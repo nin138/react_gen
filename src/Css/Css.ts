@@ -6,14 +6,14 @@ export default class CSS {
   private values: Map<string, CssValue>;
   constructor(value: Map<string, CssValue> = Map()) { this.values = value; }
   get(atr: string): CssValue { return this.values.get(atr); }
-  set(atr: string ,value: String) {
+  set(atr: string ,value: string) {
     if(this.values.get(atr).value == value) return;
     this.values = this.values.set(atr, new CssValue(value));
     if(CssData.values.get(atr).children !== undefined) this.parseAttr(atr);
     else if(CssData.values.get(atr).parent != undefined) this.margeAttr(CssData.values.get(atr).parent as string);
     return new CSS(this.values);
   }
-  parseAttr(atr: string) {
+  private parseAttr(atr: string) {
     const parser: any = {
       margin_padding: (v: string) => {
         const list = v.split(" ");
@@ -51,7 +51,7 @@ export default class CSS {
     };
     parser[atr.trim()](this.values.get(atr).value);
   }
-  margeAttr(parent: string) {
+  private margeAttr(parent: string) {
     const parser: any = {
       margin_padding: (atr: string) => {
         const top = this.values.get(atr + "Top").value || "0";

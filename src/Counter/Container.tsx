@@ -3,10 +3,10 @@ import {connect, MapDispatchToPropsParam, MapStateToPropsParam} from 'react-redu
 import {Dispatch} from 'redux'
 import {CounterState, decrementAmount, fetchRequestFinish, fetchRequestStart, incrementAmount} from './Modules'
 import {RouteComponentProps} from 'react-router'
-import {ReduxAction, ReduxState} from "../Store";
+import {GeneralAction, GeneralState} from "../Store";
 
 export class ActionDispatcher {
-  constructor(private dispatch: (action: ReduxAction) => void) {}
+  constructor(private dispatch: (action: GeneralAction) => void) {}
 
   myHeaders = new Headers({
     'Content-Type': 'application/json',
@@ -39,12 +39,12 @@ export class ActionDispatcher {
 }
 
 const mapStateToProps: MapStateToPropsParam<{value: CounterState, param?: string}, any> =
-    (state: ReduxState, ownProps: RouteComponentProps<{myParams: string | undefined}>) => {
+    (state: GeneralState, ownProps: RouteComponentProps<{myParams: string | undefined}>) => {
   if (ownProps.match.params.myParams === undefined) return {value: state.counter};
   return {value: state.counter, param: ownProps.match.params.myParams}
 };
 
 const mapDispatchToProps: MapDispatchToPropsParam<{actions: ActionDispatcher}, {}> =
-    (dispatch: Dispatch<ReduxAction>) => ({actions: new ActionDispatcher(dispatch)});
+    (dispatch: Dispatch<GeneralAction>) => ({actions: new ActionDispatcher(dispatch)});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Counter)

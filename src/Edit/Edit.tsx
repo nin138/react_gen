@@ -1,22 +1,22 @@
 import * as React from 'react'
-// import {CounterState} from './Modules'
 import {ActionDispatcher} from './Container'
+import {EditState} from "./Modules";
 
 interface Props {
-
+  value: EditState
+  actions: ActionDispatcher
 }
 
-export class Counter extends React.Component<Props, {}> {
+export default class Edit extends React.Component<Props, {}> {
   render() {
+    console.log(this.props);
     return (
-        <div>
-          {(this.props.param === undefined) ? null : <div>{this.props.param}</div>}
-          <p>{`score: ${this.props.value.num}`}</p>
-          <button onClick={() => this.props.actions.increment(3)}>Increment 3</button>
-          <button onClick={() => this.props.actions.decrement(2)}>Decrement 2</button>
-          <button onClick={() => this.props.actions.asyncIncrement()}>async Increment 100</button>
-          {(this.props.value.loadingCount === 0) ? null : <p>loading</p>}
-        </div>
+        <section>
+          <h1>edit</h1>
+          <p>{this.props.value.attr}</p>
+          <p>{this.props.value.value}</p>
+          <button onClick={() => this.props.actions.changeCss("att", "cc")}>b</button>
+        </section>
     )
   }
 }
