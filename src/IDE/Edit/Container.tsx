@@ -1,7 +1,7 @@
 import Edit from './Edit'
 import {connect, MapDispatchToPropsParam, MapStateToPropsParam} from 'react-redux'
 import {Dispatch} from 'redux'
-import {GeneralAction, GeneralState} from "../Store";
+import {GeneralAction, GeneralState} from "../../Store";
 import {changeCssAttr, EditState} from "./Modules";
 
 export class ActionDispatcher {

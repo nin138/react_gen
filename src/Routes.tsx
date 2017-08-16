@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import {Route, Switch} from "react-router";
 import NotFound from "./NotFound";
 import Counter from "./Counter/Container";
-import Edit from "./Edit/Container";
+import Edit from "./IDE/Edit/Container";
 
 export class Routes extends React.Component<{}, {}> {
   render() {

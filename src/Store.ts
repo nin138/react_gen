@@ -1,6 +1,6 @@
 import counter, {CounterActions, CounterState} from './Counter/Modules'
 import {createStore, combineReducers, Action} from 'redux'
-import edit, {EditAction, EditState} from "./Edit/Modules";
+import edit, {EditAction, EditState} from "./IDE/Edit/Modules";
 
 export default createStore(
     combineReducers({
