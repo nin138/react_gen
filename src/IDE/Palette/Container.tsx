@@ -3,11 +3,11 @@ import {Dispatch} from 'redux'
 import {GeneralAction, GeneralState} from "../../Store";
 import Palette from "./Palette";
 import {PaletteState} from "./Modules";
-import {addNode} from "../Tree/Modules";
+import {ActionDispatcher as TreeDispatcher} from "../Tree/Container"
 
 export class ActionDispatcher {
   constructor(private dispatch: (action: GeneralAction) => void) {}
-  itemDropped(target: string) { console.log(target);this.dispatch(addNode("div")) }
+  itemDropped(target: string) { console.log(target);this.dispatch(TreeDispatcher.addNode("div", "")) }
 }
 
 const mapStateToProps: MapStateToPropsParam<{value: PaletteState}, any> =

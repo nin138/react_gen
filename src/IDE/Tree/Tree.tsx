@@ -9,12 +9,13 @@ interface Props {
 
 export default class Tree extends React.Component<Props, {}> {
   render() {
-    console.log(this.props);
     const nodes = this.props.value.node.map( (v, i) => { return (<div key={i}>{v!!.tag}</div>)});
     return (
         <section>
           <h1>Tree</h1>
-          {nodes}
+          <div data-treeId="root">
+            {nodes}
+          </div>
         </section>
     )
   }

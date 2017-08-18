@@ -3,10 +3,14 @@ import {Dispatch} from 'redux'
 import {GeneralAction, GeneralState} from "../../Store";
 import {addNode, TreeState} from "./Modules";
 import Tree from "./Tree";
+import store from "../../Store"
 
 export class ActionDispatcher {
   constructor(private dispatch: (action: GeneralAction) => void) {}
-  addNode(tag: string) { this.dispatch(addNode(tag)) }
+  addNode(tag: string) {
+    console.log(store.getState());
+    this.dispatch(addNode(tag, "2"))
+  }
 }
 
 const mapStateToProps: MapStateToPropsParam<{value: TreeState}, any> =
