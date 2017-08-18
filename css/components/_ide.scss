@@ -9,6 +9,8 @@
   &--tree-area {
     @include ide-child;
     flex: 1;
+    display: flex;
+    flex-direction: column;
   }
   &--display-area {
     @include ide-child;
