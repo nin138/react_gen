@@ -1,5 +1,4 @@
 import {Action} from 'redux'
-import {List} from "immutable";
 
 enum ActionNames {
   ItemDropped = "Palette.ItemDropped",
@@ -14,18 +13,15 @@ export const itemDropped = (target: string): ItemDropAction => ({
   target
 });
 
-export class Component {
-
-}
-
 export interface PaletteState {
-  components: List<Component>
+  test: string
 }
 
 export type PaletteAction = ItemDropAction
 
+
 const initialState: PaletteState= {
-  components: List()
+  test: ""
 };
 
 export default function reducer(state: PaletteState = initialState, action: PaletteAction): PaletteState {

@@ -1,9 +1,9 @@
 import * as React from 'react'
 import {changeCssAttr, EditState} from "./Modules";
-import {GeneralAction} from "../../Store";
+import {AppAction} from "../../Store";
 
 export class EditActionDispatcher {
-  constructor(private dispatch: (action: GeneralAction) => void) {}
+  constructor(private dispatch: (action: AppAction) => void) {}
   public changeCss(attr: string, value: string) {
     this.dispatch(changeCssAttr(attr, value))
   }

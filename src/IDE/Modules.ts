@@ -1,25 +1,32 @@
-// import {EditAction} from "./Edit/Modules";
-//
-// enum ActionNames {
-// }
-//
-// export interface EditState {
-//   attr: string
-//   value: string
-// }
-//
-// export type IDEAction = EditAction
-//
-// const initialState: EditState= {
-//   attr: "i",
-//   value: "t"
-// };
-//
-// export default function reducer(state: EditState = initialState, action: EditAction): EditState {
-//   switch (action.type) {
-//     case ActionNames.ChangeCssAttr:
-//       return Object.assign({}, state, { attr: action.attr, value: action.value });
-//     default:
-//       return state
-//   }
-// }
+import {ComponentManager, initial} from "../Html/ComponentManager";
+import {NinComponentInitializer} from "../Entities/NinComponent";
+
+enum ActionNames {
+  addComponent = "IDE.addComponent"
+}
+
+interface AddComponentAction {
+  type: ActionNames.addComponent
+  initializer: NinComponentInitializer
+}
+export const addComponent = (initializer: NinComponentInitializer) =>
+  ({ type: ActionNames.addComponent, initializer });
+
+export interface IDEState {
+  componentManage: ComponentManager
+}
+
+export type IDEAction = AddComponentAction
+
+const initialState: IDEState= {
+  componentManage: initial
+};
+
+export default function reducer(state: IDEState = initialState, action: IDEAction): IDEState {
+  switch (action.type) {
+    case ActionNames.addComponent:
+      return Object.assign({}, state, { componentManager: state.componentManage.set(action.initializer) });
+    default:
+      return state
+  }
+}

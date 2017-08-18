@@ -1,5 +1,6 @@
 import {Action} from 'redux'
 import {List} from "immutable"
+import NinComponent, {NinComponentInitializer} from "../../Entities/NinComponent";
 
 enum ActionNames {
   AddNode = "Tree.AddNode"
@@ -7,12 +8,12 @@ enum ActionNames {
 
 interface AddNodeAction extends Action {
   type: ActionNames.AddNode
-  tag: string
+  initializer: NinComponentInitializer
   id: string
 }
-export const addNode = (tag: string, id: string): AddNodeAction => ({
+export const addNode = (initializer: NinComponentInitializer, id: string): AddNodeAction => ({
   type: ActionNames.AddNode,
-  tag,
+  initializer,
   id
 });
 
@@ -26,7 +27,7 @@ export class Node {
 }
 
 export interface TreeState {
-  node: List<Node>
+  node: List<NinComponent>
 }
 
 export type TreeAction = AddNodeAction
@@ -38,7 +39,7 @@ const initialState: TreeState= {
 export default function reducer(state: TreeState = initialState, action: TreeAction): TreeState {
   switch (action.type) {
     case ActionNames.AddNode:
-      return Object.assign({}, state, { node: state.node.push(new Node(action.tag, action.id)) });
+      return Object.assign({}, state, { node: state.node.push(new NinComponent(action.initializer)) });
     default:
       return state
   }

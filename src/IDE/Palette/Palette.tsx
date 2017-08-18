@@ -1,34 +1,33 @@
 import * as React from "react";
 import {itemDropped, PaletteState} from "./Modules";
-import {GeneralAction} from "../../Store";
-import {ActionDispatcher} from "../Container";
-import {HTML_PATH, HTML_TAGS} from "../../Html/Tags";
+import {AppAction} from "../../Store";
+import {IDEState} from "../Modules";
 
 export class PaletteActionDispatcher {
-  constructor(private dispatch: (action: GeneralAction) => void, private parent: ActionDispatcher) {}
-  itemDropped(tag: string, target: string) {
-    this.parent.tree.addNode(tag);
-  }
+  constructor(private dispatch: (action: AppAction) => void) {}
   test() {this.dispatch(itemDropped(""))}
 }
 
 interface Props {
+  ide: IDEState
   value: PaletteState
   actions: PaletteActionDispatcher
 }
 
 export default class Palette extends React.Component<Props, {}> {
   render() {
-    const tags = HTML_TAGS.keySeq().toArray().map(v => { return (
-        <div onDragStart={ e => { e.dataTransfer.setData("tag", `${HTML_PATH}.${v}` ); }}
-             draggable={true}
-             key={v}>
-          {v}
-        </div>) });
+    const components = this.props.ide.componentManage.getAllPath().map(v => {
+      return(
+      <div onDragStart={ e => { e.dataTransfer.setData("data", JSON.stringify(this.props.ide.componentManage.getInitializer(v)) ); }}
+           draggable={true}
+           key={v}>
+        {v}
+      </div>)
+    });
     return (
         <section className="c-palette">
           <h1>Palette</h1>
-          {tags}
+          {components}
         </section>
     )
   }

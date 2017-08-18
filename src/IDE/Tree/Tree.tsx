@@ -1,11 +1,13 @@
 import * as React from 'react'
 import {addNode, TreeState} from "./Modules";
-import {GeneralAction} from "../../Store";
+import {AppAction} from "../../Store";
+import {NinComponentInitializer} from "../../Entities/NinComponent";
+
 
 export class TreeActionDispatcher {
-  constructor(private dispatch: (action: GeneralAction) => void) {}
-  addNode(tag: string, target: string = "root") {
-    this.dispatch(addNode(tag, target))
+  constructor(private dispatch: (action: AppAction) => void) {}
+  addNode(initializer: NinComponentInitializer, target: string = "root") {
+    this.dispatch(addNode(initializer, target))
   }
 }
 
@@ -17,10 +19,10 @@ interface Props {
 
 export default class Tree extends React.Component<Props, {}> {
   handleDrop(e: React.DragEvent<any>) {
-    this.props.actions.addNode(e.dataTransfer.getData("tag"))
+    this.props.actions.addNode(JSON.parse(e.dataTransfer.getData("data")))
   }
   render() {
-    const nodes = this.props.value.node.map( (v, i) => { return (<div key={i}>{v!!.tag}</div>)});
+    const nodes = this.props.value.node.map( (v, i) => { return (<div key={i}>{v!!.fullName()}</div>)});
     return (
         <section className="c-tree">
           <div className="c-tree--head">
