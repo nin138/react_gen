@@ -16,9 +16,8 @@ interface Props {
 
 export default class Edit extends React.Component<Props, {}> {
   render() {
-    console.log(this.props);
     return (
-        <section>
+        <section className="c-edit">
           <h1>edit</h1>
           <p>{this.props.value.attr}</p>
           <p>{this.props.value.value}</p>

@@ -1,0 +1,22 @@
+@mixin ide-child {
+  border: solid;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.c-IDE {
+  display: flex;
+  &--tree-area {
+    @include ide-child;
+    flex: 1;
+  }
+  &--display-area {
+    @include ide-child;
+    flex: 2;
+  }
+  &--edit-area {
+    @include ide-child;
+    flex: 1;
+  }
+}
+

@@ -11,13 +11,19 @@ interface Props extends GeneralState{
 
 export default class IDE extends React.Component<Props, {}> {
   render() {
-    console.log(this.props);
     return (
-        <div>
-          <Palette actions={this.props.actions.palette} value={this.props.palette} />
-          <Tree actions={this.props.actions.tree} value={this.props.tree}/>
-          <Edit actions={this.props.actions.edit} value={this.props.edit}/>
-        </div>
+        <section className="c-IDE">
+          <div className="c-IDE--tree-area">
+            <Palette actions={this.props.actions.palette} value={this.props.palette} />
+            <Tree actions={this.props.actions.tree} value={this.props.tree}/>
+          </div>
+          <div className="c-IDE--display-area">
+            <h1>display</h1>
+          </div>
+          <div className="c-IDE--edit-area">
+            <Edit actions={this.props.actions.edit} value={this.props.edit}/>
+          </div>
+        </section>
     )
   }
 }

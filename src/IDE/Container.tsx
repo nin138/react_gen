@@ -13,7 +13,7 @@ export class ActionDispatcher {
   constructor(private dispatch: (action: GeneralAction) => void) {
     this.tree = new TreeActionDispatcher(dispatch);
     this.edit = new EditActionDispatcher(dispatch);
-    this.palette = new PaletteActionDispatcher(dispatch);
+    this.palette = new PaletteActionDispatcher(dispatch, this);
   }
   test() { this.dispatch(addNode("", "")) }
 }

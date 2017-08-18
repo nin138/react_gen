@@ -4,8 +4,8 @@ import {GeneralAction} from "../../Store";
 
 export class TreeActionDispatcher {
   constructor(private dispatch: (action: GeneralAction) => void) {}
-  addNode(tag: string) {
-    this.dispatch(addNode(tag, "2"))
+  addNode(tag: string, target: string = "root") {
+    this.dispatch(addNode(tag, target))
   }
 }
 
@@ -19,9 +19,9 @@ export default class Tree extends React.Component<Props, {}> {
   render() {
     const nodes = this.props.value.node.map( (v, i) => { return (<div key={i}>{v!!.tag}</div>)});
     return (
-        <section>
-          <h1>Tree</h1>
-          <div data-treeId="root">
+        <section className="c-tree">
+          <h1 onDragEnter={() => {console.log("enter")}} onDrop={ () => {console.log("www")} }>Tree</h1>
+          <div className="c-tree--main" data-treeId="root">
             {nodes}
           </div>
         </section>
