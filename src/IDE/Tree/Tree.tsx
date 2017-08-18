@@ -24,7 +24,7 @@ export default class Tree extends React.Component<Props, {}> {
     return (
         <section className="c-tree">
           <div className="c-tree--head">
-            <h1 onDragEnter={() => {console.log("enter")}} onDrop={ () => {console.log("www")} }>Tree</h1>
+            <h1>Tree</h1>
           </div>
           <div
               onDragOver={ e=> e.preventDefault() }

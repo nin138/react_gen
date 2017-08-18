@@ -1,8 +1,8 @@
 import * as React from "react";
-import {TAGS} from "../../Html/Tags";
 import {itemDropped, PaletteState} from "./Modules";
 import {GeneralAction} from "../../Store";
 import {ActionDispatcher} from "../Container";
+import {HTML_PATH, HTML_TAGS} from "../../Html/Tags";
 
 export class PaletteActionDispatcher {
   constructor(private dispatch: (action: GeneralAction) => void, private parent: ActionDispatcher) {}
@@ -19,10 +19,9 @@ interface Props {
 
 export default class Palette extends React.Component<Props, {}> {
   render() {
-    const tags = TAGS.map(v => { return (
-        <div onDragStart={ e => { e.dataTransfer.setData("tag", v); }}
+    const tags = HTML_TAGS.keySeq().toArray().map(v => { return (
+        <div onDragStart={ e => { e.dataTransfer.setData("tag", `${HTML_PATH}.${v}` ); }}
              draggable={true}
-             data-tagId={v}
              key={v}>
           {v}
         </div>) });
