@@ -3,28 +3,21 @@ import {List} from "immutable"
 import NinComponent, {NinComponentInitializer} from "../../Entities/NinComponent";
 
 enum ActionNames {
-  AddNode = "Tree.AddNode"
+  CreateNode = "Tree.CreateNode"
 }
 
 interface AddNodeAction extends Action {
-  type: ActionNames.AddNode
+  type: ActionNames.CreateNode
   initializer: NinComponentInitializer
-  id: string
+  parent: NinComponent
 }
-export const addNode = (initializer: NinComponentInitializer, id: string): AddNodeAction => ({
-  type: ActionNames.AddNode,
+export const createNode = (initializer: NinComponentInitializer, parent: NinComponent): AddNodeAction => ({
+  type: ActionNames.CreateNode,
   initializer,
-  id
+  parent
 });
 
-export class Node {
-  tag: string;
-  id: string;
-  constructor(tag: string, id: string) {
-    this.tag = tag;
-    this.id = id;
-  }
-}
+
 
 export interface TreeState {
   node: List<NinComponent>
@@ -38,8 +31,8 @@ const initialState: TreeState= {
 
 export default function reducer(state: TreeState = initialState, action: TreeAction): TreeState {
   switch (action.type) {
-    case ActionNames.AddNode:
-      return Object.assign({}, state, { node: state.node.push(new NinComponent(action.initializer)) });
+    case ActionNames.CreateNode:
+      return Object.assign({}, state, { node: state.node.push(new NinComponent(action.initializer, action.parent)) });
     default:
       return state
   }
