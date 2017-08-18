@@ -1,10 +1,18 @@
 import * as React from 'react'
-import {ActionDispatcher} from './Container'
-import {TreeState} from "./Modules";
+import {addNode, TreeState} from "./Modules";
+import {GeneralAction} from "../../Store";
+
+export class TreeActionDispatcher {
+  constructor(private dispatch: (action: GeneralAction) => void) {}
+  addNode(tag: string) {
+    this.dispatch(addNode(tag, "2"))
+  }
+}
+
 
 interface Props {
   value: TreeState
-  actions: ActionDispatcher
+  actions: TreeActionDispatcher
 }
 
 export default class Tree extends React.Component<Props, {}> {

@@ -1,10 +1,17 @@
 import * as React from 'react'
-import {ActionDispatcher} from './Container'
-import {EditState} from "./Modules";
+import {changeCssAttr, EditState} from "./Modules";
+import {GeneralAction} from "../../Store";
+
+export class EditActionDispatcher {
+  constructor(private dispatch: (action: GeneralAction) => void) {}
+  public changeCss(attr: string, value: string) {
+    this.dispatch(changeCssAttr(attr, value))
+  }
+}
 
 interface Props {
   value: EditState
-  actions: ActionDispatcher
+  actions: EditActionDispatcher
 }
 
 export default class Edit extends React.Component<Props, {}> {

@@ -1,11 +1,16 @@
 import * as React from "react";
 import {TAGS} from "../../Html/Tags";
-import {PaletteState} from "./Modules";
-import {ActionDispatcher} from "./Container";
+import {itemDropped, PaletteState} from "./Modules";
+import {GeneralAction} from "../../Store";
+
+export class PaletteActionDispatcher {
+  constructor(private dispatch: (action: GeneralAction) => void) {}
+  itemDropped(target: string) { console.log(target);this.dispatch(itemDropped("div")) }
+}
 
 interface Props {
   value: PaletteState
-  actions: ActionDispatcher
+  actions: PaletteActionDispatcher
 }
 
 export default class Palette extends React.Component<Props, {}> {
