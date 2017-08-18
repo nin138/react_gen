@@ -20,7 +20,7 @@ interface Props {
 export default class Palette extends React.Component<Props, {}> {
   render() {
     const tags = TAGS.map(v => { return (
-        <div onDragEnd={e => { console.log(e.nativeEvent);this.props.actions.itemDropped(v, e.target.toString())} }
+        <div onDragStart={ e => { e.dataTransfer.setData("tag", v); }}
              draggable={true}
              data-tagId={v}
              key={v}>
