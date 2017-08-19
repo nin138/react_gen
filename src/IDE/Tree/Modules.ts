@@ -2,6 +2,12 @@ import {Action} from 'redux'
 import {Map} from "immutable"
 import {NinComponent} from "../../Entities/NinComponent";
 
+export enum TreeItemPosition {
+  before = "before",
+  body = "body",
+  after = "after",
+}
+
 enum ActionNames {
   CreateNode = "Tree.CreateNode",
   CreateRoot = "Tree.CreateRoot",

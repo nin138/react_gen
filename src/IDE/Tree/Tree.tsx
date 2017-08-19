@@ -2,6 +2,7 @@ import * as React from 'react'
 import {createNode, createRoot, TreeState} from "./Modules";
 import {AppAction} from "../../Store";
 import { NinComponent, NinComponentInitializer} from "../../Entities/NinComponent";
+import TreeItem from "./components/TreeItem";
 
 
 export class TreeActionDispatcher {
@@ -28,7 +29,6 @@ export default class Tree extends React.Component<Props, {}> {
     else this.props.actions.createNode(initializer, targetId);
   }
   getChildNodeDom(node: NinComponent): any {
-    // return React.createElement("div", {"className": node.id}, node.children.map(v => this.getChildNode(v!!)))
     const children = node.children.map(v => { return this.getChildNodeDom(this.props.value.node.get(v!!)) });
     return  <div className="c-tree--main--item"
                  key={node.id}
@@ -39,13 +39,13 @@ export default class Tree extends React.Component<Props, {}> {
   }
   render() {
     const rootNode = this.props.value.node.get(this.props.value.rootNodeId || "");
-    const root = (rootNode)?
+    const tree = (rootNode)?
         (<div className="c-tree--main--root" data-treeId={rootNode.id}>
           {rootNode.fullName()}
-          {rootNode.children.map(v => this.getChildNodeDom(this.props.value.node.get(v!!))).toArray()}
+          {rootNode.children.map(v => <TreeItem key={this.props.value.node.get(v!!).id} nodes={this.props.value.node} node={this.props.value.node.get(v!!)}/>)}
+          {/*{rootNode.children.map(v => this.getChildNodeDom(this.props.value.node.get(v!!))).toArray()}*/}
           </div>)
         : "";
-    // const nodes = this.props.value.node.map( (v, i) => { return (<div key={i}>{v!!.fullName()}</div>)});
     return (
         <section className="c-tree">
           <div className="c-tree--head">
@@ -53,9 +53,10 @@ export default class Tree extends React.Component<Props, {}> {
           </div>
           <div onDragOver={ e=> e.preventDefault() }
                onDrop={ e => this.handleDrop(e) } className="c-tree--main" data-treeId="root">
-            {root}
+            {tree}
           </div>
         </section>
     )
   }
 }
+
