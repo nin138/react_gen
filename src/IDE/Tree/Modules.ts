@@ -1,40 +1,60 @@
 import {Action} from 'redux'
-import {List} from "immutable"
+import {Map} from "immutable"
+import {NinComponent} from "../../Entities/NinComponent";
+
+export enum TreeItemPosition {
+  before = "before",
+  body = "body",
+  after = "after",
+}
 
 enum ActionNames {
-  AddNode = "Tree.AddNode"
+  CreateNode = "Tree.CreateNode",
+  CreateRoot = "Tree.CreateRoot",
 }
 
-interface AddNodeAction extends Action {
-  type: ActionNames.AddNode
-  tag: string
+interface CreateNodeAction extends Action {
+  type: ActionNames.CreateNode
+  node: NinComponent
+  parent: string
 }
-export const addNode = (tag: string): AddNodeAction => ({
-  type: ActionNames.AddNode,
-  tag
+export const createNode = (node: NinComponent, parent: string): CreateNodeAction => ({
+  type: ActionNames.CreateNode,
+  node,
+  parent
 });
 
-export class Node {
-  constructor(tag: string) {
-    this.tag = tag;
-  }
-  tag: string
+interface CreateRootAction extends Action {
+  type: ActionNames.CreateRoot
+  node: NinComponent
 }
+export const createRoot= (node: NinComponent): CreateRootAction => ({
+  type: ActionNames.CreateRoot,
+  node,
+});
+
+
 
 export interface TreeState {
-  node: List<Node>
+  node: Map<string,NinComponent>
+  rootNodeId: string | null
 }
 
-export type TreeAction = AddNodeAction
+export type TreeAction = CreateNodeAction
+    | CreateRootAction
 
 const initialState: TreeState= {
-  node: List()
+  node: Map(),
+  rootNodeId: null
 };
 
 export default function reducer(state: TreeState = initialState, action: TreeAction): TreeState {
   switch (action.type) {
-    case ActionNames.AddNode:
-      return Object.assign({}, state, { node: state.node.push(new Node(action.tag)) });
+    case ActionNames.CreateNode:
+      const node = state.node.set(action.parent, state.node.get(action.parent).addChild(action.node.id));
+      return Object.assign({}, state, { node: node.set(action.node.id, action.node) });
+    case ActionNames.CreateRoot:
+      return Object.assign({}, state, { rootNodeId: action.node.id, node: state.node.set(action.node.id, action.node) });
     default:
       return state
   }

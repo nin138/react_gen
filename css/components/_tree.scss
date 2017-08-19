@@ -1,0 +1,18 @@
+.c-tree {
+  flex: 3;
+  &--head {
+    height: 2rem;
+  }
+  &--main {
+    box-sizing: border-box;
+    border: solid #00f;
+    height: calc(100% - 2rem);
+    &--root {
+      height: 100%;
+    }
+    &--item {
+      border: solid;
+      margin-left: 1rem;
+    }
+  }
+}
