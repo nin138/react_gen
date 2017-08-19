@@ -30,7 +30,7 @@ export const createRoot= (initializer: NinComponentInitializer): CreateRootActio
 
 
 export interface TreeState {
-  node: List<NinComponent>
+  node: Map<string,NinComponent>
   rootNode: NinComponent | null
 }
 
@@ -38,16 +38,18 @@ export type TreeAction = CreateNodeAction
     | CreateRootAction
 
 const initialState: TreeState= {
-  node: List(),
+  node: new Map(),
   rootNode: null
 };
 
 export default function reducer(state: TreeState = initialState, action: TreeAction): TreeState {
   switch (action.type) {
     case ActionNames.CreateNode:
-      const parentIndex = state.node.findIndex(v => v == action.parent);
+      const parentIndex = state.node.findIndex(v => { console.log(v);console.log(action.parent); return(v == action.parent)});
+      console.log(parentIndex);
       const newNode = new NinComponent(action.initializer, action.parent);
       const node = state.node.update(parentIndex, v => v.addChild(newNode));
+      console.log(node);
       return Object.assign({}, state, { node: node.push(newNode) });
     case ActionNames.CreateRoot:
       const root = new NinComponent(action.initializer, componentRoot);

@@ -23,14 +23,27 @@ interface Props {
 export default class Tree extends React.Component<Props, {}> {
   handleDrop(e: React.DragEvent<any>) {
     const targetId = (e.target as any).getAttribute("data-treeId");
+    console.log(targetId);
     const initializer = JSON.parse(e.dataTransfer.getData("data"));
     if(targetId == "root") this.props.actions.createRoot(initializer);
-    else this.props.actions.createNode(initializer, this.props.value.node.find((v) => v!!.id == targetId))
+    else this.props.actions.createNode(initializer, this.props.value.node.find((v) => {
+      return (v!!.id == targetId)
+    }))
+  }
+  getChildNode(node: NinComponent): any {
+    // return React.createElement("div", {"className": node.id}, node.children.map(v => this.getChildNode(v!!)))
+    return  <div>{node.fullName()}{...(node.children.map(v => { this.getChildNode(v!!) }).toArray())}</div>
   }
   render() {
-    console.log(this.props.value.node);
-    const root = (this.props.value.rootNode)? (<div>{this.props.value.rootNode.fullName()}</div>) : "";
-    const nodes = this.props.value.node.map( (v, i) => { return (<div key={i}>{v!!.fullName()}</div>)});
+    console.log(this.props.value.rootNode);
+    const root = this.props.value.rootNode;
+    const rootNode = (root)?
+        (<div className="c-tree--main--root" data-treeId={root.id}>
+          {root.fullName()}
+          {...root.children.map(v => this.getChildNode(v!!)).toArray()}
+          </div>)
+        : "";
+    // const nodes = this.props.value.node.map( (v, i) => { return (<div key={i}>{v!!.fullName()}</div>)});
     return (
         <section className="c-tree">
           <div className="c-tree--head">
@@ -38,8 +51,7 @@ export default class Tree extends React.Component<Props, {}> {
           </div>
           <div onDragOver={ e=> e.preventDefault() }
                onDrop={ e => this.handleDrop(e) } className="c-tree--main" data-treeId="root">
-            {root}
-            {nodes}
+            {rootNode}
           </div>
         </section>
     )
