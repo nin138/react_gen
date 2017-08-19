@@ -12,10 +12,10 @@ export class NinComponent {
   isFrame: boolean;
   allowChild: boolean;
   fullName() { return `${this.path}.${this.name}` }
-  parent: NinComponent | ComponentRoot;
-  children: List<NinComponent> = List();
+  parent: string;
+  children: List<string> = List();
   id: string;
-  constructor(initializer: NinComponentInitializer, parent: NinComponent | ComponentRoot, id: string = shortId.generate()) {
+  constructor(initializer: NinComponentInitializer, parent: string, id: string = shortId.generate()) {
     this.path = initializer.path;
     this.name = initializer.name;
     this.isInline = initializer.isInline;
@@ -27,8 +27,8 @@ export class NinComponent {
   copy(...obj: Array<object>): NinComponent {
     return Object.assign(Object.create(NinComponent.prototype), this, ...obj)
   }
-  addChild(child: NinComponent): NinComponent {
-    return this.copy({children: this.children.push(child)})
+  addChild(child: string): NinComponent {
+    return this.copy({children: this.children.push(child)});
   }
 }
 

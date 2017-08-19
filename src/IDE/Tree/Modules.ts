@@ -1,6 +1,6 @@
 import {Action} from 'redux'
-import {List} from "immutable"
-import {ComponentRoot, componentRoot, NinComponent, NinComponentInitializer} from "../../Entities/NinComponent";
+import {Map} from "immutable"
+import {NinComponent} from "../../Entities/NinComponent";
 
 enum ActionNames {
   CreateNode = "Tree.CreateNode",
@@ -9,51 +9,46 @@ enum ActionNames {
 
 interface CreateNodeAction extends Action {
   type: ActionNames.CreateNode
-  initializer: NinComponentInitializer
-  parent: NinComponent | ComponentRoot
+  node: NinComponent
+  parent: string
 }
-export const createNode = (initializer: NinComponentInitializer, parent: NinComponent): CreateNodeAction => ({
+export const createNode = (node: NinComponent, parent: string): CreateNodeAction => ({
   type: ActionNames.CreateNode,
-  initializer,
+  node,
   parent
 });
 
 interface CreateRootAction extends Action {
   type: ActionNames.CreateRoot
-  initializer: NinComponentInitializer
+  node: NinComponent
 }
-export const createRoot= (initializer: NinComponentInitializer): CreateRootAction => ({
+export const createRoot= (node: NinComponent): CreateRootAction => ({
   type: ActionNames.CreateRoot,
-  initializer,
+  node,
 });
 
 
 
 export interface TreeState {
   node: Map<string,NinComponent>
-  rootNode: NinComponent | null
+  rootNodeId: string | null
 }
 
 export type TreeAction = CreateNodeAction
     | CreateRootAction
 
 const initialState: TreeState= {
-  node: new Map(),
-  rootNode: null
+  node: Map(),
+  rootNodeId: null
 };
 
 export default function reducer(state: TreeState = initialState, action: TreeAction): TreeState {
   switch (action.type) {
     case ActionNames.CreateNode:
-      const parentIndex = state.node.findIndex(v => { console.log(v);console.log(action.parent); return(v == action.parent)});
-      console.log(parentIndex);
-      const newNode = new NinComponent(action.initializer, action.parent);
-      const node = state.node.update(parentIndex, v => v.addChild(newNode));
-      console.log(node);
-      return Object.assign({}, state, { node: node.push(newNode) });
+      const node = state.node.set(action.parent, state.node.get(action.parent).addChild(action.node.id));
+      return Object.assign({}, state, { node: node.set(action.node.id, action.node) });
     case ActionNames.CreateRoot:
-      const root = new NinComponent(action.initializer, componentRoot);
-      return Object.assign({}, state, { rootNode: root, node: state.node.push(root) });
+      return Object.assign({}, state, { rootNodeId: action.node.id, node: state.node.set(action.node.id, action.node) });
     default:
       return state
   }

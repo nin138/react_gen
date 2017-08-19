@@ -10,5 +10,9 @@
     &--root {
       height: 100%;
     }
+    &--item {
+      border: solid;
+      margin-left: 1rem;
+    }
   }
 }
