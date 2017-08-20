@@ -82,7 +82,6 @@ export default function reducer(state: TreeState = initialState, action: TreeAct
           .set(parentId, state.node.get(parentId).addChild(moveNode.id, target, after))
       });
     }
-    default:
-      return state
+    default: { return state }
   }
 }
