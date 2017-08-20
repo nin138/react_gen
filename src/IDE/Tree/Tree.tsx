@@ -28,31 +28,21 @@ export default class Tree extends React.Component<Props, {}> {
     if(targetId == "root") this.props.actions.createRoot(initializer);
     else this.props.actions.createNode(initializer, targetId);
   }
-  getChildNodeDom(node: NinComponent): any {
-    const children = node.children.map(v => { return this.getChildNodeDom(this.props.value.node.get(v!!)) });
-    return  <div className="c-tree--main--item"
-                 key={node.id}
-                 data-treeId={node.id}>
-      {node.fullName()}
-      {children}
-      </div>
-  }
   render() {
     const rootNode = this.props.value.node.get(this.props.value.rootNodeId || "");
     const tree = (rootNode)?
-        (<div className="c-tree--main--root" data-treeId={rootNode.id}>
+        (<div className="c-tree__main__root" data-treeId={rootNode.id}>
           {rootNode.fullName()}
           {rootNode.children.map(v => <TreeItem key={this.props.value.node.get(v!!).id} nodes={this.props.value.node} node={this.props.value.node.get(v!!)}/>)}
-          {/*{rootNode.children.map(v => this.getChildNodeDom(this.props.value.node.get(v!!))).toArray()}*/}
           </div>)
         : "";
     return (
         <section className="c-tree">
-          <div className="c-tree--head">
+          <div className="c-tree__head">
             <h1>Tree</h1>
           </div>
           <div onDragOver={ e=> e.preventDefault() }
-               onDrop={ e => this.handleDrop(e) } className="c-tree--main" data-treeId="root">
+               onDrop={ e => this.handleDrop(e) } className="c-tree__main" data-treeId="root">
             {tree}
           </div>
         </section>

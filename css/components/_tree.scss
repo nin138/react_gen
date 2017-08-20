@@ -1,18 +1,31 @@
 .c-tree {
   flex: 3;
-  &--head {
+  &__head {
     height: 2rem;
   }
-  &--main {
+  &__main {
     box-sizing: border-box;
     border: solid #00f;
     height: calc(100% - 2rem);
-    &--root {
+    &__root {
       height: 100%;
     }
-    &--item {
-      border: solid;
+    &__item {
       margin-left: 1rem;
+      &__body {
+        padding: .1rem;
+        border-left: solid;
+      }
+      &__before {
+        opacity: 0;
+        height: .4rem;
+        border-top: solid;
+      }
+      &__after {
+        height: .4rem;
+        opacity: 0;
+        border-bottom: solid;
+      }
     }
   }
 }
