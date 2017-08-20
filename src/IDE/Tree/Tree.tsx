@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {createNode, createRoot, TreeState} from "./Modules";
+import {createNode, createRoot, moveNode, TreeItemPosition, TreeState} from "./Modules";
 import {AppAction} from "../../Store";
 import { NinComponent, NinComponentInitializer} from "../../Entities/NinComponent";
 import TreeItem from "./components/TreeItem";
@@ -12,6 +12,9 @@ export class TreeActionDispatcher {
   }
   createRoot(initializer: NinComponentInitializer) {
     this.dispatch(createRoot(new NinComponent(initializer, "root")))
+  }
+  moveNode(id: string, targetId: string, position: TreeItemPosition) {
+    this.dispatch(moveNode(id, targetId, position))
   }
 }
 
@@ -38,7 +41,8 @@ export default class Tree extends React.Component<Props, {}> {
     if(type == TreeDropEventType.move) {
       const id = e.dataTransfer.getData("id");
       const targetId = e.currentTarget.getAttribute("data-treeId");
-      const position = e.currentTarget.getAttribute("data-treePosition");
+      const position = e.currentTarget.getAttribute("data-treePosition") as TreeItemPosition;
+      this.props.actions.moveNode(id, targetId!!, position);
     }
   }
   render() {
