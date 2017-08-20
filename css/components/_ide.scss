@@ -1,24 +1,29 @@
 @mixin ide-child {
   border: solid;
-  height: 100vh;
+  height: 100%;
   box-sizing: border-box;
 }
-
 .c-IDE {
-  display: flex;
-  &--tree-area {
-    @include ide-child;
-    flex: 1;
+  &__body {
+    height: calc(100vh - 5rem);
     display: flex;
-    flex-direction: column;
+    &__tree-area {
+      @include ide-child;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    &__display-area {
+      @include ide-child;
+      flex: 2;
+    }
+    &__edit-area {
+      @include ide-child;
+      flex: 1;
+    }
   }
-  &--display-area {
-    @include ide-child;
-    flex: 2;
-  }
-  &--edit-area {
-    @include ide-child;
-    flex: 1;
+  &__under {
+    height: 5rem;
   }
 }
 
