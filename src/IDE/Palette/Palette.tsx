@@ -2,6 +2,7 @@ import * as React from "react";
 import {itemDropped, PaletteState} from "./Modules";
 import {AppAction} from "../../Store";
 import {IDEState} from "../Modules";
+import {TreeDropEventType} from "../Tree/Tree";
 
 export class PaletteActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
@@ -15,10 +16,14 @@ interface Props {
 }
 
 export default class Palette extends React.Component<Props, {}> {
+  onDragStart(e: React.DragEvent<any>, v: string) {
+    e.dataTransfer.setData("type", TreeDropEventType.create);
+    e.dataTransfer.setData("data", JSON.stringify(this.props.ide.componentManage.getInitializer(v)));
+  }
   render() {
     const components = this.props.ide.componentManage.getAllPath().map(v => {
       return(
-      <div onDragStart={ e => { e.dataTransfer.setData("data", JSON.stringify(this.props.ide.componentManage.getInitializer(v)) ); }}
+      <div onDragStart={ e => this.onDragStart(e, v) }
            draggable={true}
            key={v}>
         {v}

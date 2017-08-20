@@ -15,6 +15,10 @@ export class TreeActionDispatcher {
   }
 }
 
+export enum TreeDropEventType {
+  create = "create",
+  move = "move",
+}
 
 interface Props {
   value: TreeState
@@ -22,11 +26,20 @@ interface Props {
 }
 
 export default class Tree extends React.Component<Props, {}> {
-  handleDrop(e: React.DragEvent<any>) {
-    const targetId = (e.target as any).getAttribute("data-treeId");
-    const initializer = JSON.parse(e.dataTransfer.getData("data"));
-    if(targetId == "root") this.props.actions.createRoot(initializer);
-    else this.props.actions.createNode(initializer, targetId);
+  handleDrop(e: React.DragEvent<HTMLElement>) {
+    const type = e.dataTransfer.getData("type");
+    if(type == TreeDropEventType.create) {
+      const targetId = e.currentTarget.getAttribute("data-treeId");
+      const initializer = JSON.parse(e.dataTransfer.getData("data"));
+      if (targetId == "root") this.props.actions.createRoot(initializer);
+      else this.props.actions.createNode(initializer, targetId!!);
+      return
+    }
+    if(type == TreeDropEventType.move) {
+      const id = e.dataTransfer.getData("id");
+      const targetId = e.currentTarget.getAttribute("data-treeId");
+      const position = e.currentTarget.getAttribute("data-treePosition");
+    }
   }
   render() {
     const rootNode = this.props.value.node.get(this.props.value.rootNodeId || "");

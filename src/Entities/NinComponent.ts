@@ -6,15 +6,15 @@ const shortId = require('shortid');
 export type NinComponentType = NinComponent | ComponentRoot
 
 export class NinComponent {
-  path: string;
-  name: string;
-  isInline: boolean;
-  isFrame: boolean;
-  allowChild: boolean;
+  readonly path: string;
+  readonly name: string;
+  readonly isInline: boolean;
+  readonly isFrame: boolean;
+  readonly allowChild: boolean;
   fullName() { return `${this.path}.${this.name}` }
-  parent: string;
-  children: List<string> = List();
-  id: string;
+  readonly parent: string;
+  readonly children: List<string> = List();
+  readonly id: string;
   constructor(initializer: NinComponentInitializer, parent: string, id: string = shortId.generate()) {
     this.path = initializer.path;
     this.name = initializer.name;
@@ -24,12 +24,20 @@ export class NinComponent {
     this.parent = parent;
     this.id = id;
   }
-  copy(...obj: Array<object>): NinComponent {
-    return Object.assign(Object.create(NinComponent.prototype), this, ...obj)
+  copy(...obj: Array<object>): NinComponent { return Object.assign(Object.create(NinComponent.prototype), this, ...obj) }
+  addChild(child: string, targetId?: string, after?: boolean,): NinComponent {
+    let differ = {};
+    if(targetId === undefined) differ = { children: this.children.push(child)};
+    else {
+      let index = this.children.indexOf(targetId);
+      if(after) index++;
+      differ = { children: this.children.insert(index, child) }
+    }
+    return this.copy(differ);
   }
-  addChild(child: string): NinComponent {
-    return this.copy({children: this.children.push(child)});
-  }
+  removeChild(id: string): NinComponent { return this.copy({ children: this.children.filter( value => value !== id) }) }
+  changeParent(id: string): NinComponent { return this.copy({ parent: id }) }
+
 }
 
 export class ComponentRoot {
@@ -37,12 +45,8 @@ export class ComponentRoot {
   name = "root";
   allowChild = true;
   children: List<NinComponent> = List();
-  copy(...obj: Array<object>): ComponentRoot {
-    return Object.assign(Object.create(ComponentRoot.prototype), this, ...obj)
-  }
-  addChild(child: NinComponent): ComponentRoot {
-    return this.copy({children: this.children.push(child)})
-  }
+  copy(...obj: Array<object>): ComponentRoot { return Object.assign(Object.create(ComponentRoot.prototype), this, ...obj) }
+  addChild(child: NinComponent): ComponentRoot { return this.copy({children: this.children.push(child)}) }
 }
 export const componentRoot = new ComponentRoot();
 

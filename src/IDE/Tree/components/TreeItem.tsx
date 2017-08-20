@@ -2,6 +2,7 @@ import * as React from 'react'
 import {NinComponent} from "../../../Entities/NinComponent";
 import {TreeItemPosition} from "../Modules";
 import {Map} from "immutable";
+import {TreeDropEventType} from "../Tree";
 
 interface Props {
   nodes: Map<string, NinComponent>
@@ -9,6 +10,10 @@ interface Props {
 }
 
 export default class TreeItem extends React.Component<Props> {
+  private onDragStart(e: React.DragEvent<any>) {
+    e.dataTransfer.setData("type", TreeDropEventType.move);
+    e.dataTransfer.setData("id", this.props.node.id);
+  }
   private handleDragEnterBody(e: React.DragEvent<HTMLElement>) {
     e.currentTarget.style.border = "dotted";
   }
@@ -26,7 +31,9 @@ export default class TreeItem extends React.Component<Props> {
     const childItems: any = this.props.node.children.map(
         v =>  <TreeItem key={this.props.nodes.get(v!!).id} nodes={this.props.nodes} node={this.props.nodes.get(v!!)}/>);
     return (
-        <div className="c-tree__main__item">
+        <div className="c-tree__main__item"
+             draggable={true}
+             onDragStart={ e => this.onDragStart(e) }>
           <div className="c-tree__main__item__before"
                onDragEnter={ e => this.handleDragEnterBA(e)}
                onDragLeave={ e => this.handleDragLeaveBA(e)}
