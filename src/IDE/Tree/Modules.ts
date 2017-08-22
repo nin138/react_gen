@@ -76,10 +76,10 @@ export default function reducer(state: TreeState = initialState, action: TreeAct
       const target = (action.position === TreeItemPosition.body)? undefined : action.targetId;
       const after = (action.position === TreeItemPosition.after)? true : undefined;
       const moveNode = state.node.get(action.id);
-      return Object.assign({}, state, { node: state.node
-          .set(moveNode.parent, state.node.get(moveNode.parent).removeChild(moveNode.id))
-          .set(moveNode.id, moveNode.changeParent(parentId))
-          .set(parentId, state.node.get(parentId).addChild(moveNode.id, target, after))
+      let newNode = state.node.set(moveNode.parent, state.node.get(moveNode.parent).removeChild(moveNode.id));
+      newNode = newNode.set(moveNode.id, moveNode.changeParent(parentId));
+      newNode = newNode.set(parentId, state.node.get(parentId).addChild(moveNode.id, target, after))
+      return Object.assign({}, state, { node: newNode
       });
     }
     default: { return state }

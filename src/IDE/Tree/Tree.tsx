@@ -3,7 +3,8 @@ import {createNode, createRoot, moveNode, TreeItemPosition, TreeState} from "./M
 import {AppAction} from "../../Store";
 import { NinComponent, NinComponentInitializer} from "../../Entities/NinComponent";
 import TreeItem from "./components/TreeItem";
-
+import {LogActionDispatcher} from "../Log/Log";
+import {Message} from "../../Message";
 
 export class TreeActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
@@ -28,9 +29,18 @@ export enum TreeDropEventType {
 interface Props {
   value: TreeState
   actions: TreeActionDispatcher
+  log: LogActionDispatcher
 }
 
 export default class Tree extends React.Component<Props, {}> {
+  getParentList(id: string): Array<string> {
+    const ret: Array<string> = [];
+    while(id != "root") {
+      id = this.props.value.node.get(id).parent;
+      ret.push(id)
+    }
+    return ret;
+  }
   handleDrop(e: React.DragEvent<HTMLElement>) {
     const type = e.dataTransfer.getData("type");
     if(type == TreeDropEventType.create) {
@@ -43,9 +53,10 @@ export default class Tree extends React.Component<Props, {}> {
     if(type == TreeDropEventType.move) {
       const target = e.target as HTMLElement;
       const id = e.dataTransfer.getData("id");
-      const targetId = target.getAttribute("data-treeId");
+      const targetId = target.getAttribute("data-treeId") as string;
       const position = target.getAttribute("data-treePosition") as TreeItemPosition;
-      this.props.actions.moveNode(id, targetId!!, position);
+      if(this.getParentList(id).includes(targetId)) this.props.log.error(Message.err.dom.childIncludeParent);
+      else this.props.actions.moveNode(id, targetId!!, position);
     }
   }
   render() {
