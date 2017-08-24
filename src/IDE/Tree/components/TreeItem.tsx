@@ -12,7 +12,7 @@ interface Props {
 export default class TreeItem extends React.Component<Props> {
   private onDragStart(e: React.DragEvent<any>) {
     e.dataTransfer.setData("type", TreeDropEventType.move);
-    e.dataTransfer.setData("id", this.props.node.id);
+    e.dataTransfer.setData("id", this.props.node.id)
   }
   private handleDragEnterBody(e: React.DragEvent<HTMLElement>) {
     e.currentTarget.style.border = "dotted";

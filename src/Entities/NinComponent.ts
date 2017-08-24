@@ -24,7 +24,9 @@ export class NinComponent {
     this.parent = parent;
     this.id = id;
   }
-  copy(...obj: Array<object>): NinComponent { return Object.assign(Object.create(NinComponent.prototype), this, ...obj) }
+  copy(...obj: Array<object>): NinComponent {
+    return Object.assign(Object.create(NinComponent.prototype), this, ...obj)
+  }
   addChild(child: string, targetId?: string, after?: boolean,): NinComponent {
     let differ = {};
     if(targetId === undefined) differ = { children: this.children.push(child)};

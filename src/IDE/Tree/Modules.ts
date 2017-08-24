@@ -65,22 +65,24 @@ const initialState: TreeState= {
 export default function reducer(state: TreeState = initialState, action: TreeAction): TreeState {
   switch (action.type) {
     case ActionNames.CreateNode: {
+      console.log("createnode");
       const node = state.node.set(action.parent, state.node.get(action.parent).addChild(action.node.id));
       return Object.assign({}, state, {node: node.set(action.node.id, action.node)});
     }
     case ActionNames.CreateRoot: {
+      console.log("createroot");
       return Object.assign({}, state, {rootNodeId: action.node.id, node: state.node.set(action.node.id, action.node)});
     }
     case ActionNames.MoveNode: {
       const parentId = (action.position === TreeItemPosition.body)? action.targetId : state.node.get(action.targetId).parent;
       const target = (action.position === TreeItemPosition.body)? undefined : action.targetId;
       const after = (action.position === TreeItemPosition.after)? true : undefined;
-      const moveNode = state.node.get(action.id);
-      let newNode = state.node.set(moveNode.parent, state.node.get(moveNode.parent).removeChild(moveNode.id));
-      newNode = newNode.set(moveNode.id, moveNode.changeParent(parentId));
-      newNode = newNode.set(parentId, state.node.get(parentId).addChild(moveNode.id, target, after))
-      return Object.assign({}, state, { node: newNode
-      });
+      const oldParentId = state.node.get(action.id).parent;
+      let newNode = state.node
+          .update(action.id, v => v.changeParent(parentId))
+          .update(oldParentId, v => v.removeChild(action.id))
+          .update(parentId, v=> v.addChild(action.id, target, after));
+      return Object.assign({}, state, { node: newNode });
     }
     default: { return state }
   }

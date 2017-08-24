@@ -12,11 +12,9 @@ export class TreeActionDispatcher {
     this.dispatch(createNode(new NinComponent(initializer, parent), parent))
   }
   createRoot(initializer: NinComponentInitializer) {
-    console.log("createRoot");
     this.dispatch(createRoot(new NinComponent(initializer, "root")))
   }
   moveNode(id: string, targetId: string, position: TreeItemPosition) {
-    console.log("movenode");
     this.dispatch(moveNode(id, targetId, position))
   }
 }
