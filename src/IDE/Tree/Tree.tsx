@@ -72,7 +72,7 @@ export default class Tree extends React.Component<Props, {}> {
                onDrop={ e => this.handleDrop(e) }
                className="c-tree__main"
                data-treeId="root">
-            <TreeRoot nodes={this.props.value.node}/>
+            <TreeRoot nodes={this.props.value.node} selectedItemId={this.props.value.selectedItemId}/>
           </div>
         </section>
     )

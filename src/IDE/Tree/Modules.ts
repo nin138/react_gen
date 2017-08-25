@@ -30,6 +30,7 @@ interface MoveNodeAction extends Action {
   targetId: string
   position: TreeItemPosition
 }
+
 export const moveNode = (moveId: string, targetId: string, position: TreeItemPosition): MoveNodeAction => ({
   type: ActionNames.MoveNode,
   moveId,
@@ -40,13 +41,15 @@ export const moveNode = (moveId: string, targetId: string, position: TreeItemPos
 
 export interface TreeState {
   node: Map<string,NinComponent>
+  selectedItemId: string
 }
 
 export type TreeAction = CreateNodeAction
     | MoveNodeAction
 
 const initialState: TreeState= {
-  node: Map({root: root()})
+  node: Map({root: root()}),
+  selectedItemId: "root"
 };
 
 export default function reducer(state: TreeState = initialState, action: TreeAction): TreeState {

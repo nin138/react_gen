@@ -7,6 +7,7 @@ import {TreeDropEventType} from "../Tree";
 interface Props {
   nodes: Map<string, NinComponent>
   node: NinComponent
+  selectedItemId: string
 }
 
 export default class TreeItem extends React.Component<Props> {
@@ -29,29 +30,32 @@ export default class TreeItem extends React.Component<Props> {
 
   render() {
     const childItems: any = this.props.node.children.map(
-        v =>  <TreeItem key={this.props.nodes.get(v!!).id} nodes={this.props.nodes} node={this.props.nodes.get(v!!)}/>);
+        v =>  <TreeItem key={this.props.nodes.get(v!!).id}
+                        nodes={this.props.nodes}
+                        node={this.props.nodes.get(v!!)}
+                        selectedItemId={this.props.selectedItemId}
+        />);
     return (
-        <div className="c-tree__main__item">
-          <div className="c-tree__main__item__before"
+        <div className="c-tree-item">
+          <div className="c-tree-item__before"
                onDragEnter={ e => this.handleDragEnterBA(e)}
                onDragLeave={ e => this.handleDragLeaveBA(e)}
                onDrop={e => this.handleDragLeaveBA(e)}
                data-treeId={this.props.node.id}
                data-treePosition={TreeItemPosition.before}> </div>
-          <div className="c-tree__main__item__body"
+          <div className={`c-tree-item__body${(this.props.selectedItemId === this.props.node.id)? " c-tree-item__body--selected" : ""}`}
                draggable={true}
                onDragStart={ e => this.onDragStart(e) }
                data-treeId={this.props.node.id}
                onDragEnter={ e => this.handleDragEnterBody(e)}
                onDragLeave={ e => this.handleDragLeaveBody(e)}
                onDrop={ e => this.handleDragLeaveBody(e)}
-
                data-treePosition={TreeItemPosition.body}>
             {/*{this.props.node.fullName()}*/}
             {this.props.node.id}
           </div>
           {childItems}
-          <div className="c-tree__main__item__after"
+          <div className="c-tree-item__after"
                onDragEnter={ e => this.handleDragEnterBA(e)}
                onDragLeave={ e => this.handleDragLeaveBA(e)}
                onDrop={ e => this.handleDragLeaveBA(e)}

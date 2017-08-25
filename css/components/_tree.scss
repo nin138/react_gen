@@ -10,22 +10,24 @@
     &__root {
       height: 100%;
     }
-    &__item {
-      margin-left: 1rem;
-      &__body {
-        padding: .1rem;
-        border-left: solid;
-      }
-      &__before {
-        opacity: 0;
-        height: .4rem;
-        border-top: solid;
-      }
-      &__after {
-        height: .4rem;
-        opacity: 0;
-        border-bottom: solid;
-      }
+  }
+}
+.c-tree-item {
+  margin-left: 1rem;
+  &__body {
+    padding: .1rem;
+    &--selected {
+      background: #f00;
     }
+  }
+  &__before {
+    opacity: 0;
+    height: .4rem;
+    border-top: solid;
+  }
+  &__after {
+    height: .4rem;
+    opacity: 0;
+    border-bottom: solid;
   }
 }
