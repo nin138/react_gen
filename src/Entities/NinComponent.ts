@@ -3,8 +3,6 @@ import {List} from "immutable";
 declare function require(name: string): any
 const shortId = require('shortid');
 
-export type NinComponentType = NinComponent | ComponentRoot
-
 export class NinComponent {
   readonly path: string;
   readonly name: string;
@@ -39,18 +37,17 @@ export class NinComponent {
   }
   removeChild(id: string): NinComponent { return this.copy({ children: this.children.filter( value => value !== id) }) }
   changeParent(id: string): NinComponent { return this.copy({ parent: id }) }
-
 }
 
-export class ComponentRoot {
-  id = "root";
-  name = "root";
-  allowChild = true;
-  children: List<NinComponent> = List();
-  copy(...obj: Array<object>): ComponentRoot { return Object.assign(Object.create(ComponentRoot.prototype), this, ...obj) }
-  addChild(child: NinComponent): ComponentRoot { return this.copy({children: this.children.push(child)}) }
-}
-export const componentRoot = new ComponentRoot();
+export const root = (): NinComponent=> {
+  return new NinComponent({
+    path: "Project.Body",
+    name: "root",
+    isInline: false,
+    isFrame: false,
+    allowChild: true
+  }, "none", "root")
+};
 
 export interface NinComponentInitializer {
   path: string;

@@ -1,6 +1,6 @@
 import {Action} from 'redux'
 import {Map} from "immutable"
-import {NinComponent} from "../../Entities/NinComponent";
+import {NinComponent, root} from "../../Entities/NinComponent";
 
 export enum TreeItemPosition {
   before = "before",
@@ -50,7 +50,6 @@ export const moveNode = (id: string, targetId: string, position: TreeItemPositio
 
 export interface TreeState {
   node: Map<string,NinComponent>
-  rootNodeId: string | null
 }
 
 export type TreeAction = CreateNodeAction
@@ -58,8 +57,7 @@ export type TreeAction = CreateNodeAction
     | MoveNodeAction
 
 const initialState: TreeState= {
-  node: Map(),
-  rootNodeId: null
+  node: Map({root: root()})
 };
 
 export default function reducer(state: TreeState = initialState, action: TreeAction): TreeState {

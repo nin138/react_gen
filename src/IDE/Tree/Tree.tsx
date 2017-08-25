@@ -1,18 +1,15 @@
 import * as React from 'react'
-import {createNode, createRoot, moveNode, TreeItemPosition, TreeState} from "./Modules";
+import {createNode, moveNode, TreeItemPosition, TreeState} from "./Modules";
 import {AppAction} from "../../Store";
 import { NinComponent, NinComponentInitializer} from "../../Entities/NinComponent";
-import TreeItem from "./components/TreeItem";
 import {LogActionDispatcher} from "../Log/Log";
 import {Message} from "../../Message";
+import TreeRoot from "./components/TreeRoot";
 
 export class TreeActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
   createNode(initializer: NinComponentInitializer, parent: string) {
     this.dispatch(createNode(new NinComponent(initializer, parent), parent))
-  }
-  createRoot(initializer: NinComponentInitializer) {
-    this.dispatch(createRoot(new NinComponent(initializer, "root")))
   }
   moveNode(id: string, targetId: string, position: TreeItemPosition) {
     this.dispatch(moveNode(id, targetId, position))
@@ -44,8 +41,7 @@ export default class Tree extends React.Component<Props, {}> {
     if(type == TreeDropEventType.create) {
       const targetId = (e.target as HTMLElement).getAttribute("data-treeId");
       const initializer = JSON.parse(e.dataTransfer.getData("data"));
-      if (targetId == "root") this.props.actions.createRoot(initializer);
-      else this.props.actions.createNode(initializer, targetId!!);
+      this.props.actions.createNode(initializer, targetId!!);
       return
     }
     if(type == TreeDropEventType.move) {
@@ -58,21 +54,27 @@ export default class Tree extends React.Component<Props, {}> {
     }
   }
   render() {
-    const rootNode = this.props.value.node.get(this.props.value.rootNodeId || "");
-    const tree = (rootNode)?
-        (<div className="c-tree__main__root" data-treeId={rootNode.id}>
-          {rootNode.fullName()}
-          {rootNode.children.map(v => <TreeItem key={this.props.value.node.get(v!!).id} nodes={this.props.value.node} node={this.props.value.node.get(v!!)}/>)}
-          </div>)
-        : "";
+    // const rootNode = this.props.value.node.get(this.props.value.rootNodeId || "");
+    // const tree = (rootNode)?
+    //     (<div className="c-tree__main__root" data-treeId={rootNode.id}>
+    //       {rootNode.fullName()}
+    //       {rootNode.children.map(v => <TreeItem key={this.props.value.node.get(v!!).id} nodes={this.props.value.node} node={this.props.value.node.get(v!!)}/>)}
+    //       </div>)
+    //     : "";
+    // const t =
+    //     (<div className="c-tree__main__root" data-treeId="root">
+    //       <TreeItem nodes={this.props.value.node} node={this.props.value.node.get("root")}/>
+    //     </div>);
     return (
         <section className="c-tree">
           <div className="c-tree__head">
             <h1>Tree</h1>
           </div>
           <div onDragOver={ e=> e.preventDefault() }
-               onDrop={ e => this.handleDrop(e) } className="c-tree__main" data-treeId="root">
-            {tree}
+               onDrop={ e => this.handleDrop(e) }
+               className="c-tree__main"
+               data-treeId="root">
+            <TreeRoot nodes={this.props.value.node}/>
           </div>
         </section>
     )
