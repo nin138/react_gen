@@ -50,23 +50,19 @@ export default class Tree extends React.Component<Props, {}> {
       const targetId = target.getAttribute("data-treeId") as string;
       const position = target.getAttribute("data-treePosition") as TreeItemPosition;
       console.log({moveId: id, target: targetId});
-      console.log(this.getParentList(id));
-      if(this.getParentList(id).includes(targetId)) this.props.log.error(Message.err.dom.childIncludeParent);
+      console.log(this.getParentList(targetId));
+      if(this.getParentList(targetId).includes(id)) this.props.log.error(Message.err.dom.childIncludeParent);
       else this.props.actions.moveNode(id, targetId!!, position);
     }
   }
   render() {
-    // const rootNode = this.props.value.node.get(this.props.value.rootNodeId || "");
-    // const tree = (rootNode)?
-    //     (<div className="c-tree__main__root" data-treeId={rootNode.id}>
-    //       {rootNode.fullName()}
-    //       {rootNode.children.map(v => <TreeItem key={this.props.value.node.get(v!!).id} nodes={this.props.value.node} node={this.props.value.node.get(v!!)}/>)}
-    //       </div>)
-    //     : "";
-    // const t =
-    //     (<div className="c-tree__main__root" data-treeId="root">
-    //       <TreeItem nodes={this.props.value.node} node={this.props.value.node.get("root")}/>
-    //     </div>);
+    const testTreeView = (node: NinComponent) => {
+      const thisObj: any = {};
+      node.children.map(v => thisObj[v!!] = testTreeView(this.props.value.node.get(v!!)));
+      return thisObj;
+    };
+    console.log(testTreeView(this.props.value.node.get("root")));
+    console.log(this.props.value.node.map(v => v).toArray());
     return (
         <section className="c-tree">
           <div className="c-tree__head">

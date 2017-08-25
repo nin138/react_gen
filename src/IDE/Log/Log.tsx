@@ -21,7 +21,7 @@ interface Props {
 
 export default class Log extends React.Component<Props, {}> {
   render() {
-    const logs = this.props.value.list.map(v => <div>{`${v!!.type}/${v!!.time}/${v!!.message}`}</div>);
+    const logs = this.props.value.list.map((v, i) => <div key={i}>{`${LogType[v!!.type]}/${v!!.time}/${v!!.message}`}</div>);
     return (
         <section className="c-log">
           <h1>Log</h1>

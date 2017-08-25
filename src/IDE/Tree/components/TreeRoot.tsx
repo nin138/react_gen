@@ -16,7 +16,6 @@ export default class TreeRoot extends React.Component<Props> {
   }
 
   render() {
-    console.log(this.props.nodes);
     const childItems: any = this.props.nodes.get("root").children.map(
         v =>  <TreeItem key={this.props.nodes.get(v!!).id} nodes={this.props.nodes} node={this.props.nodes.get(v!!)}/>);
     return (

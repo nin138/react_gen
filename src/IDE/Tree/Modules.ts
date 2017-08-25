@@ -52,7 +52,6 @@ const initialState: TreeState= {
 export default function reducer(state: TreeState = initialState, action: TreeAction): TreeState {
   switch (action.type) {
     case ActionNames.CreateNode: {
-      console.log("createnode");
       const node = state.node.set(action.parent, state.node.get(action.parent).addChild(action.node.id));
       return Object.assign({}, state, {node: node.set(action.node.id, action.node)});
     }
@@ -60,23 +59,14 @@ export default function reducer(state: TreeState = initialState, action: TreeAct
       const moveNode = state.node.get(action.moveId);
       const oldParentId = moveNode.parent;
       const newParentId = (action.position === TreeItemPosition.body)? action.targetId : state.node.get(action.targetId).parent;
-      console.log({OLD: oldParentId, NEW: newParentId});
       const target = (action.position === TreeItemPosition.body)? undefined : action.targetId;
       const isAfter = (action.position === TreeItemPosition.after)? true : undefined;
+      if(moveNode.id === newParentId) return state;
       let newNodes = state.node
           .update(moveNode.id, v => v.changeParent(newParentId))
           .update(oldParentId, v => v.removeChild(moveNode.id))
           .update(newParentId, v => v.addChild(moveNode.id, target, isAfter));
       return Object.assign({}, state, { node: newNodes });
-      // const parentId = (action.position === TreeItemPosition.body)? action.targetId : state.node.get(action.targetId).parent;
-      // const target = (action.position === TreeItemPosition.body)? undefined : action.targetId;
-      // const after = (action.position === TreeItemPosition.after)? true : undefined;
-      // const oldParentId = state.node.get(action.id).parent;
-      // let newNode = state.node
-      //     .update(action.id, v => v.changeParent(parentId))
-      //     .update(oldParentId, v => v.removeChild(action.id))
-      //     .update(parentId, v=> v.addChild(action.id, target, after));
-      // return Object.assign({}, state, { node: newNode });
     }
     default: { return state }
   }
