@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {createNode, moveNode, TreeItemPosition, TreeState} from "./Modules";
+import {changeSelectedItem, createNode, moveNode, TreeItemPosition, TreeState} from "./Modules";
 import {AppAction} from "../../Store";
 import { NinComponent, NinComponentInitializer} from "../../Entities/NinComponent";
 import {LogActionDispatcher} from "../Log/Log";
@@ -8,12 +8,9 @@ import TreeRoot from "./components/TreeRoot";
 
 export class TreeActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
-  createNode(initializer: NinComponentInitializer, parent: string) {
-    this.dispatch(createNode(new NinComponent(initializer, parent), parent))
-  }
-  moveNode(moveId: string, targetId: string, position: TreeItemPosition) {
-    this.dispatch(moveNode(moveId, targetId, position))
-  }
+  createNode(initializer: NinComponentInitializer, parent: string) { this.dispatch(createNode(new NinComponent(initializer, parent), parent)) }
+  moveNode(moveId: string, targetId: string, position: TreeItemPosition) { this.dispatch(moveNode(moveId, targetId, position)) }
+  changeSelectedItem(id: string) { this.dispatch(changeSelectedItem(id)) }
 }
 
 export enum TreeDropEventType {
@@ -72,7 +69,7 @@ export default class Tree extends React.Component<Props, {}> {
                onDrop={ e => this.handleDrop(e) }
                className="c-tree__main"
                data-treeId="root">
-            <TreeRoot nodes={this.props.value.node} selectedItemId={this.props.value.selectedItemId}/>
+            <TreeRoot actions={this.props.actions} nodes={this.props.value.node} selectedItemId={this.props.value.selectedItemId}/>
           </div>
         </section>
     )

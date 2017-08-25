@@ -11,6 +11,7 @@ export enum TreeItemPosition {
 enum ActionNames {
   CreateNode = "Tree.CreateNode",
   MoveNode = "Tree.MoveNode",
+  ChangeSelectedItem = "Tree.ChangeSelectedItem",
 }
 
 interface CreateNodeAction extends Action {
@@ -30,7 +31,6 @@ interface MoveNodeAction extends Action {
   targetId: string
   position: TreeItemPosition
 }
-
 export const moveNode = (moveId: string, targetId: string, position: TreeItemPosition): MoveNodeAction => ({
   type: ActionNames.MoveNode,
   moveId,
@@ -38,6 +38,14 @@ export const moveNode = (moveId: string, targetId: string, position: TreeItemPos
   position,
 });
 
+interface ChangeSelectedItemAction extends Action {
+  type: ActionNames.ChangeSelectedItem
+  id: string
+}
+export const changeSelectedItem = (id: string): ChangeSelectedItemAction => ({
+  type: ActionNames.ChangeSelectedItem,
+  id
+});
 
 export interface TreeState {
   node: Map<string,NinComponent>
@@ -46,6 +54,7 @@ export interface TreeState {
 
 export type TreeAction = CreateNodeAction
     | MoveNodeAction
+    | ChangeSelectedItemAction
 
 const initialState: TreeState= {
   node: Map({root: root()}),
@@ -70,6 +79,10 @@ export default function reducer(state: TreeState = initialState, action: TreeAct
           .update(oldParentId, v => v.removeChild(moveNode.id))
           .update(newParentId, v => v.addChild(moveNode.id, target, isAfter));
       return Object.assign({}, state, { node: newNodes });
+    }
+    case ActionNames.ChangeSelectedItem: {
+      console.log(action.id);
+      return Object.assign({}, state, { selectedItemId: action.id })
     }
     default: { return state }
   }
