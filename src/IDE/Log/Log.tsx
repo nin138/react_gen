@@ -6,7 +6,7 @@ export class LogActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
   private addLog(type: LogType, message: string) {
     const now = new Date();
-    this.dispatch(addLog(type, message, `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}}`));
+    this.dispatch(addLog(type, message, `${now.getHours()}:${now.getMinutes()} :${now.getSeconds()}`));
   }
   error(message: string) { this.addLog(LogType.Error, message) }
   info(message: string) { this.addLog(LogType.Info, message) }
@@ -21,7 +21,7 @@ interface Props {
 
 export default class Log extends React.Component<Props, {}> {
   render() {
-    const logs = this.props.value.list.map(v => <div>{v!!.type}/{v!!.time}/{v!!.message}</div>);
+    const logs = this.props.value.list.map(v => <div>{`${v!!.type}/${v!!.time}/${v!!.message}`}</div>);
     return (
         <section className="c-log">
           <h1>Log</h1>
