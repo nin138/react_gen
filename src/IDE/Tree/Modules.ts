@@ -10,7 +10,6 @@ export enum TreeItemPosition {
 
 enum ActionNames {
   CreateNode = "Tree.CreateNode",
-  CreateRoot = "Tree.CreateRoot",
   MoveNode = "Tree.MoveNode",
 }
 
@@ -23,15 +22,6 @@ export const createNode = (node: NinComponent, parent: string): CreateNodeAction
   type: ActionNames.CreateNode,
   node,
   parent
-});
-
-interface CreateRootAction extends Action {
-  type: ActionNames.CreateRoot
-  node: NinComponent
-}
-export const createRoot = (node: NinComponent): CreateRootAction => ({
-  type: ActionNames.CreateRoot,
-  node,
 });
 
 interface MoveNodeAction extends Action {
@@ -53,7 +43,6 @@ export interface TreeState {
 }
 
 export type TreeAction = CreateNodeAction
-    | CreateRootAction
     | MoveNodeAction
 
 const initialState: TreeState= {
@@ -66,10 +55,6 @@ export default function reducer(state: TreeState = initialState, action: TreeAct
       console.log("createnode");
       const node = state.node.set(action.parent, state.node.get(action.parent).addChild(action.node.id));
       return Object.assign({}, state, {node: node.set(action.node.id, action.node)});
-    }
-    case ActionNames.CreateRoot: {
-      console.log("createroot");
-      return Object.assign({}, state, {rootNodeId: action.node.id, node: state.node.set(action.node.id, action.node)});
     }
     case ActionNames.MoveNode: {
       const parentId = (action.position === TreeItemPosition.body)? action.targetId : state.node.get(action.targetId).parent;
