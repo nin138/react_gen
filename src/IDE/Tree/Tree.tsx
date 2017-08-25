@@ -11,8 +11,8 @@ export class TreeActionDispatcher {
   createNode(initializer: NinComponentInitializer, parent: string) {
     this.dispatch(createNode(new NinComponent(initializer, parent), parent))
   }
-  moveNode(id: string, targetId: string, position: TreeItemPosition) {
-    this.dispatch(moveNode(id, targetId, position))
+  moveNode(moveId: string, targetId: string, position: TreeItemPosition) {
+    this.dispatch(moveNode(moveId, targetId, position))
   }
 }
 
@@ -49,6 +49,8 @@ export default class Tree extends React.Component<Props, {}> {
       const id = e.dataTransfer.getData("id");
       const targetId = target.getAttribute("data-treeId") as string;
       const position = target.getAttribute("data-treePosition") as TreeItemPosition;
+      console.log({moveId: id, target: targetId});
+      console.log(this.getParentList(id));
       if(this.getParentList(id).includes(targetId)) this.props.log.error(Message.err.dom.childIncludeParent);
       else this.props.actions.moveNode(id, targetId!!, position);
     }

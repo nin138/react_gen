@@ -31,9 +31,7 @@ export default class TreeItem extends React.Component<Props> {
     const childItems: any = this.props.node.children.map(
         v =>  <TreeItem key={this.props.nodes.get(v!!).id} nodes={this.props.nodes} node={this.props.nodes.get(v!!)}/>);
     return (
-        <div className="c-tree__main__item"
-             draggable={true}
-             onDragStart={ e => this.onDragStart(e) }>
+        <div className="c-tree__main__item">
           <div className="c-tree__main__item__before"
                onDragEnter={ e => this.handleDragEnterBA(e)}
                onDragLeave={ e => this.handleDragLeaveBA(e)}
@@ -41,13 +39,16 @@ export default class TreeItem extends React.Component<Props> {
                data-treeId={this.props.node.id}
                data-treePosition={TreeItemPosition.before}> </div>
           <div className="c-tree__main__item__body"
+               draggable={true}
+               onDragStart={ e => this.onDragStart(e) }
                data-treeId={this.props.node.id}
                onDragEnter={ e => this.handleDragEnterBody(e)}
                onDragLeave={ e => this.handleDragLeaveBody(e)}
                onDrop={ e => this.handleDragLeaveBody(e)}
 
                data-treePosition={TreeItemPosition.body}>
-            {this.props.node.fullName()}
+            {/*{this.props.node.fullName()}*/}
+            {this.props.node.id}
           </div>
           {childItems}
           <div className="c-tree__main__item__after"
