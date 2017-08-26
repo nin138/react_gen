@@ -18,10 +18,10 @@ interface Props {
 export default class Palette extends React.Component<Props, {}> {
   onDragStart(e: React.DragEvent<any>, v: string) {
     e.dataTransfer.setData("type", TreeDropEventType.create);
-    e.dataTransfer.setData("data", JSON.stringify(this.props.ide.componentManage.getInitializer(v)));
+    e.dataTransfer.setData("data", JSON.stringify(this.props.ide.componentManager.getInitializer(v)));
   }
   render() {
-    const components = this.props.ide.componentManage.getAllPath().map(v => {
+    const components = this.props.ide.componentManager.getAllPath().map(v => {
       return(
       <div onDragStart={ e => this.onDragStart(e, v) }
            draggable={true}
