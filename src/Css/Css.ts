@@ -2,7 +2,7 @@ import {Map} from "immutable"
 import CssData from "./Data"
 import {CssValueTypes} from "./Type";
 
-export default class CSS {
+export default class Css {
   private values: Map<string, CssValue>;
   constructor(value: Map<string, CssValue> = Map()) { this.values = value; }
   get(atr: string): CssValue { return this.values.get(atr); }
@@ -11,7 +11,7 @@ export default class CSS {
     this.values = this.values.set(atr, new CssValue(value));
     if(CssData.values.get(atr).children !== undefined) this.parseAttr(atr);
     else if(CssData.values.get(atr).parent != undefined) this.margeAttr(CssData.values.get(atr).parent as string);
-    return new CSS(this.values);
+    return new Css(this.values);
   }
   private parseAttr(atr: string) {
     const parser: any = {

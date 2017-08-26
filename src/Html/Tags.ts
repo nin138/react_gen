@@ -1,3 +1,7 @@
+import Css from "../Css/Css";
+import {Map} from "immutable"
+import {EditableContent} from "../Entities/Editable";
+
 const list = [
   {
     name: "section",
@@ -21,7 +25,8 @@ export const HTML_TAGS = list.map(v => { return {
   name: v.name,
   isFrame: false,
   isInline: v.inline,
-  allowChild: v.allowChild }
-});
+  allowChild: v.allowChild,
+  editable: { css: new Css(), custom: Map<String, EditableContent>() }
+}});
 
 

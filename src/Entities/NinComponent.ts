@@ -1,4 +1,5 @@
-import {List} from "immutable";
+import {List, Map} from "immutable";
+import {Editable, EditableInitializer} from "./Editable";
 
 declare function require(name: string): any
 const shortId = require('shortid');
@@ -13,6 +14,7 @@ export class NinComponent {
   readonly parent: string;
   readonly children: List<string> = List();
   readonly id: string;
+  readonly editable: Editable;
   constructor(initializer: NinComponentInitializer, parent: string, id: string = shortId.generate()) {
     this.path = initializer.path;
     this.name = initializer.name;
@@ -45,14 +47,16 @@ export const root = (): NinComponent=> {
     name: "root",
     isInline: false,
     isFrame: false,
-    allowChild: true
+    allowChild: true,
+    editable: { css: undefined, custom: Map() }
   }, "none", "root")
 };
 
 export interface NinComponentInitializer {
-  path: string;
-  name: string;
-  isInline: boolean;
-  isFrame: boolean;
-  allowChild: boolean;
+  path: string
+  name: string
+  isInline: boolean
+  isFrame: boolean
+  allowChild: boolean
+  editable: EditableInitializer
 }
