@@ -48,7 +48,7 @@ export const root = (): NinComponent=> {
     isInline: false,
     isFrame: false,
     allowChild: true,
-    editable: { css: undefined, custom: Map() }
+    editable: { hasCss: false, custom: Map() }
   }, "none", "root")
 };
 

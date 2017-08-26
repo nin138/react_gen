@@ -1,6 +1,7 @@
 import * as React from 'react'
-import {changeCssAttr, EditState} from "./Modules";
+import {changeCssAttr} from "./Modules";
 import {AppAction} from "../../Store";
+import {TreeState} from "../Tree/Modules";
 
 export class EditActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
@@ -10,17 +11,36 @@ export class EditActionDispatcher {
 }
 
 interface Props {
-  value: EditState
+  value: TreeState
   actions: EditActionDispatcher
 }
+interface State {
+  selectedTab: EditTab
+}
 
-export default class Edit extends React.Component<Props, {}> {
+enum EditTab {
+  CSS
+}
+
+export default class Edit extends React.Component<Props, State> {
+  getBody() {
+    const component = this.props.value.node.get(this.props.value.selectedItemId);
+    switch(this.state.selectedTab) {
+      case EditTab.CSS: {
+       if(component.editable.hasCss) {
+       }
+      }
+    }
+  }
   render() {
+    const body = this.getBody();
     return (
         <section className="c-edit">
           <h1>edit</h1>
-          <p>{this.props.value.attr}</p>
-          <p>{this.props.value.value}</p>
+          <ul className="c-edit__tab-area">
+            <li>CSS</li>
+          </ul>
+          {body}
           <button onClick={() => this.props.actions.changeCss("att", "cc")}>b</button>
         </section>
     )

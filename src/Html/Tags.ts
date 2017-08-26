@@ -1,5 +1,4 @@
-import Css from "../Css/Css";
-import {Map} from "immutable"
+import {List, Map} from "immutable"
 import {EditableContent} from "../Entities/Editable";
 
 const list = [
@@ -26,7 +25,7 @@ export const HTML_TAGS = list.map(v => { return {
   isFrame: false,
   isInline: v.inline,
   allowChild: v.allowChild,
-  editable: { css: new Css(), custom: Map<String, EditableContent>() }
+  editable: { hasCss: true, classList: List<string>(), custom: Map<String, EditableContent>() }
 }});
 
 

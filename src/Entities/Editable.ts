@@ -1,13 +1,13 @@
-import {Map} from "immutable"
-import Css from "../Css/Css";
-export class Editable {
-  css: CSS|undefined;
+import {List, Map} from "immutable"
+export interface Editable {
+  hasCss: boolean
+  classList?: List<string>
   // listeners: todo
   custom: Map<String, EditableContent>
 }
 
 export interface EditableInitializer {
-  css: Css|undefined
+  hasCss: boolean
   custom: Map<String, EditableContent>
 }
 
