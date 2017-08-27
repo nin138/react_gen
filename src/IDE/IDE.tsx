@@ -23,7 +23,7 @@ export default class IDE extends React.Component<Props, {}> {
               <h1>display</h1>
             </div>
             <div className="c-IDE__body__edit-area">
-              <Edit actions={this.props.actions.edit} value={this.props.tree}/>
+              <Edit actions={this.props.actions.edit} value={this.props.tree} cssClassManager={this.props.ide.cssClassManager}/>
             </div>
           </div>
           <div className="c-IDE__under">

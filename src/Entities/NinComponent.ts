@@ -23,6 +23,7 @@ export class NinComponent {
     this.allowChild = initializer.allowChild;
     this.parent = parent;
     this.id = id;
+    this.editable = initializer.editable;
   }
   copy(...obj: Array<object>): NinComponent {
     return Object.assign(Object.create(NinComponent.prototype), this, ...obj)

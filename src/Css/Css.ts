@@ -13,6 +13,7 @@ export default class Css {
     else if(CssData.values.get(atr).parent != undefined) this.margeAttr(CssData.values.get(atr).parent as string);
     return new Css(this.values);
   }
+  getAll(): Map<string, CssValue> { return this.values }
   private parseAttr(atr: string) {
     const parser: any = {
       margin_padding: (v: string) => {
@@ -42,7 +43,7 @@ export default class Css {
       flex: (v: string) => {
         const l = v.split(" ");
         switch(l.length) {
-          case 1:
+          case 1:   //todo
           case 2:
           case 3:
           default:
