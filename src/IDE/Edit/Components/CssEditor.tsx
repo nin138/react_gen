@@ -10,10 +10,12 @@ interface Props {
 export default class CssEditor extends React.Component<Props, {}> {
   render() {
     const attrs = this.props.css.getAll();
-    const els = attrs.map((value, key) => { return(<CssAttr name={key!!} attr={value!!} />) });
+    // const els = attrs.map((value, key) => { return(<CssAttr key={key!!} name={key!!} attr={value!!} />) });
+    const nodes = attrs.keySeq().toArray().map(v => { return(<CssAttr key={v} name={v} attr={attrs.get(v)} />) });
+    console.log(attrs);
     return(
         <div>
-          {els}
+          {nodes}
         </div>
     )
   }

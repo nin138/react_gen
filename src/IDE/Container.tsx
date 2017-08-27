@@ -4,8 +4,10 @@ import IDE from "./IDE";
 import {TreeActionDispatcher} from "./Tree/Tree";
 import {EditActionDispatcher} from "./Edit/Edit";
 import {PaletteActionDispatcher} from "./Palette/Palette";
-import {addComponent} from "./Modules";
+import {addComponent, changeCss, createCssClass} from "./Modules";
 import {LogActionDispatcher} from "./Log/Log";
+import Css from "../Css/Css";
+import {addCssClassToComponent} from "./Tree/Modules";
 
 export class ActionDispatcher {
   tree: TreeActionDispatcher;
@@ -20,6 +22,15 @@ export class ActionDispatcher {
   }
   addComponent() {
     this.dispatch(addComponent({} as any))// todo
+  }
+  createCssClass(name: string) {
+    this.dispatch(createCssClass(name, new Css()))
+  }
+  changeCss(name: string, attr: string, value: string) {
+    this.dispatch(changeCss(name, attr, value)) // todo err handle
+  }
+  addCssClassToComponent(id: string, className: string) {
+    this.dispatch(addCssClassToComponent(id, className))
   }
 }
 

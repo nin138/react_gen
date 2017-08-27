@@ -1,9 +1,21 @@
 import {List, Map} from "immutable"
-export interface Editable {
-  hasCss: boolean
-  classList?: List<string>
+export class Editable {
+  hasCss: boolean;
+  classList?: List<string>;
   // listeners: todo
-  custom: Map<String, EditableContent>
+  custom: Map<String, EditableContent>;
+  constructor(initializer: EditableInitializer, classList?: List<string>) {
+    this.hasCss = initializer.hasCss;
+    this.custom = initializer.custom;
+    this.classList = classList || (this.hasCss)? List() : undefined;
+  }
+  private copy(...differ: Array<object>): Editable {
+    return Object.assign(Object.create(Editable.prototype), this, ...differ);
+  }
+  addClass(name: string): Editable {
+    if(this.hasCss) return this.copy({classList: this.classList!!.push(name)});
+    else throw new Error("ADD CSS to hasCss = false node");
+  }
 }
 
 export interface EditableInitializer {

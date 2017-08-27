@@ -6,8 +6,8 @@ export default class Css {
   private values: Map<string, CssValue>;
   constructor(value: Map<string, CssValue> = Map()) { this.values = value; }
   get(atr: string): CssValue { return this.values.get(atr); }
-  set(atr: string ,value: string) {
-    if(this.values.get(atr).value == value) return;
+  set(atr: string ,value: string): Css {
+    if(this.values.get(atr).value == value) return this;
     this.values = this.values.set(atr, new CssValue(value));
     if(CssData.values.get(atr).children !== undefined) this.parseAttr(atr);
     else if(CssData.values.get(atr).parent != undefined) this.margeAttr(CssData.values.get(atr).parent as string);

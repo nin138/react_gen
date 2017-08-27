@@ -15,6 +15,9 @@ export class CssClassManager {
   update(name: string, css: Css) {
     return this.copy({classList: this.classList.update(name, v => css)})
   }
+  updateAttr(name: string, attr: string, value: string) {
+    return this.copy({classList: this.classList.update(name, v => v.set(attr, value))})
+  }
   getCss(name: string): Css|undefined { return this.classList.get(name) }
   getAllClassName(): Array<string> { return this.classList.keySeq().toArray() }
 }
