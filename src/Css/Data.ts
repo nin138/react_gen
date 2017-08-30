@@ -237,4 +237,6 @@ export default class CssData {
       valueType: CssValueTypes.Color,
     }
   });
+
 }
+

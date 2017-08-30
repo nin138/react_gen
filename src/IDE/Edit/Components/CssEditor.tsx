@@ -15,6 +15,7 @@ export default class CssEditor extends React.Component<Props, {}> {
     console.log(attrs);
     return(
         <div>
+          <p>class::{this.props.className}</p>
           {nodes}
         </div>
     )

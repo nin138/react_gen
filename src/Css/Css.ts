@@ -1,17 +1,18 @@
 import {Map} from "immutable"
 import CssData from "./Data"
-import {CssValueTypes} from "./Type";
+import {CssUtil, CssValueTypes} from "./Type";
 
 export default class Css {
   private values: Map<string, CssValue>;
-  constructor(value: Map<string, CssValue> = Map()) { this.values = value; }
+  constructor(value: Map<string, CssValue> = defaultCss()) { this.values = value; }
   get(atr: string): CssValue { return this.values.get(atr); }
   set(atr: string ,value: string): Css {
     if(this.values.get(atr).value == value) return this;
     this.values = this.values.set(atr, new CssValue(value));
+    const newValues = this.values.set(atr, { value: value, status: CssUtil.isValid(atr, value) });
     if(CssData.values.get(atr).children !== undefined) this.parseAttr(atr);
     else if(CssData.values.get(atr).parent != undefined) this.margeAttr(CssData.values.get(atr).parent as string);
-    return new Css(this.values);
+
   }
   getAll(): Map<string, CssValue> { return this.values }
   private parseAttr(atr: string) {
@@ -85,11 +86,27 @@ export default class Css {
   }
 }
 
+const defaultCss = (): Map<string, CssValue> => {
+  const css = Map<string, CssValue>();
+  CssData.values.keySeq().forEach(v => {
+    css.set(v!!, { value: "", status: CssStatus.Void })
+  });
+  return css;
+};
 
-export class CssValue {
-  public value: string = "";
-  public type = CssValueTypes.Void;
-  constructor(value: string = "") {
-    this.value = value
-  }
+export enum CssStatus {
+  Void, Error, Warnning, Valid
 }
+
+export interface CssValue {
+  value: string
+  status: CssStatus
+}
+
+// export class CssValue {
+//   public value: string = "";
+//   public type = CssValueTypes.Void;
+//   constructor(value: string = "") {
+//     this.value = value
+//   }
+// }
