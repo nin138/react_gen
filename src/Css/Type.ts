@@ -22,6 +22,17 @@ export const CssUtil = {
     }
     return (flag)? CssStatus.Valid : CssStatus.Error;
   },
+  isValidByType(type: CssValueTypes, value: string): CssStatus {
+    let flag: boolean = false;
+    switch(type) {
+      case CssValueTypes.Int: flag = CssUtil.isInt(value); break;
+      case CssValueTypes.Float: flag = CssUtil.isFloat(value); break;
+      case CssValueTypes.Len: flag = CssUtil.isLen(value); break;
+      case CssValueTypes.Color: flag = CssUtil.isColor(value); break;
+      case CssValueTypes.ZeroToOne: flag = CssUtil.isZeroToOne(value); break;
+    }
+    return (flag)? CssStatus.Valid : CssStatus.Error;
+  },
   isInt(v: string): boolean { return (isFinite(+v) && !/[.]/.test(v)) },
   isFloat(v: string): boolean { return isFinite(+v) },
   isZeroToOne: (v: string): boolean => { return (isFinite(+v) && +v >= 0 && +v <= 1) },
@@ -68,7 +79,18 @@ export const CssUtil = {
     }
     return false;
   },
-  isValidMergedAtr: (attr: string, v: string): boolean => {},
+  isValidMergedAtr: (attr: string, v: string): boolean => {
+    const split = v.split(" ");
+    const pattern = CssData.values.get(attr).values;
+    pattern.forEach((arr: Array<CssValueTypes>) => {
+      if(arr.length == split.length) {
+        let flag = true;
+        for(let i = 0; i < split.length; i++) {
+          if(!CssUtil.isValid(arr[i], split[i])) flag = false//todo when CssValue.Other
+        }
+      }
+    })
+  },
   isOtherAttrValid: (attr: string, v: string): boolean => {
     let f = false;
     CssData.values.get(attr).values.forEach((data: string) => { if(data == v) f = true } )

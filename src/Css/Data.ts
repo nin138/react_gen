@@ -171,7 +171,7 @@ export default class CssData {
       category: CssCategory.Size,
       valueType: CssValueTypes.Merge,
       values: [
-        [CssValueTypes.Len],
+        [CssValueTypes.Len],// todo change to csstype to css attr
         [CssValueTypes.Len, CssValueTypes.Len],
         [CssValueTypes.Len, CssValueTypes.Len, CssValueTypes.Len],
         [CssValueTypes.Len, CssValueTypes.Len, CssValueTypes.Len, CssValueTypes.Len],
