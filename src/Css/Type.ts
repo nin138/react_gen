@@ -81,19 +81,22 @@ export const CssUtil = {
   },
   isValidMergedAtr: (attr: string, v: string): boolean => {
     const split = v.split(" ");
-    const pattern = CssData.values.get(attr).values;
-    pattern.forEach((arr: Array<CssValueTypes>) => {
-      if(arr.length == split.length) {
+    const pattern = CssData.values.get(attr).patterns;
+    let ret = false;
+    pattern!!.forEach(pattern => {
+      if(pattern.length == split.length) {
         let flag = true;
         for(let i = 0; i < split.length; i++) {
-          if(!CssUtil.isValid(arr[i], split[i])) flag = false//todo when CssValue.Other
+          if(!CssUtil.isValid(pattern[i][0], split[i])) flag = false
         }
+        if(flag == true) ret = true;
       }
-    })
+    });
+    return ret;
   },
   isOtherAttrValid: (attr: string, v: string): boolean => {
     let f = false;
-    CssData.values.get(attr).values.forEach((data: string) => { if(data == v) f = true } )
+    CssData.values.get(attr).values!!.forEach((data: string) => { if(data == v) f = true } );
     return f;
   },
 };

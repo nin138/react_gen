@@ -1,5 +1,6 @@
 import {Map} from "immutable"
 import {CssValueTypes} from "./Type";
+
 export class UnitSizeCalculator {
   public unit_data = {
     rem: 16,
@@ -28,13 +29,24 @@ export enum CssCondition {
   FlexBox, FlexItem, NotStatic
 }
 
+
+interface CssAttrData {
+  category: CssCategory
+  valueType: CssValueTypes
+  values?: Array<string>
+  condition?: CssCondition
+  children?: Array<string>
+  parent?: string
+  patterns?: Array<Array<Array<string>>>
+}
+
 export default class CssData {
   public static ALL_ATTR_HAS = ["inherit", "initial", "unset"];
 
   public static Flex_BOX_ATTRS = ["flexDirection", "flexWrap", "justifyContent", "alignItems", "alignContent"];
   public static FLEX_ITEM_ATTRS = ["flex", "flexGrow", "flexShrink", "flexBasis", "order"];
   public static DISPLAY_DIRECTIONS = ["top", "left", "right", "bottom"];
-  public static values: Map<string, {category: CssCategory, valueType: CssValueTypes, values?: any, condition?: CssCondition, children?: Array<string>, parent?: string}> = Map({
+  public static values: Map<string, CssAttrData> = Map({
     position: {
       category: CssCategory.Position,
       valueType: CssValueTypes.Other,
@@ -82,12 +94,12 @@ export default class CssData {
     flex: {
       category: CssCategory.Flex,
       valueType: CssValueTypes.Merge,
-      values: [
-        [CssValueTypes.Int],
-        [CssValueTypes.Len],
-        [CssValueTypes.Int, CssValueTypes.Int],
-        [CssValueTypes.Int, CssValueTypes.Len],
-        [CssValueTypes.Int, CssValueTypes.Int, CssValueTypes.Len]
+      patterns: [
+        [["flexGrow"]],
+        [["flexBasis"]],
+        [["flexGrow"], ["flexShrink"]],
+        [["flexGrow"], ["flexBasis"]],
+        [["flexGrow"], ["flexShrink"], ["flexBasis"]]
       ],
       children: ["flexGrow, FlexShrink, FlexBasis"],
       condition: CssCondition.FlexItem,
@@ -170,11 +182,11 @@ export default class CssData {
     margin: {
       category: CssCategory.Size,
       valueType: CssValueTypes.Merge,
-      values: [
-        [CssValueTypes.Len],// todo change to csstype to css attr
-        [CssValueTypes.Len, CssValueTypes.Len],
-        [CssValueTypes.Len, CssValueTypes.Len, CssValueTypes.Len],
-        [CssValueTypes.Len, CssValueTypes.Len, CssValueTypes.Len, CssValueTypes.Len],
+      patterns: [
+        [["marginTop", "marginLeft", "marginRight", "marginBottom"]],
+        [["marginTop", "marginBottom"], ["marginLeft", "marginRight"]],
+        [["marginTop"], ["marginLeft", "marginRight"], ["marginBottom"]],
+        [["marginTop"], ["marginRight"], ["marginBottom"], ["marginLeft"]]
       ],
       children: ["marginTop", "marginLeft", "marginRight", "marginBottom"],
     },
@@ -201,6 +213,12 @@ export default class CssData {
     padding: {
       category: CssCategory.Size,
       valueType: CssValueTypes.Merge,
+      patterns: [
+        [["paddingTop", "paddingLeft", "paddingRight", "paddingBottom"]],
+        [["paddingTop", "paddingBottom"], ["paddingLeft", "paddingRight"]],
+        [["paddingTop"], ["paddingLeft", "paddingRight"], ["paddingBottom"]],
+        [["paddingTop"], ["paddingRight"], ["paddingBottom"], ["paddingLeft"]]
+      ],
       children: ["paddingTop", "paddingLeft", "paddingRight", "paddingBottom"],
     },
     paddingTop: {
