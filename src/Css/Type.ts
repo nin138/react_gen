@@ -39,14 +39,14 @@ export const CssUtil = {
   isLen: (v: string): boolean => {
     if(v == "0" ) return true;
     //todo use Data.CssUnit
-    if(/^+\d+px$/.test(v)) return true;
-    if(/^+\d+rem$/.test(v)) return true;
-    if(/^+\d+em$/.test(v)) return true;
-    if(/^+\d+%$/.test(v)) return true;
-    if(/^+\d+vh$/.test(v)) return true;
-    if(/^+\d+vw$/.test(v)) return true;
-    if(/^+\d+vmin$/.test(v)) return true;
-    if(/^+\d+vmax$/.test(v)) return true;
+    if(/^\d+px$/.test(v)) return true;
+    if(/^\d+rem$/.test(v)) return true;
+    if(/^\d+em$/.test(v)) return true;
+    if(/^\d+%$/.test(v)) return true;
+    if(/^\d+vh$/.test(v)) return true;
+    if(/^\d+vw$/.test(v)) return true;
+    if(/^\d+vmin$/.test(v)) return true;
+    if(/^\d+vmax$/.test(v)) return true;
     return false;
   },
   isColor: (v: string): boolean => {
