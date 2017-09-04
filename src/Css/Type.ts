@@ -99,6 +99,9 @@ export const CssUtil = {
     CssData.values.get(attr).values!!.forEach((data: string) => { if(data == v) f = true } );
     return f;
   },
+  getAttrType(attr: string) {
+    return CssData.values.get(attr).valueType
+  },
 };
 
 

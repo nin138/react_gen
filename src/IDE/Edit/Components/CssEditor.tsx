@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Css, {CssValue} from "../../../Css/Css";
-import {CssValueTypes} from "../../../Css/Type";
+import {CssUtil, CssValueTypes} from "../../../Css/Type";
 
 interface Props {
   className: string
@@ -11,7 +11,7 @@ export default class CssEditor extends React.Component<Props, {}> {
   render() {
     const attrs = this.props.css.getAll();
     // const els = attrs.map((value, key) => { return(<CssAttr key={key!!} name={key!!} attr={value!!} />) });
-    const nodes = attrs.keySeq().toArray().map(v => { return(<CssAttr key={v} name={v} attr={attrs.get(v)} />) });
+    const nodes = attrs.keySeq().toArray().map(v => { return(<CssAttr key={v} attr={v} value={attrs.get(v)} />) });
     console.log(attrs);
     return(
         <div>
@@ -23,8 +23,8 @@ export default class CssEditor extends React.Component<Props, {}> {
 }
 
 interface AttrProps {
-  name: string
-  attr: CssValue
+  attr: string
+  value: CssValue
 }
 
 class CssAttr extends React.Component<AttrProps, {}> {
@@ -52,10 +52,10 @@ class CssAttr extends React.Component<AttrProps, {}> {
     }
   }
   render() {
-    const input = this.createInput(this.props.attr.type);
+    const input = this.createInput(CssUtil.getAttrType(this.props.attr));
     return(
         <div>
-          <p>{this.props.name}</p>
+          <p>{this.props.attr}</p>
           {input}
         </div>
     )

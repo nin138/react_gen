@@ -1,6 +1,6 @@
 import {Map} from "immutable"
 import CssData from "./Data"
-import {CssUtil, CssValueTypes} from "./Type";
+import {CssUtil} from "./Type";
 
 export default class Css {
   private values: Map<string, CssValue>;
@@ -8,14 +8,13 @@ export default class Css {
   get(atr: string): CssValue { return this.values.get(atr); }
   set(atr: string ,value: string): Css {
     if(this.values.get(atr).value == value) return this;
-    this.values = this.values.set(atr, new CssValue(value));
-    const newValues = this.values.set(atr, { value: value, status: CssUtil.isValid(atr, value) });
-    if(CssData.values.get(atr).children !== undefined) this.parseAttr(atr);
-    else if(CssData.values.get(atr).parent != undefined) this.margeAttr(CssData.values.get(atr).parent as string);
-
+    let newValues = this.values.set(atr, { value: value, status: CssUtil.isValid(atr, value) });
+    if(CssData.values.get(atr).children !== undefined) newValues = Css.parseAttr(atr, newValues);
+    else if(CssData.values.get(atr).parent != undefined) newValues = Css.margeAttr(CssData.values.get(atr).parent as string, newValues);
+    return new Css(newValues);
   }
   getAll(): Map<string, CssValue> { return this.values }
-  private parseAttr(atr: string) {
+  private static parseAttr(attr: string, values: Map<string, CssValue>): Map<string, CssValue> {
     const parser: any = {
       margin_padding: (v: string) => {
         const list = v.split(" ");
@@ -29,17 +28,17 @@ export default class Css {
       },
       margin: (v: string) => {
         const l = parser.margin_padding(v);
-        this.values = this.values.set("marginTop", l[0]);
-        this.values = this.values.set("marginRight", l[1]);
-        this.values = this.values.set("marginBottom", l[2]);
-        this.values = this.values.set("marginLeft", l[3]);
+        values = values.set("marginTop", l[0]);
+        values = values.set("marginRight", l[1]);
+        values = values.set("marginBottom", l[2]);
+        values = values.set("marginLeft", l[3]);
       },
       padding: (v: string) => {
         const l = parser.margin_padding(v);
-        this.values = this.values.set("paddingTop", l[0]);
-        this.values = this.values.set("paddingRight", l[1]);
-        this.values = this.values.set("paddingBottom", l[2]);
-        this.values = this.values.set("paddingLeft", l[3]);
+        values = values.set("paddingTop", l[0]);
+        values = values.set("paddingRight", l[1]);
+        values = values.set("paddingBottom", l[2]);
+        values = values.set("paddingLeft", l[3]);
       },
       flex: (v: string) => {
         const l = v.split(" ");
@@ -51,15 +50,16 @@ export default class Css {
         }
       }
     };
-    parser[atr.trim()](this.values.get(atr).value);
+    parser[attr.trim()](values.get(attr).value);
+    return values
   }
-  private margeAttr(parent: string) {
+  private static margeAttr(parent: string, values: Map<string, CssValue>): Map<string, CssValue> {
     const parser: any = {
       margin_padding: (atr: string) => {
-        const top = this.values.get(atr + "Top").value || "0";
-        const right = this.values.get(atr + "Right").value || "0";
-        const bottom = this.values.get(atr + "Bottom").value || "0";
-        const left = this.values.get(atr + "Left").value || "0";
+        const top = values.get(atr + "Top").value || "0";
+        const right = values.get(atr + "Right").value || "0";
+        const bottom = values.get(atr + "Bottom").value || "0";
+        const left = values.get(atr + "Left").value || "0";
         let val = "";
         if(left == right) {
           if(top == bottom) {
@@ -69,20 +69,21 @@ export default class Css {
         } else val = `${top} ${right} ${bottom} ${left}`;
         return val;
       },
-      margin: () => this.values = this.values.set(parent, new CssValue(parser.margin_padding(parent))),
-      padding: () => this.values = this.values.set(parent, new CssValue(parser.margin_padding(parent))),
+      margin: () => values = values.set(parent, { value: parser.margin_padding(parent), status: CssUtil.isValid(parent ,parser.margin_padding(parent))}),
+      padding: () => values = values.set(parent, { value: parser.margin_padding(parent), status: CssUtil.isValid(parent ,parser.margin_padding(parent))}),
       flex: () => {
-        const grow = this.values.get("flexGrow").value;
-        const shrink = this.values.get("flexShrink").value;
-        const basis = this.values.get("flexBasis").value;
+        const grow = values.get("flexGrow").value;
+        const shrink = values.get("flexShrink").value;
+        const basis = values.get("flexBasis").value;
         let v = "";
         if(grow) v += grow + " ";
         if(shrink) v += shrink + " ";
         if(basis) v += basis;
-        this.values = this.values.set(parent, new CssValue(v.trim()))
+        values = values.set(parent, { value: v, status: CssUtil.isValid(parent ,v) },)
       }
     };
     parser[parent]();
+    return values;
   }
 }
 
