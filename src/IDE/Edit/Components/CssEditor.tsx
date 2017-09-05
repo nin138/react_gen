@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Css, {CssValue} from "../../../Css/Css";
-import {CssUtil, CssValueTypes} from "../../../Css/Type";
+import {CssValueTypes} from "../../../Css/Data";
+import {CssUtil} from "../../../Css/CssUtil";
 
 interface Props {
   className: string

@@ -1,6 +1,6 @@
 import {Map} from "immutable"
 import CssData from "./Data"
-import {CssUtil} from "./Type";
+import {CssUtil} from "./CssUtil";
 
 export default class Css {
   private values: Map<string, CssValue>;
