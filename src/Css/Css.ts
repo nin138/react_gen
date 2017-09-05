@@ -87,22 +87,22 @@ export default class Css {
   }
 }
 
-const defaultCss = (): Map<string, CssValue> => {
-  const css = Map<string, CssValue>();
-  CssData.values.keySeq().forEach(v => {
-    css.set(v!!, { value: "", status: CssStatus.Void })
-  });
-  return css;
-};
-
 export enum CssStatus {
-  Void, Error, Warnning, Valid
+  Void, Error, Warning, Valid
 }
 
 export interface CssValue {
   value: string
   status: CssStatus
 }
+
+const defaultCss = (): Map<string, CssValue> => {
+  const obj: any = {};
+  CssData.values.keySeq().forEach(v => {
+    obj[v!!] = { value: "", status: CssStatus.Void };
+  });
+  return Map(obj);
+};
 
 // export class CssValue {
 //   public value: string = "";

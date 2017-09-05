@@ -10,6 +10,9 @@ interface Props {
 
 export default class CssEditor extends React.Component<Props, {}> {
   render() {
+    console.log("editor");
+    console.log(this.props.css);
+    console.log();
     const attrs = this.props.css.getAll();
     // const els = attrs.map((value, key) => { return(<CssAttr key={key!!} name={key!!} attr={value!!} />) });
     const nodes = attrs.keySeq().toArray().map(v => { return(<CssAttr key={v} attr={v} value={attrs.get(v)} />) });
@@ -40,6 +43,9 @@ class CssAttr extends React.Component<AttrProps, {}> {
       case CssValueTypes.Int: {
         return(<input type="number"/>)
       }
+      case CssValueTypes.ZeroToOne: {
+        return(<input type="number"/>)
+      }
       case CssValueTypes.Len: {
         return(<input type="text"/>)
       }
@@ -49,7 +55,10 @@ class CssAttr extends React.Component<AttrProps, {}> {
       case CssValueTypes.Merge: {
         return ""
       }
-      default: throw new Error("ERROR INVALID CSS_VALUE_TYPE")
+      default: {
+        console.log(type);
+        throw new Error("ERROR INVALID CSS_VALUE_TYPE")
+      }
     }
   }
   render() {
