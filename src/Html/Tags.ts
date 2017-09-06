@@ -1,5 +1,6 @@
 import {List, Map} from "immutable"
 import {EditableContent} from "../Entities/Editable";
+import {NinComponentString} from "../Entities/NinComponent";
 
 const list = [
   {
@@ -25,6 +26,7 @@ export const HTML_TAGS = list.map(v => { return {
   isFrame: false,
   isInline: v.inline,
   allowChild: v.allowChild,
+  row: `<${v.name}>${NinComponentString.Children}</${v.name}>`,
   editable: { hasCss: true, classList: List<string>(), custom: Map<String, EditableContent>() }
 }});
 

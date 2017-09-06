@@ -5,6 +5,7 @@ import Tree from "./Tree/Tree";
 import {AppState} from "../Store";
 import {ActionDispatcher} from "./Container";
 import Log from "./Log/Log";
+import Renderer from "./Renderer/Renderer";
 
 interface Props extends AppState {
   actions: ActionDispatcher
@@ -20,7 +21,7 @@ export default class IDE extends React.Component<Props, {}> {
               <Tree actions={this.props.actions.tree} value={this.props.tree} log={this.props.actions.log}/>
             </div>
             <div className="c-IDE__body__display-area">
-              <h1>display</h1>
+              <Renderer nodes={this.props.tree.node}/>
             </div>
             <div className="c-IDE__body__edit-area">
               <Edit actions={this.props.actions} value={this.props.tree} cssClassManager={this.props.ide.cssClassManager}/>

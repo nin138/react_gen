@@ -2,9 +2,10 @@ import {List, Map} from "immutable";
 import {Editable, EditableInitializer} from "./Editable";
 
 declare function require(name: string): any
-const shortId = require('shortid');
+const shortId = require("shortid");
 
 export class NinComponent {
+  static ROOT_ID = "root";
   readonly path: string;
   readonly name: string;
   readonly isInline: boolean;
@@ -15,6 +16,7 @@ export class NinComponent {
   readonly children: List<string> = List();
   readonly id: string;
   readonly editable: Editable;
+  readonly row: string;
   constructor(initializer: NinComponentInitializer, parent: string, id: string = shortId.generate()) {
     this.path = initializer.path;
     this.name = initializer.name;
@@ -23,11 +25,10 @@ export class NinComponent {
     this.allowChild = initializer.allowChild;
     this.parent = parent;
     this.id = id;
+    this.row = initializer.row;
     this.editable = new Editable(initializer.editable);
   }
-  copy(...obj: Array<object>): NinComponent {
-    return Object.assign(Object.create(NinComponent.prototype), this, ...obj)
-  }
+  copy(...obj: Array<object>): NinComponent { return Object.assign(Object.create(NinComponent.prototype), this, ...obj) }
   addChild(child: string, targetId?: string, after?: boolean,): NinComponent {
     let differ = {};
     if(targetId === undefined) differ = { children: this.children.push(child)};
@@ -41,6 +42,9 @@ export class NinComponent {
   removeChild(id: string): NinComponent { return this.copy({ children: this.children.filter( value => value !== id) }) }
   changeParent(id: string): NinComponent { return this.copy({ parent: id }) }
   addCssClass(name: string): NinComponent { return this.copy({ editable: this.editable.addClass(name) }) }
+  rowString() {
+
+  }
 }
 
 export const root = (): NinComponent=> {
@@ -50,6 +54,7 @@ export const root = (): NinComponent=> {
     isInline: false,
     isFrame: false,
     allowChild: true,
+    row: NinComponentString.Children,
     editable: { hasCss: false, custom: Map() }
   }, "none", "root")
 };
@@ -60,5 +65,10 @@ export interface NinComponentInitializer {
   isInline: boolean
   isFrame: boolean
   allowChild: boolean
+  row: string //    /$*children*$/
   editable: EditableInitializer
 }
+
+export const NinComponentString = {
+  Children: "<$*children*$>"
+};
