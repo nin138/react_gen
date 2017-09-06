@@ -10,9 +10,13 @@ export default class Renderer extends React.Component<Props, {}> {
   renderComponent(component: NinComponent): string {
     let row = component.row;
     if(component.row.includes(NinComponentString.Children)) {
-      row = component.row.replace(
+      row = row.replace(
           NinComponentString.Children, component.children.reduce((r, v) =>
               r + this.renderComponent(this.props.nodes.get(v!)!), ""))
+    }
+    if(component.row.includes(NinComponentString.Text)) {
+      console.log(component.editable);
+      row = row.replace(NinComponentString.Text, component.editable.custom.get("text").value)
     }
     return row
   }

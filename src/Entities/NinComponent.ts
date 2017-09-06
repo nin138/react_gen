@@ -1,5 +1,5 @@
 import {List, Map} from "immutable";
-import {Editable, EditableInitializer} from "./Editable";
+import {Editable, EditableContentType, EditableInitializer} from "./Editable";
 
 declare function require(name: string): any
 const shortId = require("shortid");
@@ -42,9 +42,6 @@ export class NinComponent {
   removeChild(id: string): NinComponent { return this.copy({ children: this.children.filter( value => value !== id) }) }
   changeParent(id: string): NinComponent { return this.copy({ parent: id }) }
   addCssClass(name: string): NinComponent { return this.copy({ editable: this.editable.addClass(name) }) }
-  rowString() {
-
-  }
 }
 
 export const root = (): NinComponent=> {
@@ -55,7 +52,7 @@ export const root = (): NinComponent=> {
     isFrame: false,
     allowChild: true,
     row: NinComponentString.Children,
-    editable: { hasCss: false, custom: Map() }
+    editable: { hasCss: false, custom: Map({text: { name: "text", type: EditableContentType.html_string, value: ""}}) }
   }, "none", "root")
 };
 
@@ -70,5 +67,6 @@ export interface NinComponentInitializer {
 }
 
 export const NinComponentString = {
-  Children: "<$*children*$>"
+  Children: "<$*children*$>",
+  Text: "<$*text*$>",
 };

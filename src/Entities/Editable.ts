@@ -6,7 +6,7 @@ export class Editable {
   custom: Map<String, EditableContent>;
   constructor(initializer: EditableInitializer, classList?: List<string>) {
     this.hasCss = initializer.hasCss;
-    this.custom = initializer.custom;
+    this.custom = Map(initializer.custom);
     this.classList = classList || (this.hasCss)? List() : undefined;
   }
   private copy(...differ: Array<object>): Editable {
@@ -26,7 +26,7 @@ export interface EditableInitializer {
 export interface EditableContent {
   name: string
   type: EditableContentType
-  cssAttr: string|undefined // when EditableContentType is css
+  cssAttr?: string|undefined // when EditableContentType is css
   value: any
 }
 

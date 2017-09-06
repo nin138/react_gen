@@ -58,8 +58,7 @@ export default class TreeItem extends React.Component<Props> {
                onDragLeave={ e => this.onDragLeaveFromBody(e) }
                onDrop={ e => this.onDragLeaveFromBody(e) }
                data-treePosition={TreeItemPosition.body}>
-            {/*{this.props.node.fullName()}*/}
-            {this.props.node.id}
+            {this.props.node.fullName()}
           </div>
           { childItems }
           <div className="c-tree-item__after"
