@@ -16,15 +16,17 @@ export const changeCssAttr = (attr: string, value: string): ChangeCssAttrAction 
 });
 
 export interface EditState {
-  attr: string
-  value: string
+  selectedTab: EditTabs
 }
 
 export type EditAction = ChangeCssAttrAction
 
+export enum EditTabs {
+  CSS, Custom, Listeners
+}
+
 const initialState: EditState= {
-  attr: "i",
-  value: "t"
+  selectedTab: EditTabs.CSS
 };
 
 export default function reducer(state: EditState = initialState, action: EditAction): EditState {

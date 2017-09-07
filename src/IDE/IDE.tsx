@@ -24,7 +24,7 @@ export default class IDE extends React.Component<Props, {}> {
               <Renderer nodes={this.props.tree.node}/>
             </div>
             <div className="c-IDE__body__edit-area">
-              <Edit actions={this.props.actions} value={this.props.tree} cssClassManager={this.props.ide.cssClassManager}/>
+              <Edit actions={this.props.actions} value={this.props.tree} cssClassManager={this.props.ide.cssClassManager} selectedTab={this.props.edit.selectedTab}/>
             </div>
           </div>
           <div className="c-IDE__under">
