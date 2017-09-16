@@ -71,8 +71,14 @@ export default class Edit extends React.Component<Props, {}> {
         <section className="c-edit">
           <h1>edit</h1>
           <ul className="c-edit__tab-area">
-            <li onClick={ () => this.onTabClicked(EditTabs.Attributes) }>Attributes</li>
-            <li onClick={ () => this.onTabClicked(EditTabs.CSS) }>CSS</li>
+            <li className={`c-edit__tab-area__item ${(this.props.selectedTab === EditTabs.Attributes)? "c-edit__tab-area__item--selected" : ""}`}
+                onClick={ () => this.onTabClicked(EditTabs.Attributes) }>
+              Attributes
+            </li>
+            <li className={`c-edit__tab-area__item ${(this.props.selectedTab === EditTabs.CSS)? "c-edit__tab-area__item--selected" : ""}`}
+                onClick={ () => this.onTabClicked(EditTabs.CSS) }>
+              CSS
+            </li>
           </ul>
           {body}
         </section>
