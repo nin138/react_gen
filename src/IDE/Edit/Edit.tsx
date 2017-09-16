@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {changeCssAttr, EditTabs} from "./Modules";
+import {changeCssAttr, changeSelectedTab, EditTabs} from "./Modules";
 import {AppAction} from "../../Store";
 import {TreeState} from "../Tree/Modules";
 import CssEditor from "./Components/CssEditor";
@@ -14,6 +14,9 @@ export class EditActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
   changeCss(attr: string, value: string) {
     this.dispatch(changeCssAttr(attr, value))
+  }
+  changeSelectedTab(tab: EditTabs) {
+    this.dispatch(changeSelectedTab(tab));
   }
 }
 
@@ -36,6 +39,11 @@ export default class Edit extends React.Component<Props, {}> {
   getBody() {
     const component = this.getActiveNode();
     switch(this.props.selectedTab) {
+      case EditTabs.Attributes:
+        return (
+            <div>
+              Attrs
+            </div>);
       case EditTabs.CSS:
         const classes = (component.editable.hasCss) ? component.editable.classList!!.map(
             v => { return (<CssEditor key={v!!} className={v!!} css={this.props.cssClassManager.getCss(v!!)!!}/>) })
@@ -51,19 +59,20 @@ export default class Edit extends React.Component<Props, {}> {
             </div>);
       case EditTabs.Custom:
         return component.editable.custom.toArray().map(v => createEditInput(v));
-
     }
+  }
+  onTabClicked(tab: EditTabs) {
+    this.props.actions.edit.changeSelectedTab(tab);
   }
   getActiveNode(): NinComponent { return this.props.value.node.get(this.props.value.selectedItemId) }
   render() {
-    const tabs = this.getActiveNode().editable.custom.toArray().map(v => { return(<li>{v.name}</li>) });
     const body = this.getBody();
     return (
         <section className="c-edit">
           <h1>edit</h1>
           <ul className="c-edit__tab-area">
-            {(this.getActiveNode().editable.hasCss)? <li>CSS</li> : ""}
-            {tabs}
+            <li onClick={ () => this.onTabClicked(EditTabs.Attributes) }>Attributes</li>
+            <li onClick={ () => this.onTabClicked(EditTabs.CSS) }>CSS</li>
           </ul>
           {body}
         </section>
