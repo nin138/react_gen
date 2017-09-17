@@ -1,5 +1,5 @@
 import {List, Map} from "immutable";
-import {Editable, EditableContentType, EditableInitializer} from "./Editable";
+import {Editable, EditableInitializer} from "./Editable";
 
 declare function require(name: string): any
 const shortId = require("shortid");
@@ -52,7 +52,11 @@ export const root = (): NinComponent=> {
     isFrame: false,
     allowChild: true,
     row: NinComponentString.Children,
-    editable: { hasCss: false, custom: Map({text: { name: "text", type: EditableContentType.html_string, value: ""}}) }
+    editable: {
+      attributes: [],
+      hasCss: false,
+      custom: Map(),
+    }
   }, "none", "root")
 };
 

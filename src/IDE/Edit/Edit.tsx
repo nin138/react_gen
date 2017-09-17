@@ -36,13 +36,15 @@ const createEditInput = (content: EditableContent) => {
 };
 
 export default class Edit extends React.Component<Props, {}> {
-  getBody() {
+
+  createBody() {
     const component = this.getActiveNode();
     switch(this.props.selectedTab) {
       case EditTabs.Attributes:
         return (
             <div>
               Attrs
+              {component.editable.attributes.keys()}
             </div>);
       case EditTabs.CSS:
         const classes = (component.editable.hasCss) ? component.editable.classList!!.map(
@@ -66,7 +68,6 @@ export default class Edit extends React.Component<Props, {}> {
   }
   getActiveNode(): NinComponent { return this.props.value.node.get(this.props.value.selectedItemId) }
   render() {
-    const body = this.getBody();
     return (
         <section className="c-edit">
           <h1>edit</h1>
@@ -80,7 +81,7 @@ export default class Edit extends React.Component<Props, {}> {
               CSS
             </li>
           </ul>
-          {body}
+          {this.createBody()}
         </section>
     )
   }

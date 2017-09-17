@@ -16,7 +16,7 @@ export default class Renderer extends React.Component<Props, {}> {
     }
     if(component.row.includes(NinComponentString.Text)) {
       console.log(component.editable);
-      row = row.replace(NinComponentString.Text, component.editable.custom.get("text").value)
+      row = row.replace(NinComponentString.Text, component.editable.attributes.get("text").value)
     }
     return row
   }

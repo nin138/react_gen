@@ -27,17 +27,24 @@ const textNode: NinComponentInitializer = {
   isFrame: false,
   allowChild: false,
   row: NinComponentString.Text,
-  editable: {hasCss: false, custom: Map({text: {name: "text", type: EditableContentType.html_string, value: ""}})}
+  editable: {
+    attributes: [{name: 'text', type: EditableContentType.html_string, value: ""}],
+    hasCss: false,
+    custom: Map()
+  }
 };
 
-export const HTML_TAGS = list.map(v => { return {
+export const HTML_TAGS: Array<NinComponentInitializer> = list.map(v => { return {
   path: HTML_PATH,
   name: v.name,
   isFrame: false,
   isInline: v.inline,
   allowChild: v.allowChild,
   row: `<${v.name}>${NinComponentString.Children}</${v.name}>`,
-  editable: { hasCss: true, custom: Map<String, EditableContent>() }
+  editable: {
+    attributes: [],
+    hasCss: true,
+    custom: Map<String, EditableContent>() }
 }});
 HTML_TAGS.push(textNode);
 
