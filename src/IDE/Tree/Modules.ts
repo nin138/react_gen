@@ -13,6 +13,7 @@ enum ActionNames {
   MoveNode = "Tree.MoveNode",
   ChangeSelectedItem = "Tree.ChangeSelectedItem",
   AddCssClassToComponent = "Tree.AddCssClassToComponent",
+  ChangeAttribute = "Tree.ChangeAttribute",
 }
 
 interface CreateNodeAction extends Action {
@@ -59,6 +60,18 @@ export const addCssClassToComponent = (id: string, className: string): AddCssCla
   className,
 });
 
+interface ChangeAttributeAction extends Action {
+  type: ActionNames.ChangeAttribute,
+  targetId: string,
+  attr: string,
+  value: string,
+}
+export const changeAttribute = (targetId: string, attr: string, value: string): ChangeAttributeAction => ({
+  type: ActionNames.ChangeAttribute,
+  targetId,
+  attr,
+  value
+});
 
 
 export interface TreeState {
@@ -70,6 +83,7 @@ export type TreeAction = CreateNodeAction
     | MoveNodeAction
     | ChangeSelectedItemAction
     | AddCssClassToComponentAction
+    | ChangeAttributeAction
 
 const initialState: TreeState= {
   node: Map({root: root()}),
@@ -95,12 +109,14 @@ export default function reducer(state: TreeState = initialState, action: TreeAct
           .update(newParentId, v => v.addChild(moveNode.id, target, isAfter));
       return Object.assign({}, state, { node: newNodes });
     }
-    case ActionNames.ChangeSelectedItem: {
+    case ActionNames.ChangeSelectedItem:
       return Object.assign({}, state, { selectedItemId: action.id })
-    }
-    case ActionNames.AddCssClassToComponent: {
+    case ActionNames.AddCssClassToComponent:
       return Object.assign({}, state, {node: state.node.update(action.id, v => v.addCssClass(action.className))})
-    }
+    case ActionNames.ChangeAttribute:
+      return Object.assign(
+          {}, state,
+          {node: state.node.update(action.targetId, v => v.changeAttribute(action.attr, action.value))});
     default: { return state }
   }
 }

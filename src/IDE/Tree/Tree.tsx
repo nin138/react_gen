@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {changeSelectedItem, createNode, moveNode, TreeItemPosition, TreeState} from "./Modules";
+import {changeAttribute, changeSelectedItem, createNode, moveNode, TreeItemPosition, TreeState} from "./Modules";
 import {AppAction} from "../../Store";
 import { NinComponent, NinComponentInitializer} from "../../Entities/NinComponent";
 import {LogActionDispatcher} from "../Log/Log";
@@ -11,6 +11,7 @@ export class TreeActionDispatcher {
   createNode(initializer: NinComponentInitializer, parent: string) { this.dispatch(createNode(new NinComponent(initializer, parent), parent)) }
   moveNode(moveId: string, targetId: string, position: TreeItemPosition) { this.dispatch(moveNode(moveId, targetId, position)) }
   changeSelectedItem(id: string) { this.dispatch(changeSelectedItem(id)) }
+  changeAttribute(targetId: string ,attr: string, value: string) { this.dispatch(changeAttribute(targetId, attr, value)) }
 }
 
 export enum TreeDropEventType {

@@ -8,7 +8,7 @@ import {Message} from "../../Message";
 import ClassCreator from "./Components/ClassCreator";
 import {ActionDispatcher} from "../Container";
 import {NinComponent} from "../../Entities/NinComponent";
-import {EditableContent} from "../../Entities/Editable";
+import {EditableContent, EditableContentType} from "../../Entities/Editable";
 
 export class EditActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
@@ -21,30 +21,43 @@ export class EditActionDispatcher {
 }
 
 interface Props {
-  value: TreeState
+  tree: TreeState
   cssClassManager: CssClassManager
   actions: ActionDispatcher
   selectedTab: EditTabs
 }
 
-const createEditInput = (content: EditableContent) => {
-  return (
-      <div>
-        <p>{content.name}</p>
-      </div>
-  )
-};
+
 
 export default class Edit extends React.Component<Props, {}> {
-
-  createBody() {
+  private createAttributeInput(id: string, content: EditableContent) {
+    const createInput = (value: string, type: EditableContentType, onChange: (value: string) => void, cssAttr?: string) => {
+      switch(type) {
+        case EditableContentType.string: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case EditableContentType.html_string: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case EditableContentType.array: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case EditableContentType.float: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case EditableContentType.int: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case EditableContentType.script: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case EditableContentType.any: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case EditableContentType.css: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>); // todo use CssEditor
+      }};
+    const action = (value: string)=> { this.props.actions.tree.changeAttribute(id, content.name, value) };
+    return (
+        <div key={content.name}>
+          <p>{content.name}</p>
+          {createInput(content.value, content.type, action,content.cssAttr)}
+        </div>
+    );
+  }
+  private createBody() {
     const component = this.getActiveNode();
     switch(this.props.selectedTab) {
       case EditTabs.Attributes:
         return (
             <div>
               Attrs
-              {component.editable.attributes.keys()}
+              {component.editable.attributes.keySeq().toArray().map(v => this.createAttributeInput(component.id ,component.editable.attributes.get(v)))}
             </div>);
       case EditTabs.CSS:
         const classes = (component.editable.hasCss) ? component.editable.classList!!.map(
@@ -60,13 +73,13 @@ export default class Edit extends React.Component<Props, {}> {
               {classes}
             </div>);
       case EditTabs.Custom:
-        return component.editable.custom.toArray().map(v => createEditInput(v));
+        return component.editable.custom.toArray().map(v => (<div>{v}</div>));
     }
   }
-  onTabClicked(tab: EditTabs) {
+  private onTabClicked(tab: EditTabs) {
     this.props.actions.edit.changeSelectedTab(tab);
   }
-  getActiveNode(): NinComponent { return this.props.value.node.get(this.props.value.selectedItemId) }
+  private getActiveNode(): NinComponent { return this.props.tree.node.get(this.props.tree.selectedItemId) }
   render() {
     return (
         <section className="c-edit">

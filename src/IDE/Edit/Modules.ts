@@ -2,7 +2,8 @@ import {Action} from 'redux'
 
 enum ActionNames {
   ChangeSelectedTab = "Edit.ChangeSelectedTab",
-  ChangeCssAttr = "Edit.CssAttrChange",
+  ChangeCssAttr = "Edit.ChangeCssAttr",
+  ChangeAttribute = "Edit.ChangeAttribute"
 }
 
 interface ChangeSelectedTabAction extends Action {
