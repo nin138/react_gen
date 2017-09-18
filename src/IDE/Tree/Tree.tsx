@@ -59,8 +59,6 @@ export default class Tree extends React.Component<Props, {}> {
       node.children.map(v => thisObj[v!!] = testTreeView(this.props.value.node.get(v!!)));
       return thisObj;
     };
-    console.log(testTreeView(this.props.value.node.get("root")));
-    console.log(this.props.value.node.map(v => v).toArray());
     return (
         <section className="c-tree">
           <div className="c-tree__head">

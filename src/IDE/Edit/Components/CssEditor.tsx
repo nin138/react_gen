@@ -1,73 +1,40 @@
 import * as React from 'react'
-import Css, {CssValue} from "../../../Css/Css";
-import {CssValueTypes} from "../../../Css/Data";
-import {CssUtil} from "../../../Css/CssUtil";
+import ClassCreator from "./ClassCreator";
+import {NinComponent} from "../../../Entities/NinComponent";
+import {ActionDispatcher} from "../../Container";
+import CssClassEditor from "./CssClassEditor";
+import {CssClassManager} from "../../../Css/CssClassManager";
+import {Message} from "../../../Message";
 
 interface Props {
-  className: string
-  css: Css
+  component: NinComponent
+  actions: ActionDispatcher
+  cssClassManager: CssClassManager
 }
 
-export default class CssEditor extends React.Component<Props, {}> {
-  render() {
-    console.log("editor");
-    console.log(this.props.css);
-    console.log();
-    const attrs = this.props.css.getAll();
-    // const els = attrs.map((value, key) => { return(<CssAttr key={key!!} name={key!!} attr={value!!} />) });
-    const nodes = attrs.keySeq().toArray().map(v => { return(<CssAttr key={v} attr={v} value={attrs.get(v)} />) });
-    console.log(attrs);
-    return(
-        <div>
-          <p>class::{this.props.className}</p>
-          {nodes}
-        </div>
-    )
+export default class CssEditor extends React.Component<Props> {
+
+  createAndAddClass(name: string) {
+    console.log(this);
+    this.props.actions.createCssClass(name);
+    this.props.actions.addCssClassToComponent(this.props.component.id, name);
   }
-}
-
-interface AttrProps {
-  attr: string
-  value: CssValue
-}
-
-class CssAttr extends React.Component<AttrProps, {}> {
-  createInput(type: CssValueTypes) {
-    switch(type) {
-      case CssValueTypes.Color: {
-        return(<input type="color"/>)
-      }
-      case CssValueTypes.Float: {
-        return(<input type="number"/>)
-      }
-      case CssValueTypes.Int: {
-        return(<input type="number"/>)
-      }
-      case CssValueTypes.ZeroToOne: {
-        return(<input type="number"/>)
-      }
-      case CssValueTypes.Len: {
-        return(<input type="text"/>)
-      }
-      case CssValueTypes.Other: {
-        return(<input type="text"/>)
-      }
-      case CssValueTypes.Merge: {
-        return ""
-      }
-      default: {
-        console.log(type);
-        throw new Error("ERROR INVALID CSS_VALUE_TYPE")
-      }
-    }
+  createClassEditors() {
+    return (this.props.component.editable.hasCss)
+        ? this.props.component.editable.classList!!
+            .map(v => {
+              return (<CssClassEditor key={v!!}
+                                      className={v!!}
+                                      css={this.props.cssClassManager.getCss(v!!)!!}
+                                      changeCss={ (className: string, attr: string, value: string) => this.props.actions.changeCss(className, attr, value) }/>)
+            })
+        : (<p>{Message.err.dom.unableToSetCss}</p>);
   }
   render() {
-    const input = this.createInput(CssUtil.getAttrType(this.props.attr));
-    return(
+    return (
         <div>
-          <p>{this.props.attr}</p>
-          {input}
-        </div>
-    )
+          {(this.props.component.editable.hasCss) ? (<ClassCreator createCssClass={ (value: string) => this.createAndAddClass(value) }/>) : ""}
+          {this.createClassEditors()}
+        </div>)
   }
 }

@@ -4,9 +4,9 @@ import {CssClassManager} from "../Css/CssClassManager";
 import Css from "../Css/Css";
 
 enum ActionNames {
-  addComponent = "IDE.addComponent",
-  createCssClass = "IDE.createCssClass",
-  changeCss ="IDE.changeCss",
+  addComponent = "IDE.AddComponent",
+  createCssClass = "IDE.CreateCssClass",
+  changeCss ="IDE.ChangeCss",
 }
 
 interface AddComponentAction {
