@@ -59,6 +59,7 @@ export default function reducer(state: IDEState = initialState, action: IDEActio
     case ActionNames.addComponent:
       return Object.assign({}, state, { componentManager: state.componentManager.set(action.initializer) });
     case ActionNames.createCssClass:
+      if(state.cssClassManager.getCss(action.name)) return state;
       return Object.assign({}, state, { cssClassManager: state.cssClassManager.add(action.name, action.css) });
     case ActionNames.changeCss:
       return Object.assign({}, state, { cssClassManager: state.cssClassManager.updateAttr(action.className, action.attr, action.value)});
