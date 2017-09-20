@@ -20,4 +20,9 @@ export class CssClassManager {
   }
   getCss(name: string): Css|undefined { return this.classList.get(name) }
   getAllClassName(): Array<string> { return this.classList.keySeq().toArray() }
+  getCssString(): string {
+    return this.classList
+        .map((value, key) => `.${key} ${value!!.getRowString()}`)
+        .reduce((r, v) => r!! + v, "");
+  }
 }

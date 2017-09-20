@@ -45,6 +45,8 @@ export default class Edit extends React.Component<Props, {}> {
   }
   private getActiveNode(): NinComponent { return this.props.tree.node.get(this.props.tree.selectedItemId) }
   render() {
+    document.querySelector('style')!!.innerHTML = this.props.cssClassManager.getCssString();
+    console.log(this.props.cssClassManager.getCssString());
     return (
         <section className="c-edit">
           <h1>edit</h1>

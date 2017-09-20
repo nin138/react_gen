@@ -14,6 +14,11 @@ export default class Css {
     return new Css(newValues);
   }
   getAll(): Map<string, CssValue> { return this.values }
+  getRowString(): string {
+    return "{\n" + this.values.filter(value => value!.status === CssStatus.Valid).map(((value, key) => `\t${key}: ${value!!.value};\n`))
+        .reduce((r, v) => r!! + v, '') + "}\n"
+  }
+
   private static parseAttr(attr: string, values: Map<string, CssValue>): Map<string, CssValue> {
     const parser: any = {
       margin_padding: (v: string) => {
