@@ -9,6 +9,10 @@ interface Props {
 export default class Renderer extends React.Component<Props, {}> {
   renderComponent(component: NinComponent): string {
     let row = component.row;
+    if(component.editable.hasCss && !component.editable.classList!!.isEmpty()) {
+      const classes = component.editable.classList!!.reduce((reduction, value) => `${reduction} ${value}`, "").substring(1);
+      row = row.replace(NinComponentString.ClassName, ` class=\"${classes}\"`);
+    } else row = row.replace(NinComponentString.ClassName, "");
     if(component.row.includes(NinComponentString.Children)) {
       row = row.replace(
           NinComponentString.Children, component.children.reduce((r, v) =>

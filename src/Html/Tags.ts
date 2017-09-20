@@ -40,7 +40,7 @@ export const HTML_TAGS: Array<NinComponentInitializer> = list.map(v => { return 
   isFrame: false,
   isInline: v.inline,
   allowChild: v.allowChild,
-  row: `<${v.name}>${NinComponentString.Children}</${v.name}>`,
+  row: `<${v.name}${NinComponentString.ClassName}>${NinComponentString.Children}</${v.name}>`,
   editable: {
     attributes: [],
     hasCss: true,

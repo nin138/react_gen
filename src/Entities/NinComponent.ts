@@ -72,6 +72,7 @@ export interface NinComponentInitializer {
 }
 
 export const NinComponentString = {
+  ClassName: "<$*className*$>",
   Children: "<$*children*$>",
   Text: "<$*text*$>",
 };
