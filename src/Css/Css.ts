@@ -1,6 +1,7 @@
 import {Map} from "immutable"
 import CssData from "./Data"
 import {CssUtil} from "./CssUtil";
+import {Util} from "../Util";
 
 export default class Css {
   private values: Map<string, CssValue>;
@@ -15,7 +16,7 @@ export default class Css {
   }
   getAll(): Map<string, CssValue> { return this.values }
   getRowString(): string {
-    return "{\n" + this.values.filter(value => value!.status === CssStatus.Valid).map(((value, key) => `\t${key}: ${value!!.value};\n`))
+    return "{\n" + this.values.filter(value => value!.status === CssStatus.Valid).map(((value, key) => `\t${Util.camelToChain(key!)}: ${value!!.value};\n`))
         .reduce((r, v) => r!! + v, '') + "}\n"
   }
 

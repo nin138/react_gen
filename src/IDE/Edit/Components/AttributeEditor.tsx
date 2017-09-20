@@ -20,7 +20,7 @@ export default class AttributeEditor extends React.Component<Props> {
         case EditableContentType.any: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
         case EditableContentType.css: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>); // todo use CssEditor
       }};
-    const action = (value: string)=> { this.props.changeAttribute(id, content.name, value) };
+    const action = (value: string) => { this.props.changeAttribute(id, content.name, value) };
     return (
         <div key={content.name}>
           <p>{content.name}</p>

@@ -26,8 +26,7 @@ export default class Renderer extends React.Component<Props, {}> {
   }
   render() {
     return (
-        <section className="c-renderer">
-          {this.renderComponent(this.props.nodes.get(NinComponent.ROOT_ID)!)}
+        <section className="c-renderer" dangerouslySetInnerHTML={{__html: this.renderComponent(this.props.nodes.get(NinComponent.ROOT_ID)!)}}>
         </section>
     )
   }

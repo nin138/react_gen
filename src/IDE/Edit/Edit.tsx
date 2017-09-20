@@ -33,7 +33,9 @@ export default class Edit extends React.Component<Props, {}> {
     const component = this.getActiveNode();
     switch(this.props.selectedTab) {
       case EditTabs.Attributes:
-        return (<AttributeEditor id={component.id} editable={component.editable} changeAttribute={this.props.actions.tree.changeAttribute}/>);
+        return (<AttributeEditor id={component.id}
+                                 editable={component.editable}
+                                 changeAttribute={(id, attr, value) => this.props.actions.tree.changeAttribute(id, attr, value)}/>);
       case EditTabs.CSS:
         return (<CssEditor component={component} actions={this.props.actions} cssClassManager={this.props.cssClassManager}/>);
       case EditTabs.Custom:
