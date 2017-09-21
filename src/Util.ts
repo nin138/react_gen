@@ -5,5 +5,18 @@ export const Util = {
           return '-' + s.charAt(0).toLowerCase();
         }
     );
-  }
+  },
+  escapeHTMLString: (str: string): string => {
+    return str.replace(/[&'`"<>]/g, (match) => {
+      switch(match) {
+        case "&": return "&amp;";
+        case "'": return "&#x27;";
+        case "`": return "&#x60;";
+        case '"': return "&quot;";
+        case "<": return "&lt;";
+        case ">": return "&gt;";
+        default: return match;
+      }
+    });
+  },
 };

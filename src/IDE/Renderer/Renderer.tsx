@@ -1,6 +1,7 @@
 import * as React from "react";
 import {NinComponent, NinComponentString} from "../../Entities/NinComponent";
 import {Map} from "immutable"
+import {Util} from "../../Util";
 
 interface Props {
   nodes: Map<string, NinComponent>
@@ -19,8 +20,7 @@ export default class Renderer extends React.Component<Props, {}> {
               r + this.renderComponent(this.props.nodes.get(v!)!), ""))
     }
     if(component.row.includes(NinComponentString.Text)) {
-      console.log(component.editable);
-      row = row.replace(NinComponentString.Text, component.editable.attributes.get("text").value)
+      row = row.replace(NinComponentString.Text, Util.escapeHTMLString(component.editable.attributes.get("text").value))
     }
     return row
   }
