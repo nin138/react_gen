@@ -112,9 +112,10 @@ export default function reducer(state: TreeState = initialState, action: TreeAct
     case ActionNames.MoveNode: {
       const moveNode = state.node.get(action.moveId);
       const oldParentId = moveNode.parent;
-      const newParentId = (action.position === TreeItemPosition.body)? action.targetId : state.node.get(action.targetId).parent;
+      const newParentId = (action.position === TreeItemPosition.body || !action.position)? action.targetId : state.node.get(action.targetId).parent;
       const target = (action.position === TreeItemPosition.body)? undefined : action.targetId;
       const isAfter = (action.position === TreeItemPosition.after)? true : undefined;
+
       if(moveNode.id === newParentId) return state;
       let newNodes = state.node
           .update(moveNode.id, v => v.changeParent(newParentId))

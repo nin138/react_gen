@@ -19,4 +19,8 @@ export const Util = {
       }
     });
   },
+  // when `enum xx { a = "sss" }` doesn't work
+  enumToKeyArray: (enumObj: any): Array<string> => {
+    return Object.keys(enumObj).filter(v => typeof v === "string");
+  }
 };
