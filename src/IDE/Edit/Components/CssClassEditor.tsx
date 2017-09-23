@@ -13,12 +13,15 @@ export default class CssClassEditor extends React.Component<Props> {
   render() {
     const attrs = this.props.css.getAll();
     const nodes = attrs.keySeq().toArray()
-        .map(v => {return(
-            <CssAttr key={v}
-                     attr={v}
-                     value={attrs.get(v)}
-                     changeCss={ (value: string) => this.props.changeCss(this.props.className, v, value)}/>)
+        .sort((a, b) => (CssUtil.getAttrOrder(a) < CssUtil.getAttrOrder(b))? -1 : 1)
+        .map(v => {
+          return(
+              <CssAttr key={v}
+                       attr={v}
+                       value={attrs.get(v)}
+                       changeCss={ (value: string) => this.props.changeCss(this.props.className, v, value)}/>)
         });
+
     return(
         <div>
           <p>class::{this.props.className}</p>

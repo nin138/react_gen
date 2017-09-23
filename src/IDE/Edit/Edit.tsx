@@ -51,21 +51,25 @@ export default class Edit extends React.Component<Props, {}> {
     document.querySelector('style')!!.innerHTML = this.props.cssClassManager.getCssString();
     return (
         <section className="c-edit">
-          <h1>edit</h1>
-          <ul className="c-edit__tab-area">
-            <li className={`c-edit__tab-area__item ${(this.props.selectedTab === EditTabs.Attributes)? "c-edit__tab-area__item--selected" : ""}`}
-                onClick={ () => this.onTabClicked(EditTabs.Attributes) }>
-              Attributes
-            </li>
-            {
-              (this.getActiveNode().editable.hasCss === true)?
-              <li className={`c-edit__tab-area__item ${(this.props.selectedTab === EditTabs.CSS) ? "c-edit__tab-area__item--selected" : ""}`}
-                  onClick={() => this.onTabClicked(EditTabs.CSS)}>
-                CSS
-              </li> : ""
-            }
-          </ul>
-          {this.createBody()}
+          <div className="c-edit__head">
+            <h1>edit</h1>
+            <ul className="c-edit__head__tab-area">
+              <li className={`c-edit__head__tab-area__item ${(this.props.selectedTab === EditTabs.Attributes)? "c-edit__head__tab-area__item--selected" : ""}`}
+                  onClick={ () => this.onTabClicked(EditTabs.Attributes) }>
+                Attributes
+              </li>
+              {
+                (this.getActiveNode().editable.hasCss === true)?
+                    <li className={`c-edit__head__tab-area__item ${(this.props.selectedTab === EditTabs.CSS) ? "c-edit__head__tab-area__item--selected" : ""}`}
+                        onClick={() => this.onTabClicked(EditTabs.CSS)}>
+                      CSS
+                    </li> : ""
+              }
+            </ul>
+          </div>
+          <div className="c-edit__body">
+            {this.createBody()}
+          </div>
         </section>
     )
   }

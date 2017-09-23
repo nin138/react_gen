@@ -1,22 +1,31 @@
 .c-edit {
-  &__tab-area {
-    display: flex;
-    &__item {
-      display: block;
-      flex: 1;
-      border: outset;
-      position: relative;
-      text-align: center;
-      &--selected:after {
-        content: "";
-        position: absolute;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 255, .5);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  &__head {
+    &__tab-area {
+      display: flex;
+      &__item {
+        display: block;
+        flex: 1;
+        border: outset;
+        position: relative;
+        text-align: center;
+        &--selected:after {
+          content: "";
+          position: absolute;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 255, .5);
 
+        }
       }
     }
+  }
+  &__body {
+    overflow-y: scroll;
+    flex: 5;
   }
 }
 

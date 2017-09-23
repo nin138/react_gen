@@ -1,5 +1,6 @@
 import {default as CssData, CssValueTypes} from "./Data";
 import {CssStatus} from "./Css";
+import {CssOrder} from "./Order";
 
 export const CssUtil = {
   isValid(attr: string, value: string): CssStatus {
@@ -97,4 +98,7 @@ export const CssUtil = {
   getAttrType(attr: string) {
     return CssData.values.get(attr).valueType
   },
+  getAttrOrder(attr: string): number {
+    return CssOrder[attr];
+  }
 };
