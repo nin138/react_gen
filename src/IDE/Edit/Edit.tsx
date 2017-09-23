@@ -31,7 +31,8 @@ export default class Edit extends React.Component<Props, {}> {
 
   private createBody() {
     const component = this.getActiveNode();
-    switch(this.props.selectedTab) {
+    const tab = (!component.editable.hasCss && this.props.selectedTab === EditTabs.CSS)? EditTabs.Attributes : this.props.selectedTab;
+    switch(tab) {
       case EditTabs.Attributes:
         return (<AttributeEditor id={component.id}
                                  editable={component.editable}
@@ -56,10 +57,13 @@ export default class Edit extends React.Component<Props, {}> {
                 onClick={ () => this.onTabClicked(EditTabs.Attributes) }>
               Attributes
             </li>
-            <li className={`c-edit__tab-area__item ${(this.props.selectedTab === EditTabs.CSS)? "c-edit__tab-area__item--selected" : ""}`}
-                onClick={ () => this.onTabClicked(EditTabs.CSS) }>
-              CSS
-            </li>
+            {
+              (this.getActiveNode().editable.hasCss === true)?
+              <li className={`c-edit__tab-area__item ${(this.props.selectedTab === EditTabs.CSS) ? "c-edit__tab-area__item--selected" : ""}`}
+                  onClick={() => this.onTabClicked(EditTabs.CSS)}>
+                CSS
+              </li> : ""
+            }
           </ul>
           {this.createBody()}
         </section>
