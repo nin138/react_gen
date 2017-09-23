@@ -44,6 +44,7 @@ export default class TreeItem extends React.Component<Props> {
     return (
         <div className="c-tree-item">
           <div className="c-tree-item__before"
+               onClick={ e => this.onClick(e) }
                onDragEnter={ e => this.onDragEnterToBA(e) }
                onDragLeave={ e => this.onDragLeaveFromBA(e) }
                onDrop={e => this.onDragLeaveFromBA(e) }
@@ -62,6 +63,7 @@ export default class TreeItem extends React.Component<Props> {
           </div>
           { childItems }
           <div className="c-tree-item__after"
+               onClick={ e => this.onClick(e) }
                onDragEnter={ e => this.onDragEnterToBA(e) }
                onDragLeave={ e => this.onDragLeaveFromBA(e) }
                onDrop={ e => this.onDragLeaveFromBA(e) }

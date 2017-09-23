@@ -32,8 +32,8 @@ export default class TreeRoot extends React.Component<Props> {
     return (
         <div className="c-tree-root"
              data-treeId="root"
-             onClick={ () => this.onClick()}
-             onDragEnter={ e => this.onDragEnter(e)}
+             onClick={ () => this.onClick() }
+             onDragEnter={ e => this.onDragEnter(e) }
              onDragLeave={ e => this.onDragLeave(e) }
              onDrop={ e => this.onDragLeave(e) }>
           {childItems}
