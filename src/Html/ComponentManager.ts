@@ -19,6 +19,7 @@ export class ComponentManager {
   }
   getInitializer(fullName: string): NinComponentInitializer { return this.components.get(fullName) }
   getAllPath(): Array<string> { return this.components.keySeq().toArray() }
+
 }
 
 export const initial = new ComponentManager().setArray(HTML_TAGS);

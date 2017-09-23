@@ -18,6 +18,9 @@ export class Editable {
     if(this.hasCss) return this.copy({classList: this.classList!!.push(name)});
     else throw new Error("ADD CSS to hasCss = false node");
   }
+  removeClass(className: string): Editable {
+    return this.copy({ classList: this.classList!!.remove(this.classList!!.indexOf(className))});
+  }
   changeAttribute(attr: string, value: string) {
     return this.copy({ attributes: this.attributes.update(attr, v => Object.assign(v, { value: value })) })
   }

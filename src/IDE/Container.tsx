@@ -7,7 +7,7 @@ import {PaletteActionDispatcher} from "./Palette/Palette";
 import {addComponent, changeCss, createCssClass} from "./Modules";
 import {LogActionDispatcher} from "./Log/Log";
 import Css from "../Css/Css";
-import {addCssClassToComponent} from "./Tree/Modules";
+import {addCssClassToComponent, removeCssFromComponent} from "./Tree/Modules";
 
 export class ActionDispatcher {
   tree: TreeActionDispatcher;
@@ -31,6 +31,9 @@ export class ActionDispatcher {
   }
   addCssClassToComponent(id: string, className: string) {
     this.dispatch(addCssClassToComponent(id, className))
+  }
+  removeCssFromComponent(componentId: string, className: string) {
+    this.dispatch(removeCssFromComponent(componentId, className))
   }
 }
 

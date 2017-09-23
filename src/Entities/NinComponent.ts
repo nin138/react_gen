@@ -42,6 +42,7 @@ export class NinComponent {
   removeChild(id: string): NinComponent { return this.copy({ children: this.children.filter( value => value !== id) }) }
   changeParent(id: string): NinComponent { return this.copy({ parent: id }) }
   addCssClass(name: string): NinComponent { return this.copy({ editable: this.editable.addClass(name) }) }
+  removeCssClass(className:string): NinComponent { return this.copy( { editable: this.editable.removeClass(className) }) }
   changeAttribute(attr: string, value: string): NinComponent { return this.copy({ editable: this.editable.changeAttribute(attr, value)}) }
 }
 

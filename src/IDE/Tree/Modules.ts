@@ -14,6 +14,7 @@ enum ActionNames {
   ChangeSelectedItem = "Tree.ChangeSelectedItem",
   AddCssClassToComponent = "Tree.AddCssClassToComponent",
   ChangeAttribute = "Tree.ChangeAttribute",
+  RemoveCssFromComponent = "Tree.RemoveCssFromComponent"
 }
 
 interface CreateNodeAction extends Action {
@@ -73,17 +74,29 @@ export const changeAttribute = (targetId: string, attr: string, value: string): 
   value
 });
 
+interface RemoveCssFromComponentAction {
+  type: ActionNames.RemoveCssFromComponent
+  componentId: string
+  className: string
+}
+export const removeCssFromComponent = (componentId: string, className: string): RemoveCssFromComponentAction => ({
+  type: ActionNames.RemoveCssFromComponent,
+  componentId,
+  className,
+});
 
 export interface TreeState {
   node: Map<string,NinComponent>
   selectedItemId: string
 }
 
-export type TreeAction = CreateNodeAction
+export type TreeAction =
+    CreateNodeAction
     | MoveNodeAction
     | ChangeSelectedItemAction
     | AddCssClassToComponentAction
     | ChangeAttributeAction
+    | RemoveCssFromComponentAction
 
 const initialState: TreeState= {
   node: Map({root: root()}),
@@ -110,9 +123,11 @@ export default function reducer(state: TreeState = initialState, action: TreeAct
       return Object.assign({}, state, { node: newNodes });
     }
     case ActionNames.ChangeSelectedItem:
-      return Object.assign({}, state, { selectedItemId: action.id })
+      return Object.assign({}, state, { selectedItemId: action.id });
     case ActionNames.AddCssClassToComponent:
-      return Object.assign({}, state, {node: state.node.update(action.id, v => v.addCssClass(action.className))})
+      return Object.assign({}, state, { node: state.node.update(action.id, v => v.addCssClass(action.className)) });
+    case ActionNames.RemoveCssFromComponent:
+      return Object.assign({}, state, { node: state.node.update(action.componentId, v => v.removeCssClass(action.className))});
     case ActionNames.ChangeAttribute:
       return Object.assign(
           {}, state,

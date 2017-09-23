@@ -26,6 +26,7 @@ export default class CssEditor extends React.Component<Props> {
               return (<CssClassEditor key={v!!}
                                       className={v!!}
                                       css={this.props.cssClassManager.getCss(v!!)!!}
+                                      removeClass={ (className: string) => this.props.actions.removeCssFromComponent(this.props.component.id, className) }
                                       changeCss={ (className: string, attr: string, value: string) => this.props.actions.changeCss(className, attr, value) }/>)
             })
         : (<p>{Message.err.dom.unableToSetCss}</p>);

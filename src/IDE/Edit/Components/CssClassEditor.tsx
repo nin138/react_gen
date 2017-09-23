@@ -6,7 +6,8 @@ import {CssUtil} from "../../../Css/CssUtil";
 interface Props {
   className: string
   css: Css
-  changeCss: (className: string, attr: string, value: string) => void,
+  changeCss: (className: string, attr: string, value: string) => void
+  removeClass: (className: string) => void
 }
 
 export default class CssClassEditor extends React.Component<Props> {
@@ -21,10 +22,12 @@ export default class CssClassEditor extends React.Component<Props> {
                        value={attrs.get(v)}
                        changeCss={ (value: string) => this.props.changeCss(this.props.className, v, value)}/>)
         });
-
     return(
         <div>
-          <p>class::{this.props.className}</p>
+          <div className="c-CssClassEditor__head">
+            <p>class::{this.props.className}</p>
+            <button className="CssClassEditor__head__del" onClick={() => this.props.removeClass(this.props.className)}>×</button>
+          </div>
           {nodes}
         </div>
     )
