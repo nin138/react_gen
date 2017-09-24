@@ -9,7 +9,7 @@ import TreeRoot from "./components/TreeRoot";
 export class TreeActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
   createNode(initializer: NinComponentInitializer, parent: string) { this.dispatch(createNode(new NinComponent(initializer, parent), parent)) }
-  moveNode(moveId: string, targetId: string, position: TreeItemPosition) { this.dispatch(moveNode(moveId, targetId, position)) }
+  moveNode(moveNodeId: string, parentId: string, ref: string | null) { this.dispatch(moveNode(moveNodeId, parentId, ref)) }
   changeSelectedItem(id: string) { this.dispatch(changeSelectedItem(id)) }
   changeAttribute(targetId: string ,attr: string, value: string) { this.dispatch(changeAttribute(targetId, attr, value)) }
 }
@@ -43,14 +43,19 @@ export default class Tree extends React.Component<Props, {}> {
       return
     }
     if(type == TreeDropEventType.move) {
+      const nodes = this.props.value.node;
       const target = e.target as HTMLElement;
       const id = e.dataTransfer.getData("id");
       const targetId = target.getAttribute("data-treeId") as string;
       const position = target.getAttribute("data-treePosition") as TreeItemPosition;
-      console.log({moveId: id, target: targetId});
-      console.log(this.getParentList(targetId));
+
+      const parentId = (position === TreeItemPosition.body || !position)? targetId : nodes.get(targetId).parent;
+      const parentNode = nodes.get(parentId);
+      const ref = (position === TreeItemPosition.body || !position)? null : (position === TreeItemPosition.before)?targetId : parentNode.children.get(parentNode.children.indexOf(targetId) + 1);
+      if(parentId === id || ref === id) return;
       if(this.getParentList(targetId).includes(id)) this.props.log.error(Message.err.dom.childIncludeParent);
-      else this.props.actions.moveNode(id, targetId!!, position);
+      else if(!this.props.value.node.get(parentId).allowChild) this.props.log.error(Message.err.dom.cannotHaveChildNode);
+      else this.props.actions.moveNode(id, parentId, ref);
     }
   }
   render() {

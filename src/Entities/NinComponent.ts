@@ -29,15 +29,8 @@ export class NinComponent {
     this.editable = new Editable(initializer.editable);
   }
   copy(...obj: Array<object>): NinComponent { return Object.assign(Object.create(NinComponent.prototype), this, ...obj) }
-  addChild(child: string, targetId?: string, after?: boolean,): NinComponent {
-    let differ = {};
-    if(targetId === undefined) differ = { children: this.children.push(child)};
-    else {
-      let index = this.children.indexOf(targetId);
-      if(after) index++;
-      differ = { children: this.children.insert(index, child) }
-    }
-    return this.copy(differ);
+  addChild(childId: string, ref: string | null = null): NinComponent {
+    return this.copy({ children: (!ref)? this.children.push(childId) : this.children.insert(this.children.indexOf(ref), childId) });
   }
   removeChild(id: string): NinComponent { return this.copy({ children: this.children.filter( value => value !== id) }) }
   changeParent(id: string): NinComponent { return this.copy({ parent: id }) }

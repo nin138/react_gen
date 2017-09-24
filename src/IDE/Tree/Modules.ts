@@ -30,15 +30,15 @@ export const createNode = (node: NinComponent, parent: string): CreateNodeAction
 
 interface MoveNodeAction extends Action {
   type: ActionNames.MoveNode
-  moveId: string
-  targetId: string
-  position: TreeItemPosition
+  moveNodeId: string
+  parentId: string
+  ref: string | null
 }
-export const moveNode = (moveId: string, targetId: string, position: TreeItemPosition): MoveNodeAction => ({
+export const moveNode = (moveNodeId: string, parentId: string, ref: string | null): MoveNodeAction => ({
   type: ActionNames.MoveNode,
-  moveId,
-  targetId,
-  position,
+  moveNodeId,
+  parentId,
+  ref
 });
 
 interface ChangeSelectedItemAction extends Action {
@@ -110,17 +110,13 @@ export default function reducer(state: TreeState = initialState, action: TreeAct
       return Object.assign({}, state, {node: node.set(action.node.id, action.node)});
     }
     case ActionNames.MoveNode: {
-      const moveNode = state.node.get(action.moveId);
+      const moveNode = state.node.get(action.moveNodeId);
       const oldParentId = moveNode.parent;
-      const newParentId = (action.position === TreeItemPosition.body || !action.position)? action.targetId : state.node.get(action.targetId).parent;
-      const target = (action.position === TreeItemPosition.body)? undefined : action.targetId;
-      const isAfter = (action.position === TreeItemPosition.after)? true : undefined;
-
-      if(moveNode.id === newParentId) return state;
+      if(moveNode.id === action.parentId) return state;
       let newNodes = state.node
-          .update(moveNode.id, v => v.changeParent(newParentId))
+          .update(moveNode.id, v => v.changeParent(action.parentId))
           .update(oldParentId, v => v.removeChild(moveNode.id))
-          .update(newParentId, v => v.addChild(moveNode.id, target, isAfter));
+          .update(action.parentId, v => v.addChild(moveNode.id, action.ref));
       return Object.assign({}, state, { node: newNodes });
     }
     case ActionNames.ChangeSelectedItem:
