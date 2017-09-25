@@ -8,17 +8,20 @@ import {addComponent, changeCss, createCssClass} from "./Modules";
 import {LogActionDispatcher} from "./Log/Log";
 import Css from "../Css/Css";
 import {addCssClassToComponent, removeCssFromComponent} from "./Tree/Modules";
+import {ProjectActionDispatcher} from "./Project/Project";
 
 export class ActionDispatcher {
   tree: TreeActionDispatcher;
   edit: EditActionDispatcher;
   palette: PaletteActionDispatcher;
   log: LogActionDispatcher;
+  project: ProjectActionDispatcher;
   constructor(private dispatch: (action: AppAction) => void) {
     this.tree = new TreeActionDispatcher(dispatch);
     this.edit = new EditActionDispatcher(dispatch);
     this.palette = new PaletteActionDispatcher(dispatch);
     this.log = new LogActionDispatcher(dispatch);
+    this.project = new ProjectActionDispatcher(dispatch);
   }
   addComponent() {
     this.dispatch(addComponent({} as any))// todo

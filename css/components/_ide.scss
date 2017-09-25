@@ -7,6 +7,10 @@
   &__body {
     height: calc(100vh - 5rem);
     display: flex;
+    &__project-area {
+      @include ide-child;
+      flex: 1;
+    }
     &__tree-area {
       @include ide-child;
       flex: 1;

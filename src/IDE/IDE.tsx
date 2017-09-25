@@ -6,6 +6,7 @@ import {AppState} from "../Store";
 import {ActionDispatcher} from "./Container";
 import Log from "./Log/Log";
 import Renderer from "./Renderer/Renderer";
+import Project from "./Project/Project";
 
 interface Props extends AppState {
   actions: ActionDispatcher
@@ -16,6 +17,9 @@ export default class IDE extends React.Component<Props, {}> {
     return (
         <section className="c-IDE">
           <div className="c-IDE__body">
+            <div className="c-IDE__body__project-area">
+              <Project actions={this.props.actions.project}/>
+            </div>
             <div className="c-IDE__body__tree-area">
               <Palette actions={this.props.actions.palette} ide={this.props.ide} value={this.props.palette} />
               <Tree actions={this.props.actions.tree} value={this.props.tree} log={this.props.actions.log}/>
