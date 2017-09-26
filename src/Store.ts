@@ -4,6 +4,7 @@ import tree, {TreeAction, TreeState} from "./IDE/Tree/Modules";
 import palette, {PaletteAction, PaletteState} from "./IDE/Palette/Modules";
 import ide, {IDEAction, IDEState} from "./IDE/Modules";
 import log, {LogAction, LogState} from "./IDE/Log/Modules";
+import project, {ProjectAction, ProjectState} from "./IDE/Project/Modules";
 
 export default createStore(
     combineReducers({
@@ -11,7 +12,8 @@ export default createStore(
       edit,
       tree,
       palette,
-      log
+      log,
+      project,
     })
 )
 
@@ -21,6 +23,7 @@ export type AppState = {
   tree: TreeState
   palette: PaletteState
   log: LogState
+  project: ProjectState
 }
 
 export type AppAction = Action
@@ -29,3 +32,4 @@ export type AppAction = Action
     | TreeAction
     | PaletteAction
     | LogAction
+    | ProjectAction

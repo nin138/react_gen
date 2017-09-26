@@ -18,7 +18,7 @@ export default class IDE extends React.Component<Props, {}> {
         <section className="c-IDE">
           <div className="c-IDE__body">
             <div className="c-IDE__body__project-area">
-              <Project actions={this.props.actions.project}/>
+              <Project value={this.props.project} actions={this.props.actions.project}/>
             </div>
             <div className="c-IDE__body__tree-area">
               <Palette actions={this.props.actions.palette} ide={this.props.ide} value={this.props.palette} />
