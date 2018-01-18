@@ -2,7 +2,7 @@ import * as React from 'react'
 import {Route, Switch} from "react-router";
 import NotFound from "./NotFound";
 import IDE from "./IDE/Container";
-import Top from "./TOP/Top";
+import Top from "./TOP/Container";
 
 export class Routes extends React.Component<{}, {}> {
   render() {

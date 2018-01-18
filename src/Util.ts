@@ -1,10 +1,7 @@
 export const Util = {
   camelToChain: (str: string): string => {
     return str.replace(/([A-Z])/g,
-        (s) => {
-          return '-' + s.charAt(0).toLowerCase();
-        }
-    );
+        (s) => '-' + s.charAt(0).toLowerCase());
   },
   escapeHTMLString: (str: string): string => {
     return str.replace(/[&'`"<>]/g, (match) => {

@@ -1,6 +1,21 @@
 .c-project {
   padding: .5rem;
+  height: 100%;
   &__head {
+    height: 2rem;
    font-size: 1.5rem;
+    border-bottom: solid #000;
+  }
+  &__list {
+    height: calc(100% - 3rem);
+    overflow-y: scroll;
+    &__item {
+      &:hover {
+        background: #0000ff;
+      }
+      &--selected {
+        background: #ff0000;
+      }
+    }
   }
 }
