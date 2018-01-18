@@ -1,6 +1,6 @@
 import {Action} from 'redux'
 import {Map} from "immutable"
-import {NinComponent, root} from "../../Entities/NinComponent";
+import {NinComponent, createRoot} from "../../Entities/NinComponent";
 
 export enum TreeItemPosition {
   before = "before",
@@ -99,7 +99,7 @@ export type TreeAction =
     | RemoveCssFromComponentAction
 
 const initialState: TreeState= {
-  node: Map({root: root()}),
+  node: Map({root: createRoot()}),
   selectedItemId: "root"
 };
 

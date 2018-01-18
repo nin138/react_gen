@@ -8,7 +8,6 @@ export class NinComponent {
   static ROOT_ID = "root";
   readonly path: string;
   readonly name: string;
-  readonly isInline: boolean;
   readonly isFrame: boolean;
   readonly allowChild: boolean;
   fullName() { return `${this.path}.${this.name}` }
@@ -20,7 +19,6 @@ export class NinComponent {
   constructor(initializer: NinComponentInitializer, parent: string, id: string = shortId.generate()) {
     this.path = initializer.path;
     this.name = initializer.name;
-    this.isInline = initializer.isInline;
     this.isFrame = initializer.isFrame;
     this.allowChild = initializer.allowChild;
     this.parent = parent;
@@ -39,11 +37,10 @@ export class NinComponent {
   changeAttribute(attr: string, value: string): NinComponent { return this.copy({ editable: this.editable.changeAttribute(attr, value)}) }
 }
 
-export const root = (): NinComponent=> {
+export const createRoot = (): NinComponent=> {
   return new NinComponent({
     path: "Project.Body",
     name: "root",
-    isInline: false,
     isFrame: false,
     allowChild: true,
     row: NinComponentString.Children,
@@ -58,7 +55,6 @@ export const root = (): NinComponent=> {
 export interface NinComponentInitializer {
   path: string
   name: string
-  isInline: boolean
   isFrame: boolean
   allowChild: boolean
   row: string //    /$*children*$/

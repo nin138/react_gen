@@ -15,8 +15,18 @@ interface Props {
 
 export default class Project extends React.Component<Props, {}> {
   render() {
+    // const root = [];
+    // const keys = this.props.value.files.keySeq().toArray().map(v => {
+    //   const arr = v.split("/");
+    //   arr.forEach(v => {
+    //
+    //   })
+    // });
     return (
         <section className="c-project">
+          <div className="c-project__head">
+            <h1>Project</h1>
+          </div>
         </section>
     )
   }
