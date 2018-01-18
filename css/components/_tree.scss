@@ -1,32 +1,39 @@
 .c-tree {
   flex: 3;
+  padding: .5rem;
+  overflow: hidden;
   &__head {
     height: 2rem;
+    font-size: 1.5rem;
   }
   &__main {
     box-sizing: border-box;
-    border: solid #00f;
+    border: solid;
     height: calc(100% - 2rem);
-    &__root {
-      height: 100%;
-    }
   }
+}
+.c-tree-root {
+  height: 100%;
+  overflow-y: scroll;
 }
 .c-tree-item {
   margin-left: 1rem;
   &__body {
     padding: .1rem;
+    &:hover {
+      background: #0000ff;
+    }
     &--selected {
       background: #f00;
     }
   }
   &__before {
     opacity: 0;
-    height: .4rem;
+    height: .2rem;
     border-top: solid;
   }
   &__after {
-    height: .4rem;
+    height: .2rem;
     opacity: 0;
     border-bottom: solid;
   }

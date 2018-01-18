@@ -7,3 +7,26 @@
 @import "components/tree";
 @import "components/edit";
 @import "components/CssClassEditor";
+@import "components/project";
+@import "components/top";
+
+//no bounce scroll
+html {
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+}
+
+//---
+
+body {
+  background: #444;
+  color: #eee;
+}

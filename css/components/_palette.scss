@@ -1,3 +1,39 @@
 .c-palette {
+  box-sizing: border-box;
+  padding: .5rem;
   flex: 1;
+  overflow: hidden;
+  &__head {
+    font-size: 1.5rem;
+    height: 2rem;
+    line-height: 2rem;
+    display: flex;
+    justify-content: space-between;
+    &__input {
+      font-size: 1.5rem;
+      line-height: 1.5rem;
+      padding: 5px;
+      margin: 3px;
+      border-radius: 1rem;
+      outline: none;
+      border: solid;
+      &:hover {
+        border: solid #0000ff;
+      }
+      &:focus {
+        border: solid #ff0000;
+      }
+    }
+  }
+  &__list {
+    border: solid;
+    height: calc(100% - 2rem);
+    overflow-y: scroll;
+    &__item {
+      margin: .2rem;
+      &:hover {
+        background: rgba(0,0,255,.5);
+      }
+    }
+  }
 }
