@@ -7,8 +7,8 @@ import {PaletteActionDispatcher} from "./Palette/Palette";
 import {addComponent, changeCss, createCssClass} from "./Modules";
 import {LogActionDispatcher} from "./Log/Log";
 import Css from "../Css/Css";
-import {addCssClassToComponent, removeCssFromComponent} from "./Tree/Modules";
 import {ProjectActionDispatcher} from "./Project/Project";
+import {addCssClassToComponent, removeCssFromComponent} from "./Project/Modules";
 
 export class ActionDispatcher {
   tree: TreeActionDispatcher;

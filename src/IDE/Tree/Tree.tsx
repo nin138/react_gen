@@ -1,11 +1,11 @@
 import * as React from 'react'
-import {changeAttribute, changeSelectedItem, TreeItemPosition, TreeState} from "./Modules";
+import {changeSelectedItem, TreeItemPosition, TreeState} from "./Modules";
 import {AppAction} from "../../Store";
 import { NinElement, NinComponentInitializer} from "../../Entities/NinComponent";
 import {LogActionDispatcher} from "../Log/Log";
 import {Message} from "../../Message";
 import TreeRoot from "./components/TreeRoot";
-import {createNode, moveNode} from "../Project/Modules";
+import {changeAttribute, createNode, moveNode} from "../Project/Modules";
 import {Map} from "immutable";
 
 export class TreeActionDispatcher {
