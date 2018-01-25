@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {Action} from "redux";
 import {Map} from "immutable"
-import {addFile, ComponentFile, loadProject, ProjectState} from "./Modules";
+import {addFile, ComponentFile, loadProject, Project} from "./Modules";
 
 export class ProjectActionDispatcher {
   constructor(private dispatch: (action: Action) => void) {}
@@ -11,11 +11,11 @@ export class ProjectActionDispatcher {
 
 
 interface Props {
-  value: ProjectState;
+  value: Project;
   actions: ProjectActionDispatcher
 }
 
-export default class Project extends React.Component<Props, {}> {
+export default class ProjectTree extends React.Component<Props, {}> {
   render() {
     // const root = [];
     // const keys = this.props.value.files.keySeq().toArray().map(v => {

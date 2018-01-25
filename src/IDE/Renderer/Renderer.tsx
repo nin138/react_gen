@@ -1,14 +1,14 @@
 import * as React from "react";
-import {NinComponent, NinComponentString} from "../../Entities/NinComponent";
+import {NinElement, NinComponentString} from "../../Entities/NinComponent";
 import {Map} from "immutable"
 import {Util} from "../../Util";
 
 interface Props {
-  nodes: Map<string, NinComponent>
+  nodes: Map<string, NinElement>
 }
 
 export default class Renderer extends React.Component<Props, {}> {
-  renderComponent(component: NinComponent): string {
+  renderComponent(component: NinElement): string {
     let row = component.row;
     if(component.editable.hasCss && !component.editable.classList!!.isEmpty()) {
       const classes = component.editable.classList!!.reduce((reduction, value) => `${reduction} ${value}`, "").substring(1);
@@ -26,7 +26,7 @@ export default class Renderer extends React.Component<Props, {}> {
   }
   render() {
     return (
-        <section className="c-renderer" dangerouslySetInnerHTML={{__html: this.renderComponent(this.props.nodes.get(NinComponent.ROOT_ID)!)}}>
+        <section className="c-renderer" dangerouslySetInnerHTML={{__html: this.renderComponent(this.props.nodes.get(NinElement.ROOT_ID)!)}}>
         </section>
     )
   }

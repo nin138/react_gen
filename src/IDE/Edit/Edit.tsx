@@ -1,12 +1,12 @@
 import * as React from 'react'
 import {changeCssAttr, changeSelectedTab, EditTabs} from "./Modules";
 import {AppAction} from "../../Store";
-import {TreeState} from "../Tree/Modules";
 import CssEditor from "./Components/CssEditor";
 import {CssClassManager} from "../../Css/CssClassManager";
 import {ActionDispatcher} from "../Container";
-import {NinComponent} from "../../Entities/NinComponent";
+import {NinElement} from "../../Entities/NinComponent";
 import AttributeEditor from "./Components/AttributeEditor";
+import {Map} from "immutable";
 
 export class EditActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
@@ -19,7 +19,8 @@ export class EditActionDispatcher {
 }
 
 interface Props {
-  tree: TreeState
+  selectedItemId: string
+  nodes: Map<string, NinElement>
   cssClassManager: CssClassManager
   actions: ActionDispatcher
   selectedTab: EditTabs
@@ -46,7 +47,7 @@ export default class Edit extends React.Component<Props, {}> {
   private onTabClicked(tab: EditTabs) {
     this.props.actions.edit.changeSelectedTab(tab);
   }
-  private getActiveNode(): NinComponent { return this.props.tree.node.get(this.props.tree.selectedItemId) }
+  private getActiveNode(): NinElement { return this.props.nodes.get(this.props.selectedItemId) }
   render() {
     document.querySelector('style')!!.innerHTML = this.props.cssClassManager.getCssString();
     return (

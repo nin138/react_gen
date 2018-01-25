@@ -4,7 +4,7 @@ import {Editable, EditableInitializer} from "./Editable";
 declare function require(name: string): any
 const shortId = require("shortid");
 
-export class NinComponent {
+export class NinElement {
   static ROOT_ID = "root";
   readonly path: string;
   readonly name: string;
@@ -26,19 +26,19 @@ export class NinComponent {
     this.row = initializer.row;
     this.editable = new Editable(initializer.editable);
   }
-  copy(...obj: Array<object>): NinComponent { return Object.assign(Object.create(NinComponent.prototype), this, ...obj) }
-  addChild(childId: string, ref: string | null = null): NinComponent {
+  copy(...obj: Array<object>): NinElement { return Object.assign(Object.create(NinElement.prototype), this, ...obj) }
+  addChild(childId: string, ref: string | null = null): NinElement {
     return this.copy({ children: (!ref)? this.children.push(childId) : this.children.insert(this.children.indexOf(ref), childId) });
   }
-  removeChild(id: string): NinComponent { return this.copy({ children: this.children.filter( value => value !== id) }) }
-  changeParent(id: string): NinComponent { return this.copy({ parent: id }) }
-  addCssClass(name: string): NinComponent { return this.copy({ editable: this.editable.addClass(name) }) }
-  removeCssClass(className:string): NinComponent { return this.copy( { editable: this.editable.removeClass(className) }) }
-  changeAttribute(attr: string, value: string): NinComponent { return this.copy({ editable: this.editable.changeAttribute(attr, value)}) }
+  removeChild(id: string): NinElement { return this.copy({ children: this.children.filter( value => value !== id) }) }
+  changeParent(id: string): NinElement { return this.copy({ parent: id }) }
+  addCssClass(name: string): NinElement { return this.copy({ editable: this.editable.addClass(name) }) }
+  removeCssClass(className:string): NinElement { return this.copy( { editable: this.editable.removeClass(className) }) }
+  changeAttribute(attr: string, value: string): NinElement { return this.copy({ editable: this.editable.changeAttribute(attr, value)}) }
 }
 
-export const createRoot = (): NinComponent=> {
-  return new NinComponent({
+export const createRoot = (): NinElement=> {
+  return new NinElement({
     path: "Project.Body",
     name: "root",
     isFrame: false,

@@ -1,13 +1,13 @@
 import * as React from 'react'
 import ClassCreator from "./ClassCreator";
-import {NinComponent} from "../../../Entities/NinComponent";
+import {NinElement} from "../../../Entities/NinComponent";
 import {ActionDispatcher} from "../../Container";
 import CssClassEditor from "./CssClassEditor";
 import {CssClassManager} from "../../../Css/CssClassManager";
 import {Message} from "../../../Message";
 
 interface Props {
-  component: NinComponent
+  component: NinElement
   actions: ActionDispatcher
   cssClassManager: CssClassManager
 }

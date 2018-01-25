@@ -1,11 +1,11 @@
 import * as React from 'react'
-import {NinComponent} from "../../../Entities/NinComponent";
+import {NinElement} from "../../../Entities/NinComponent";
 import {Map} from "immutable";
 import TreeItem from "./TreeItem";
 import {TreeActionDispatcher} from "../Tree";
 
 interface Props {
-  nodes: Map<string, NinComponent>
+  nodes: Map<string, NinElement>
   selectedItemId: string
   actions: TreeActionDispatcher
 }
@@ -22,7 +22,7 @@ export default class TreeRoot extends React.Component<Props> {
   }
 
   render() {
-    const childItems: any = this.props.nodes.get("root").children.map(
+    const childItems = this.props.nodes.get("root").children.map(
         v =>  <TreeItem
             actions={this.props.actions}
             key={this.props.nodes.get(v!!).id}

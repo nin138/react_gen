@@ -22,13 +22,13 @@ export default class IDE extends React.Component<Props, {}> {
             </div>
             <div className="c-IDE__body__tree-area">
               <Palette actions={this.props.actions.palette} ide={this.props.ide} value={this.props.palette} />
-              <Tree actions={this.props.actions.tree} value={this.props.tree} log={this.props.actions.log}/>
+              <Tree actions={this.props.actions.tree} value={this.props.tree} nodes={this.props.project.getActiveFile().elements} log={this.props.actions.log}/>
             </div>
             <div className="c-IDE__body__display-area">
-              <Renderer nodes={this.props.tree.node}/>
+              <Renderer nodes={this.props.project.getActiveFile().elements}/>
             </div>
             <div className="c-IDE__body__edit-area">
-              <Edit actions={this.props.actions} tree={this.props.tree} cssClassManager={this.props.ide.cssClassManager} selectedTab={this.props.edit.selectedTab}/>
+              <Edit actions={this.props.actions} nodes={this.props.project.getActiveFile().elements} selectedItemId={this.props.tree.selectedItemId} cssClassManager={this.props.ide.cssClassManager} selectedTab={this.props.edit.selectedTab}/>
             </div>
           </div>
           <div className="c-IDE__under">

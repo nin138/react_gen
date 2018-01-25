@@ -1,14 +1,16 @@
 import * as React from 'react'
-import {changeAttribute, changeSelectedItem, createNode, moveNode, TreeItemPosition, TreeState} from "./Modules";
+import {changeAttribute, changeSelectedItem, TreeItemPosition, TreeState} from "./Modules";
 import {AppAction} from "../../Store";
-import { NinComponent, NinComponentInitializer} from "../../Entities/NinComponent";
+import { NinElement, NinComponentInitializer} from "../../Entities/NinComponent";
 import {LogActionDispatcher} from "../Log/Log";
 import {Message} from "../../Message";
 import TreeRoot from "./components/TreeRoot";
+import {createNode, moveNode} from "../Project/Modules";
+import {Map} from "immutable";
 
 export class TreeActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
-  createNode(initializer: NinComponentInitializer, parent: string) { this.dispatch(createNode(new NinComponent(initializer, parent), parent)) }
+  createNode(initializer: NinComponentInitializer, parent: string) { this.dispatch(createNode(new NinElement(initializer, parent), parent)) }
   moveNode(moveNodeId: string, parentId: string, ref: string | null) { this.dispatch(moveNode(moveNodeId, parentId, ref)) }
   changeSelectedItem(id: string) { this.dispatch(changeSelectedItem(id)) }
   changeAttribute(targetId: string ,attr: string, value: string) { this.dispatch(changeAttribute(targetId, attr, value)) }
@@ -21,6 +23,7 @@ export enum TreeDropEventType {
 
 interface Props {
   value: TreeState
+  nodes: Map<string, NinElement>
   actions: TreeActionDispatcher
   log: LogActionDispatcher
 }
@@ -29,7 +32,7 @@ export default class Tree extends React.Component<Props, {}> {
   getParentList(id: string): Array<string> {
     const ret: Array<string> = [];
     while(id != "root") {
-      id = this.props.value.node.get(id).parent;
+      id = this.props.nodes.get(id).parent;
       ret.push(id)
     }
     return ret;
@@ -43,7 +46,7 @@ export default class Tree extends React.Component<Props, {}> {
       return
     }
     if(type == TreeDropEventType.move) {
-      const nodes = this.props.value.node;
+      const nodes = this.props.nodes;
       const target = e.target as HTMLElement;
       const id = e.dataTransfer.getData("id");
       const targetId = target.getAttribute("data-treeId") as string;
@@ -54,16 +57,11 @@ export default class Tree extends React.Component<Props, {}> {
       const ref = (position === TreeItemPosition.body || !position)? null : (position === TreeItemPosition.before)?targetId : parentNode.children.get(parentNode.children.indexOf(targetId) + 1);
       if(parentId === id || ref === id) return;
       if(this.getParentList(targetId).includes(id)) this.props.log.error(Message.err.dom.childIncludeParent);
-      else if(!this.props.value.node.get(parentId).allowChild) this.props.log.error(Message.err.dom.cannotHaveChildNode);
+      else if(!nodes.get(parentId).allowChild) this.props.log.error(Message.err.dom.cannotHaveChildNode);
       else this.props.actions.moveNode(id, parentId, ref);
     }
   }
   render() {
-    const testTreeView = (node: NinComponent) => {
-      const thisObj: any = {};
-      node.children.map(v => thisObj[v!!] = testTreeView(this.props.value.node.get(v!!)));
-      return thisObj;
-    };
     return (
         <section className="c-tree">
           <div className="c-tree__head">
@@ -73,7 +71,7 @@ export default class Tree extends React.Component<Props, {}> {
                onDrop={ e => this.handleDrop(e) }
                className="c-tree__main"
                data-treeId="root">
-            <TreeRoot actions={this.props.actions} nodes={this.props.value.node} selectedItemId={this.props.value.selectedItemId}/>
+            <TreeRoot actions={this.props.actions} nodes={this.props.nodes} selectedItemId={this.props.value.selectedItemId}/>
           </div>
         </section>
     )

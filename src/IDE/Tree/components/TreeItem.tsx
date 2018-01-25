@@ -1,12 +1,12 @@
 import * as React from 'react'
-import {NinComponent} from "../../../Entities/NinComponent";
+import {NinElement} from "../../../Entities/NinComponent";
 import {TreeItemPosition} from "../Modules";
 import {Map} from "immutable";
 import {TreeActionDispatcher, TreeDropEventType} from "../Tree";
 
 interface Props {
-  nodes: Map<string, NinComponent>
-  node: NinComponent
+  nodes: Map<string, NinElement>
+  node: NinElement
   selectedItemId: string
   actions: TreeActionDispatcher
 }
