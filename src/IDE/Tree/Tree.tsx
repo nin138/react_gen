@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {changeSelectedItem, TreeItemPosition, TreeState} from "./Modules";
+import {changeSelectedItem, openContextMenu, TreeItemPosition, TreeState} from "./Modules";
 import {AppAction} from "../../Store";
 import { NinElement, NinComponentInitializer} from "../../Entities/NinComponent";
 import {LogActionDispatcher} from "../Log/Log";
@@ -7,6 +7,7 @@ import {Message} from "../../Message";
 import TreeRoot from "./components/TreeRoot";
 import {changeAttribute, createNode, moveNode} from "../Project/Modules";
 import {Map} from "immutable";
+import {ActionDispatcher} from "../Container";
 
 export class TreeActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
@@ -14,6 +15,9 @@ export class TreeActionDispatcher {
   moveNode(moveNodeId: string, parentId: string, ref: string | null) { this.dispatch(moveNode(moveNodeId, parentId, ref)) }
   changeSelectedItem(id: string) { this.dispatch(changeSelectedItem(id)) }
   changeAttribute(targetId: string ,attr: string, value: string) { this.dispatch(changeAttribute(targetId, attr, value)) }
+  openContextMenu(targetId: string) { this.dispatch(openContextMenu(targetId)) }
+  closeContextMenu() {
+    this.dispatch(openContextMenu(null)) }
 }
 
 export enum TreeDropEventType {
@@ -24,11 +28,17 @@ export enum TreeDropEventType {
 interface Props {
   value: TreeState
   nodes: Map<string, NinElement>
-  actions: TreeActionDispatcher
+  actions: ActionDispatcher
   log: LogActionDispatcher
 }
 
 export default class Tree extends React.Component<Props, {}> {
+  componentDidMount() {
+    window.addEventListener("mousedown", this.props.actions.tree.closeContextMenu.bind(this.props.actions));
+  }
+  componentWillUnmount() {
+    window.removeEventListener("mousedown", this.props.actions.tree.closeContextMenu.bind(this.props.actions));
+  }
   getParentList(id: string): Array<string> {
     const ret: Array<string> = [];
     while(id != "root") {
@@ -42,7 +52,7 @@ export default class Tree extends React.Component<Props, {}> {
     if(type == TreeDropEventType.create) {
       const targetId = (e.target as HTMLElement).getAttribute("data-treeId");
       const initializer = JSON.parse(e.dataTransfer.getData("data"));
-      this.props.actions.createNode(initializer, targetId!!);
+      this.props.actions.tree.createNode(initializer, targetId!!);
       return
     }
     if(type == TreeDropEventType.move) {
@@ -58,7 +68,7 @@ export default class Tree extends React.Component<Props, {}> {
       if(parentId === id || ref === id) return;
       if(this.getParentList(targetId).includes(id)) this.props.log.error(Message.err.dom.childIncludeParent);
       else if(!nodes.get(parentId).allowChild) this.props.log.error(Message.err.dom.cannotHaveChildNode);
-      else this.props.actions.moveNode(id, parentId, ref);
+      else this.props.actions.tree.moveNode(id, parentId, ref);
     }
   }
   render() {
@@ -71,7 +81,7 @@ export default class Tree extends React.Component<Props, {}> {
                onDrop={ e => this.handleDrop(e) }
                className="c-tree__main"
                data-treeId="root">
-            <TreeRoot actions={this.props.actions} nodes={this.props.nodes} selectedItemId={this.props.value.selectedItemId}/>
+            <TreeRoot actions={this.props.actions} nodes={this.props.nodes} selectedItemId={this.props.value.selectedItemId} contextMenuId={this.props.value.contextMenuId}/>
           </div>
         </section>
     )

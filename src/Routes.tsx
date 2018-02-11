@@ -3,6 +3,7 @@ import {Route, Switch} from "react-router";
 import NotFound from "./NotFound";
 import IDE from "./IDE/Container";
 import Top from "./TOP/Container";
+import Modal from "./Modal/Container";
 
 export class Routes extends React.Component<{}, {}> {
   render() {
@@ -13,6 +14,7 @@ export class Routes extends React.Component<{}, {}> {
           <Route path="/" component={Top}/>
           <Route component={NotFound}/>
         </Switch>
+        <Modal/>
       </div>
     )
   }

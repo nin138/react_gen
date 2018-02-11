@@ -1,5 +1,5 @@
 import * as React from "react";
-import {NinElement, NinComponentString} from "../../Entities/NinComponent";
+import {NinElement, NinComponentString, ROOT_ID} from "../../Entities/NinComponent";
 import {Map} from "immutable"
 import {Util} from "../../Util";
 
@@ -26,8 +26,10 @@ export default class Renderer extends React.Component<Props, {}> {
   }
   render() {
     return (
-        <section className="c-renderer" dangerouslySetInnerHTML={{__html: this.renderComponent(this.props.nodes.get(NinElement.ROOT_ID)!)}}>
-        </section>
+        <iframe className="c-renderer__iframe" src={'data:text/html;base64,' + btoa(this.props.nodes.get(ROOT_ID).getHTMLString(this.props.nodes))}>
+          {/*<section className="c-renderer" dangerouslySetInnerHTML={{__html: this.renderComponent(this.props.nodes.get(NinElement.ROOT_ID)!)}}>*/}
+          {/*</section>*/}
+        </iframe>
     )
   }
 }

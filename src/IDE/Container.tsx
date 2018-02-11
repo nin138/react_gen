@@ -4,11 +4,13 @@ import IDE from "./IDE";
 import {TreeActionDispatcher} from "./Tree/Tree";
 import {EditActionDispatcher} from "./Edit/Edit";
 import {PaletteActionDispatcher} from "./Palette/Palette";
-import {addComponent, changeCss, createCssClass} from "./Modules";
+import {addComponentToManager, changeCss, createCssClass} from "./Modules";
 import {LogActionDispatcher} from "./Log/Log";
 import Css from "../Css/Css";
 import {ProjectActionDispatcher} from "./Project/Project";
 import {addCssClassToComponent, removeCssFromComponent} from "./Project/Modules";
+import {NinComponentInitializer} from "../Entities/NinComponent";
+import {ModalActionDispatcher} from "../Modal/Container";
 
 export class ActionDispatcher {
   tree: TreeActionDispatcher;
@@ -16,15 +18,17 @@ export class ActionDispatcher {
   palette: PaletteActionDispatcher;
   log: LogActionDispatcher;
   project: ProjectActionDispatcher;
+  modal: ModalActionDispatcher;
   constructor(private dispatch: (action: AppAction) => void) {
     this.tree = new TreeActionDispatcher(dispatch);
     this.edit = new EditActionDispatcher(dispatch);
     this.palette = new PaletteActionDispatcher(dispatch);
     this.log = new LogActionDispatcher(dispatch);
     this.project = new ProjectActionDispatcher(dispatch);
+    this.modal = new ModalActionDispatcher(dispatch);
   }
-  addComponent() {
-    this.dispatch(addComponent({} as any))// todo
+  addComponentToManager(initializer: NinComponentInitializer) {
+    this.dispatch(addComponentToManager(initializer))
   }
   createCssClass(name: string) {
     this.dispatch(createCssClass(name, new Css()))

@@ -103,7 +103,7 @@ export const HTML_PATH = "HTML";
 
 const textNode: NinComponentInitializer = {
   path: HTML_PATH,
-  name: "textNode",
+  type: "textNode",
   isFrame: false,
   allowChild: false,
   row: NinComponentString.Text,
@@ -116,7 +116,7 @@ const textNode: NinComponentInitializer = {
 
 export const HTML_TAGS: Array<NinComponentInitializer> = list.map(it => { return {
   path: HTML_PATH,
-  name: it.name,
+  type: it.name,
   isFrame: false,
   allowChild: it.hasChild,
   row: `<${it.name}${NinComponentString.ClassName}>${NinComponentString.Children}</${it.name}>`,

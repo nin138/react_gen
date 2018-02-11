@@ -5,6 +5,7 @@ import palette, {PaletteAction, PaletteState} from "./IDE/Palette/Modules";
 import ide, {IDEAction, IDEState} from "./IDE/Modules";
 import log, {LogAction, LogState} from "./IDE/Log/Modules";
 import project, {ProjectAction, Project} from "./IDE/Project/Modules";
+import modal, {ModalAction, ModalState} from "./Modal/Modules";
 
 export default createStore(
     combineReducers({
@@ -14,6 +15,7 @@ export default createStore(
       palette,
       log,
       project,
+      modal,
     })
 )
 
@@ -24,6 +26,7 @@ export type AppState = {
   palette: PaletteState
   log: LogState
   project: Project
+  modal: ModalState
 }
 
 export type AppAction = Action
@@ -33,3 +36,4 @@ export type AppAction = Action
     | PaletteAction
     | LogAction
     | ProjectAction
+    | ModalAction

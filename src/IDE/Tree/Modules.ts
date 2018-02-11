@@ -1,5 +1,3 @@
-import {Action} from 'redux'
-
 export enum TreeItemPosition {
   before = "before",
   body = "body",
@@ -7,37 +5,52 @@ export enum TreeItemPosition {
 }
 
 enum ActionNames {
-  ChangeSelectedItem = "Tree.ChangeSelectedItem",
+  changeSelectedItem = "Tree.ChangeSelectedItem",
+  openContextMenu = "Tree.changeContextMenu",
 }
 
 
-
-interface ChangeSelectedItemAction extends Action {
-  type: ActionNames.ChangeSelectedItem
+interface ChangeSelectedItemAction {
+  type: ActionNames.changeSelectedItem
   id: string
 }
 export const changeSelectedItem = (id: string): ChangeSelectedItemAction => ({
-  type: ActionNames.ChangeSelectedItem,
+  type: ActionNames.changeSelectedItem,
+  id
+});
+
+
+interface OpenContextMenuAction {
+  type: ActionNames.openContextMenu,
+  id: string | null
+}
+export const openContextMenu = (id: string | null): OpenContextMenuAction => ({
+  type: ActionNames.openContextMenu,
   id
 });
 
 
 export interface TreeState {
   selectedItemId: string
+  contextMenuId: string | null
 }
 
 export type TreeAction =
     | ChangeSelectedItemAction
+    | OpenContextMenuAction
+
 
 const initialState: TreeState= {
-  selectedItemId: "root"
+  selectedItemId: "root",
+  contextMenuId: null
 };
 
 export default function reducer(state: TreeState = initialState, action: TreeAction): TreeState {
   switch (action.type) {
-
-    case ActionNames.ChangeSelectedItem:
+    case ActionNames.changeSelectedItem:
       return Object.assign({}, state, { selectedItemId: action.id });
+    case ActionNames.openContextMenu:
+      return Object.assign({}, state, { contextMenuId: action.id });
     default: { return state }
   }
 }

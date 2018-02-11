@@ -1,0 +1,13 @@
+.c-contextMenu {
+  position: absolute;
+  border-radius: 1px;
+  box-shadow: 0 0 2px 2px #222;
+  padding: 3px;
+  background: #555;
+  z-index: 10000;
+  &__item {
+    &:hover {
+      background: #0000ff;
+    }
+  }
+}

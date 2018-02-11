@@ -1,8 +1,8 @@
 import * as React from "react";
 import {itemDropped, PaletteState} from "./Modules";
 import {AppAction} from "../../Store";
-import {IDEState} from "../Modules";
 import {TreeDropEventType} from "../Tree/Tree";
+import {Project} from "../Project/Modules";
 
 export class PaletteActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
@@ -10,7 +10,7 @@ export class PaletteActionDispatcher {
 }
 
 interface Props {
-  ide: IDEState
+  project: Project
   value: PaletteState
   actions: PaletteActionDispatcher
 }
@@ -26,10 +26,10 @@ export default class Palette extends React.Component<Props, State> {
   }
   onDragStart(e: React.DragEvent<any>, v: string) {
     e.dataTransfer.setData("type", TreeDropEventType.create);
-    e.dataTransfer.setData("data", JSON.stringify(this.props.ide.componentManager.getInitializer(v)));
+    e.dataTransfer.setData("data", JSON.stringify(this.props.project.componentManager.getInitializer(v)));
   }
   render() {
-    const components = this.props.ide.componentManager.getAllPath()
+    const components = this.props.project.componentManager.getAllPath()
         .sort()
         .filter(it => it.toLowerCase().includes(this.state.search.toLowerCase()))// todo order
         .map(v => { return(

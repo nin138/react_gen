@@ -2,17 +2,18 @@ import * as React from 'react'
 import {NinElement} from "../../../Entities/NinComponent";
 import {Map} from "immutable";
 import TreeItem from "./TreeItem";
-import {TreeActionDispatcher} from "../Tree";
+import {ActionDispatcher} from "../../Container";
 
 interface Props {
   nodes: Map<string, NinElement>
   selectedItemId: string
-  actions: TreeActionDispatcher
+  contextMenuId: string | null
+  actions: ActionDispatcher
 }
 
 export default class TreeRoot extends React.Component<Props> {
   onClick() {
-    this.props.actions.changeSelectedItem("root")
+    this.props.actions.tree.changeSelectedItem("root")
   }
   private onDragEnter(e: React.DragEvent<HTMLElement>) {
     e.currentTarget.style.border = "dotted";
@@ -28,7 +29,8 @@ export default class TreeRoot extends React.Component<Props> {
             key={this.props.nodes.get(v!!).id}
             nodes={this.props.nodes}
             node={this.props.nodes.get(v!!)}
-            selectedItemId={this.props.selectedItemId}/>);
+            selectedItemId={this.props.selectedItemId}
+            contextMenuId={this.props.contextMenuId}/>);
     return (
         <div className="c-tree-root"
              data-treeId="root"

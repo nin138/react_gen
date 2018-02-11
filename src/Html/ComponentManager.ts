@@ -8,13 +8,13 @@ export class ComponentManager {
     const ret = new ComponentManager();
     ret.components = this.components;
     arr.map(v => {
-      ret.components = ret.components.set(`${v.path}.${v.name}`, v);
+      ret.components = ret.components.set(`${v.path}.${v.type}`, v);
     });
     return ret;
   }
   set(initializer: NinComponentInitializer): ComponentManager {
     const ret = new ComponentManager();
-    ret.components = this.components.set(`${initializer.path}.${initializer.name}`, initializer);
+    ret.components = this.components.set(`${initializer.path}.${initializer.type}`, initializer);
     return ret
   }
   getInitializer(fullName: string): NinComponentInitializer { return this.components.get(fullName) }
@@ -22,4 +22,4 @@ export class ComponentManager {
 
 }
 
-export const initial = new ComponentManager().setArray(HTML_TAGS);
+export const initialComponentManager = new ComponentManager().setArray(HTML_TAGS);

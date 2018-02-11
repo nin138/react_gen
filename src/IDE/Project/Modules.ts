@@ -1,5 +1,9 @@
 import {Map} from "immutable"
-import {createRoot, NinElement} from "../../Entities/NinComponent";
+import {
+  createNinComponentInitializer, createRoot, NinComponentInitializer, NinElement,
+  ROOT_ID
+} from "../../Entities/NinComponent";
+import {ComponentManager, initialComponentManager} from "../../Html/ComponentManager";
 
 enum ActionNames {
   loadProject = "Project.loadProject",
@@ -9,7 +13,9 @@ enum ActionNames {
   moveNode = "Project.MoveNode",
   addCssClassToComponent = "Project.AddCssClassToComponent",
   changeAttribute = "Project.ChangeAttribute",
-  removeCssFromComponent = "Project.RemoveCssFromComponent"
+  removeCssFromComponent = "Project.RemoveCssFromComponent",
+  componentize = " Project.Componentize",
+  changeActiveFile = "Project.changeActiveFile",
 }
 
 interface LoadProjectAction {
@@ -104,16 +110,37 @@ export const removeCssFromComponent = (id: string, className: string): RemoveCss
   className,
 });
 
+interface ComponentizeAction {
+  type: ActionNames.componentize,
+  id: string,
+  componentName: string
+}
+export const componentize = (id: string, componentName: string): ComponentizeAction => ({
+  type: ActionNames.componentize,
+  id,
+  componentName
+});
 
+interface ChangeActiveFileAction {
+  type: ActionNames.changeActiveFile,
+  fileName: string
+}
+
+export const changeActiveFile = (fileName: string): ChangeActiveFileAction => ({
+  type: ActionNames.changeActiveFile,
+  fileName
+});
 
 export class Project {
   projectName: string;
   files: Map<string, ComponentFile>;
   activeFile: string;
-  constructor(projectName: string, files: Map<string, ComponentFile>, activeFile: string = "App") {
+  componentManager: ComponentManager;
+  constructor(projectName: string, files: Map<string, ComponentFile>, activeFile: string = "App", componentManager: ComponentManager = initialComponentManager) {
     this.projectName = projectName;
     this.files = files;
     this.activeFile = activeFile;
+    this.componentManager = componentManager;
   }
   getActiveFile(): ComponentFile {
     return this.files.get(this.activeFile);
@@ -121,8 +148,11 @@ export class Project {
   private copy(...differ: Array<object>): Project {
     return Object.assign(Object.create(Project.prototype), this, ...differ)
   }
-  addFile(fullName: string) {
-    return this.copy({ files: this.files.set(fullName, new ComponentFile(fullName))});
+  changeActiveFile(fileName: string): Project {
+    return this.copy({ activeFile: fileName });
+  }
+  addFile(fullName: string, elements = Map({root: createRoot()})): Project {
+    return this.copy({ files: this.files.set(fullName, new ComponentFile(fullName, elements))});
   }
   addNode(element: NinElement): Project {
     return this.copy({ files: this.files.update(this.activeFile, it => it.addNode(element)) });
@@ -130,14 +160,33 @@ export class Project {
   moveNode(moveNodeId: string, parentId: string, ref: string | null): Project {
     return this.copy({ files: this.files.update(this.activeFile, it => it.moveNode(moveNodeId, parentId, ref)) });
   }
-  addCssClassToNode(id: string, className: string) {
+  removeNode(id: string): Project {
+    return this.copy({ files: this.files.update(this.activeFile, it => it.removeNode(id))});
+  }
+  addCssClassToNode(id: string, className: string): Project {
     return this.copy({ files: this.files.update(this.activeFile, it => it.addCssClassToNode(id, className)) });
   }
-  removeCssClassFromNode(id: string, className: string) {
+  removeCssClassFromNode(id: string, className: string): Project {
     return this.copy({ files: this.files.update(this.activeFile, it => it.removeCssClassFromNode(id, className))});
   }
-  changeNodeAttribute(id: string, attr: string, value: string) {
-    return this.copy({files: this.files.update(this.activeFile, it => it.changeAttribute(id, attr, value))});
+  changeNodeAttribute(id: string, attr: string, value: string): Project {
+    return this.copy({ files: this.files.update(this.activeFile, it => it.changeAttribute(id, attr, value)) });
+  }
+  componentize(id: string, componentName: string): Project {
+    const parent = this.files.get(this.activeFile).elements.get(id).parent;
+    let nodes = this.files.get(this.activeFile).copyNodes(id);
+    nodes = nodes.set(ROOT_ID, nodes.get(id).changeId(ROOT_ID).changeParent("none"))
+        .delete(id)
+        .map(it => (it!.parent === id)? it!.changeParent(ROOT_ID) : it!)
+        .toMap();
+    const ret = this
+        .addComponentToManager(createNinComponentInitializer(componentName, nodes))
+        .addFile(componentName, nodes)
+        .removeNode(id);
+    return ret.addNode(new NinElement(ret.componentManager.getInitializer("components." + componentName), parent,));
+  }
+  addComponentToManager(initializer: NinComponentInitializer) {
+    return this.copy({componentManager: this.componentManager.set(initializer)});
   }
 
 }
@@ -155,6 +204,19 @@ export class ComponentFile {
   }
   addNode(element: NinElement): ComponentFile {
     return this.copy({ elements: this.elements.set(element.id, element).update(element.parent, it => it.addChild(element.id)) });
+  }
+  removeNode(id: string): ComponentFile {
+    let ret = this.elements;
+    ret = ret.update(ret.get(id).parent, it => it.removeChild(id));
+    const remove = (id: string) => {
+      const children = this.elements.get(id).children;
+      children.forEach(it => {
+        remove(it!);
+      });
+      ret = ret.delete(id);
+    };
+    remove(id);
+    return this.copy({ elements: ret });
   }
   moveNode(moveNodeId: string, parentId: string, ref: string | null): ComponentFile {
     const moveNode = this.elements.get(moveNodeId);
@@ -175,6 +237,15 @@ export class ComponentFile {
   changeAttribute(id: string, attr: string, value: string): ComponentFile {
     return this.copy( { elements: this.elements.update(id, it => it.changeAttribute(attr, value))});
   }
+  copyNodes(id: string): Map<string, NinElement> {
+    let ret = Map<string, NinElement>();
+    const get = (id: string) => {
+      this.elements.get(id).children.forEach(it => get(it!));
+      ret = ret.set(id, this.elements.get(id));
+    };
+    get(id);
+    return ret;
+  }
 }
 
 export type ProjectAction =
@@ -185,6 +256,8 @@ export type ProjectAction =
   | AddCssClassToComponentAction
   | RemoveCssFromComponentAction
   | ChangeAttributeAction
+  | ComponentizeAction
+  | ChangeActiveFileAction
 
 const initialState: Project = Object.assign(Object.create(Project.prototype),{
   projectName: "",
@@ -201,6 +274,8 @@ export default function reducer(state: Project = initialState, action: ProjectAc
     case ActionNames.addCssClassToComponent: return state.addCssClassToNode(action.id, action.className);
     case ActionNames.removeCssFromComponent: return state.removeCssClassFromNode(action.id, action.className);
     case ActionNames.changeAttribute: return state.changeNodeAttribute(action.targetId, action.attr, action.value);
+    case ActionNames.componentize: return state.componentize(action.id, action.componentName);
+    case ActionNames.changeActiveFile: return state.changeActiveFile(action.fileName);
     default: { return state }
   }
 }
