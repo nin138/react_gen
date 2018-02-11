@@ -4,9 +4,10 @@ import {AppAction} from "../../Store";
 import CssEditor from "./Components/CssEditor";
 import {CssClassManager} from "../../Css/CssClassManager";
 import {ActionDispatcher} from "../Container";
-import {NinElement} from "../../Entities/NinComponent";
+import {NinElement, ROOT_ID} from "../../Entities/NinComponent";
 import AttributeEditor from "./Components/AttributeEditor";
 import {Map} from "immutable";
+import {ComponentFile} from "../Project/Modules";
 
 export class EditActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
@@ -24,6 +25,7 @@ interface Props {
   cssClassManager: CssClassManager
   actions: ActionDispatcher
   selectedTab: EditTabs
+  file: ComponentFile
 }
 
 
@@ -31,6 +33,11 @@ interface Props {
 export default class Edit extends React.Component<Props, {}> {
 
   private createBody() {
+    if(this.props.selectedItemId === ROOT_ID) {
+      return (<div>
+        <p>file: {this.props.file.fullName}</p>
+      </div>)
+    }
     const component = this.getActiveNode();
     const tab = (!component.editable.hasCss && this.props.selectedTab === EditTabs.CSS)? EditTabs.Attributes : this.props.selectedTab;
     switch(tab) {
@@ -49,7 +56,6 @@ export default class Edit extends React.Component<Props, {}> {
   }
   private getActiveNode(): NinElement { return this.props.nodes.get(this.props.selectedItemId) }
   render() {
-    document.querySelector('style')!!.innerHTML = this.props.cssClassManager.getCssString();
     return (
         <section className="c-edit">
           <div className="c-edit__head">
@@ -60,11 +66,11 @@ export default class Edit extends React.Component<Props, {}> {
                 Attributes
               </li>
               {
-                (this.getActiveNode().editable.hasCss === true)?
+                (this.props.selectedItemId !== ROOT_ID && this.getActiveNode().editable.hasCss === true)?
                     <li className={`c-edit__head__tab-area__item ${(this.props.selectedTab === EditTabs.CSS) ? "c-edit__head__tab-area__item--selected" : ""}`}
-                        onClick={() => this.onTabClicked(EditTabs.CSS)}>
-                      CSS
-                    </li> : ""
+                onClick={() => this.onTabClicked(EditTabs.CSS)}>
+                CSS
+                </li> : ""
               }
             </ul>
           </div>

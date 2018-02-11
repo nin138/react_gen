@@ -1,6 +1,6 @@
 import {Map} from "immutable"
 import {
-  createNinComponentInitializer, createRoot, NinComponentInitializer, NinElement,
+  createNinComponentInitializer, NinComponentInitializer, NinComponentString, NinElement,
   ROOT_ID
 } from "../../Entities/NinComponent";
 import {ComponentManager, initialComponentManager} from "../../Html/ComponentManager";
@@ -151,7 +151,7 @@ export class Project {
   changeActiveFile(fileName: string): Project {
     return this.copy({ activeFile: fileName });
   }
-  addFile(fullName: string, elements = Map({root: createRoot()})): Project {
+  addFile(fullName: string, elements = Map<string, NinElement>()): Project {
     return this.copy({ files: this.files.set(fullName, new ComponentFile(fullName, elements))});
   }
   addNode(element: NinElement): Project {
@@ -173,41 +173,62 @@ export class Project {
     return this.copy({ files: this.files.update(this.activeFile, it => it.changeAttribute(id, attr, value)) });
   }
   componentize(id: string, componentName: string): Project {
-    const parent = this.files.get(this.activeFile).elements.get(id).parent;
-    let nodes = this.files.get(this.activeFile).copyNodes(id);
-    nodes = nodes.set(ROOT_ID, nodes.get(id).changeId(ROOT_ID).changeParent("none"))
-        .delete(id)
-        .map(it => (it!.parent === id)? it!.changeParent(ROOT_ID) : it!)
-        .toMap();
+    let nodes = this.files.get(this.activeFile).copyNodes(id).update(id, it => it.changeParent(ROOT_ID));
     const ret = this
         .addComponentToManager(createNinComponentInitializer(componentName, nodes))
-        .addFile(componentName, nodes)
+        .addFile("components." + componentName, nodes)
         .removeNode(id);
+    const parent = this.files.get(this.activeFile).elements.get(id).parent;
     return ret.addNode(new NinElement(ret.componentManager.getInitializer("components." + componentName), parent,));
   }
   addComponentToManager(initializer: NinComponentInitializer) {
     return this.copy({componentManager: this.componentManager.set(initializer)});
   }
+  getHTMLString(fileName: string = this.activeFile) {
 
+    const getFileHtml = (file: ComponentFile): string => {
+      const getNodeHtml = (node: NinElement, nodes: Map<string, NinElement>): string => {
+        if (node.path !== "HTML") {
+          return getFileHtml(this.files.get(`${node.path}.${node.type}`));
+        }
+        if(node.type === "textNode") return node.editable.attributes.get("text").value;
+        const classes = (node.editable.hasCss && !node.editable.classList!!.isEmpty())?
+            ` class="${node.editable.classList!!.join(" ")}"` : "";
+        const children = node.children.map(it => getNodeHtml(nodes.get(it!), nodes)).join();
+        return node.row
+            .replace(NinComponentString.ClassName, classes)
+            .replace(NinComponentString.Children, children)
+      };
+      if(file.elements.filter(it => it!.parent == ROOT_ID).size != 1) return "rendering problem"//todo
+      const root = file.elements.find(it => it!.parent == ROOT_ID);
+      return getNodeHtml(root, file.elements)
+    };
+    console.log(fileName);
+    console.log(this.files.get(fileName));
+    return getFileHtml(this.files.get(fileName));
+  }
 }
+
 
 
 export class ComponentFile {
   fullName: string;
   elements: Map<string, NinElement>;
-  constructor(fullName: string, elements: Map<string, NinElement> = Map({root: createRoot()})) {
+  constructor(fullName: string, elements: Map<string, NinElement> = Map()) {
     this.fullName = fullName;
     this.elements = elements;
   }
   private copy(...differ: Array<object>): ComponentFile {
     return Object.assign(Object.create(ComponentFile.prototype), this, ...differ)
   }
+
   addNode(element: NinElement): ComponentFile {
+    if(element.parent == ROOT_ID) return this.copy({ elements: this.elements.set(element.id, element) });
     return this.copy({ elements: this.elements.set(element.id, element).update(element.parent, it => it.addChild(element.id)) });
   }
   removeNode(id: string): ComponentFile {
     let ret = this.elements;
-    ret = ret.update(ret.get(id).parent, it => it.removeChild(id));
+    ret = (ret.get(id).parent !== ROOT_ID)? ret.update(ret.get(id).parent, it => it.removeChild(id)) : ret;
     const remove = (id: string) => {
       const children = this.elements.get(id).children;
       children.forEach(it => {
@@ -222,10 +243,10 @@ export class ComponentFile {
     const moveNode = this.elements.get(moveNodeId);
     const oldParentId = moveNode.parent;
     if(moveNode.id === parentId) return this;
-    const newElements = this.elements
-        .update(moveNode.id, v => v.changeParent(parentId))
-        .update(oldParentId, v => v.removeChild(moveNode.id))
-        .update(parentId, v => v.addChild(moveNode.id, ref));
+    let newElements = this.elements
+        .update(moveNode.id, v => v.changeParent(parentId));
+    if(parentId !== ROOT_ID) newElements = newElements.update(parentId, v => v.addChild(moveNode.id, ref));
+    if(oldParentId !== ROOT_ID) newElements = newElements.update(oldParentId, v => v.removeChild(moveNode.id));
     return this.copy({elements: newElements});
   }
   addCssClassToNode(id: string, className: string): ComponentFile {

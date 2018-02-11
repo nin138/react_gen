@@ -1,3 +1,5 @@
+import {ROOT_ID} from "../../Entities/NinComponent";
+
 export enum TreeItemPosition {
   before = "before",
   body = "body",
@@ -41,7 +43,7 @@ export type TreeAction =
 
 
 const initialState: TreeState= {
-  selectedItemId: "root",
+  selectedItemId: ROOT_ID,
   contextMenuId: null
 };
 

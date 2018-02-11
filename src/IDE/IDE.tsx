@@ -34,10 +34,10 @@ export default class IDE extends React.Component<Props, {}> {
               <Tree actions={this.props.actions} value={this.props.tree} nodes={this.props.project.getActiveFile().elements} log={this.props.actions.log}/>
             </div>
             <div className="c-IDE__body__display-area">
-              <Renderer nodes={this.props.project.getActiveFile().elements}/>
+              <Renderer cssClassManager={this.props.ide.cssClassManager} project={this.props.project} nodes={this.props.project.getActiveFile().elements} files={this.props.project.files}/>
             </div>
             <div className="c-IDE__body__edit-area">
-              <Edit actions={this.props.actions} nodes={this.props.project.getActiveFile().elements} selectedItemId={this.props.tree.selectedItemId} cssClassManager={this.props.ide.cssClassManager} selectedTab={this.props.edit.selectedTab}/>
+              <Edit file={this.props.project.getActiveFile()} actions={this.props.actions} nodes={this.props.project.getActiveFile().elements} selectedItemId={this.props.tree.selectedItemId} cssClassManager={this.props.ide.cssClassManager} selectedTab={this.props.edit.selectedTab}/>
             </div>
           </div>
           <div className="c-IDE__under">

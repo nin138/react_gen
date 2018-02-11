@@ -1,10 +1,15 @@
 import * as React from "react";
-import {NinElement, NinComponentString, ROOT_ID} from "../../Entities/NinComponent";
+import {NinElement, NinComponentString} from "../../Entities/NinComponent";
 import {Map} from "immutable"
 import {Util} from "../../Util";
+import {ComponentFile, Project} from "../Project/Modules";
+import {CssClassManager} from "../../Css/CssClassManager";
 
 interface Props {
   nodes: Map<string, NinElement>
+  files: Map<string, ComponentFile>
+  project: Project
+  cssClassManager: CssClassManager
 }
 
 export default class Renderer extends React.Component<Props, {}> {
@@ -25,10 +30,11 @@ export default class Renderer extends React.Component<Props, {}> {
     return row
   }
   render() {
+    const htmlString = `<style>${this.props.cssClassManager.getCssString()}</style>` + this.props.project.getHTMLString();
     return (
-        <iframe className="c-renderer__iframe" src={'data:text/html;base64,' + btoa(this.props.nodes.get(ROOT_ID).getHTMLString(this.props.nodes))}>
-          {/*<section className="c-renderer" dangerouslySetInnerHTML={{__html: this.renderComponent(this.props.nodes.get(NinElement.ROOT_ID)!)}}>*/}
-          {/*</section>*/}
+        <iframe
+            className="c-renderer__iframe"
+            src={'data:text/html;base64,' + btoa(htmlString)}>
         </iframe>
     )
   }

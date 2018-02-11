@@ -24,6 +24,7 @@ interface Props {
 
 export default class ProjectTree extends React.Component<Props, {}> {
   render() {
+    console.log(this.props.value);
     const files = this.props.value.files.keySeq().toArray()
         .map(it => <p onClick={() => {this.props.actions.changeActiveFile(it)}} className={`c-project__list__item${(this.props.value.activeFile == it)? " c-project__list__item--selected" : ""}`} key={it}>{it}</p>);
     return (

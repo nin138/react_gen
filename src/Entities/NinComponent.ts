@@ -25,18 +25,6 @@ export class NinElement {
     this.row = initializer.row;
     this.editable = new Editable(initializer.editable);
   }
-  getHTMLString(nodes: Map<string, NinElement>): string {
-    if(this.type === "textNode") return this.editable.attributes.get("text").value;
-    if(!this.allowChild) return this.row;
-    let ret = this.row;
-    if(this.editable.attributes.get("text")) ret = ret.replace(NinComponentString.Text, this.editable.attributes.get("text").value);
-    else ret = ret.replace(NinComponentString.Text, "");
-    ret = ret.replace(NinComponentString.ClassName, this.getClassNames());
-    return ret.replace(NinComponentString.Children, this.children.map(it => nodes.get(it!).getHTMLString(nodes)).join("\n"))
-  }
-  getClassNames() {
-    return ""//todo
-  }
   copy(...obj: Array<object>): NinElement { return Object.assign(Object.create(NinElement.prototype), this, ...obj) }
   changeId(id: string): NinElement { return this.copy({id: id}) }
   addChild(childId: string, ref: string | null = null): NinElement {
@@ -50,20 +38,6 @@ export class NinElement {
 }
 
 export const ROOT_ID = "root";
-export const createRoot = (): NinElement=> {
-  return new NinElement({
-    path: "Project.Body",
-    type: "root",
-    isFrame: false,
-    allowChild: true,
-    row: NinComponentString.Children,
-    editable: {
-      attributes: [],
-      hasCss: false,
-      custom: Map(),
-    }
-  }, "none", ROOT_ID)
-};
 
 export interface NinComponentInitializer {
   path: string

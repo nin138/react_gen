@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {NinElement} from "../../../Entities/NinComponent";
+import {NinElement, ROOT_ID} from "../../../Entities/NinComponent";
 import {Map} from "immutable";
 import TreeItem from "./TreeItem";
 import {ActionDispatcher} from "../../Container";
@@ -23,14 +23,15 @@ export default class TreeRoot extends React.Component<Props> {
   }
 
   render() {
-    const childItems = this.props.nodes.get("root").children.map(
-        v =>  <TreeItem
-            actions={this.props.actions}
-            key={this.props.nodes.get(v!!).id}
-            nodes={this.props.nodes}
-            node={this.props.nodes.get(v!!)}
-            selectedItemId={this.props.selectedItemId}
-            contextMenuId={this.props.contextMenuId}/>);
+    const items = this.props.nodes.filter(it => it!.parent === ROOT_ID).toArray().map(it => {
+      return (<TreeItem
+              actions={this.props.actions}
+              key={it.id}
+              nodes={this.props.nodes}
+              node={it}
+              selectedItemId={this.props.selectedItemId}
+              contextMenuId={this.props.contextMenuId}/>)
+    });
     return (
         <div className="c-tree-root"
              data-treeId="root"
@@ -38,7 +39,7 @@ export default class TreeRoot extends React.Component<Props> {
              onDragEnter={ e => this.onDragEnter(e) }
              onDragLeave={ e => this.onDragLeave(e) }
              onDrop={ e => this.onDragLeave(e) }>
-          {childItems}
+          {items}
         </div>
     )
   }
