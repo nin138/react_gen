@@ -132,11 +132,17 @@ export const changeActiveFile = (fileName: string): ChangeActiveFileAction => ({
 });
 
 export class Project {
+  version: string;
+  groupName: string;
   projectName: string;
+  root: string;
   files: Map<string, ComponentFile>;
   activeFile: string;
   componentManager: ComponentManager;
   constructor(projectName: string, files: Map<string, ComponentFile>, activeFile: string = "App", componentManager: ComponentManager = initialComponentManager) {
+    this.groupName = "group1"; // todo;
+    this.version = "1.0.0"; //todo;
+    this.root = "src/App";//todo
     this.projectName = projectName;
     this.files = files;
     this.activeFile = activeFile;

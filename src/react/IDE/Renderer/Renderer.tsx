@@ -1,7 +1,7 @@
 import * as React from "react";
 import {NinElement, NinComponentString} from "../../Entities/NinComponent";
 import {Map} from "immutable"
-import {Util} from "../../Util";
+import {Util} from "../../../Util";
 import {ComponentFile, Project} from "../Project/Modules";
 import {CssClassManager} from "../../Css/CssClassManager";
 

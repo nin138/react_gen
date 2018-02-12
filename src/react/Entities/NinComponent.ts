@@ -15,7 +15,7 @@ export class NinElement {
   readonly id: string;
   readonly editable: Editable;
   readonly row: string;
-  constructor(initializer: NinComponentInitializer, parent: string, id: string = shortId.generate()) {
+  constructor(initializer: NinComponentInitializer, parent: string, classList: Array<string> = [], id: string = shortId.generate()) {
     this.path = initializer.path;
     this.type = initializer.type;
     this.isFrame = initializer.isFrame;
@@ -23,7 +23,7 @@ export class NinElement {
     this.parent = parent;
     this.id = id;
     this.row = initializer.row;
-    this.editable = new Editable(initializer.editable);
+    this.editable = new Editable(initializer.editable, classList);
   }
   copy(...obj: Array<object>): NinElement { return Object.assign(Object.create(NinElement.prototype), this, ...obj) }
   changeId(id: string): NinElement { return this.copy({id: id}) }

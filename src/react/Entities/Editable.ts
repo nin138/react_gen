@@ -2,14 +2,14 @@ import {List, Map} from "immutable"
 export class Editable {
   attributes: Map<String, EditableContent>;
   hasCss: boolean;
-  classList?: List<string>;
+  classList: List<string>;
   // listeners: todo
   custom: Map<String, EditableContent>;
-  constructor(initializer: EditableInitializer, classList?: List<string>) {
+  constructor(initializer: EditableInitializer, classList: Array<string>) {
     this.attributes = Map(initializer.attributes.reduce((ret, item) => ret.set(item.name, item), Map<string, EditableContent>()));
     this.hasCss = initializer.hasCss;
     this.custom = Map(initializer.custom);
-    this.classList = classList || (this.hasCss)? List() : undefined;
+    this.classList = List(classList);
   }
   private copy(...differ: Array<object>): Editable {
     return Object.assign(Object.create(Editable.prototype), this, ...differ);
