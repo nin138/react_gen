@@ -19,6 +19,10 @@ export interface SavedAttribute {
   value: string
 }
 
+export const getAttrFromSavedNode = (attr: string, node: SavedNode): SavedAttribute|undefined => {
+  return node.attribute.find(it => it.name === attr);
+};
+
 export interface SavedFile {
   path: string
   name: string
@@ -26,7 +30,7 @@ export interface SavedFile {
   state: {[key: string]: string}
   store: {[key: string]: string}
   initialStore: {[key: string]: string}
-  actions: {[key: string]: string}
+  actions: {[action: string]: {[param: string]: string}}
   reducer: {[key: string]: string}
   node: Array<SavedNode>
 }

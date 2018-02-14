@@ -1,96 +1,67 @@
-import {readFile} from "./readFile";
-import {isNinComponent, Toml, toOutPath} from "./util";
-import {toTs} from "./toTs";
-import {mkdirsSync, writeFile} from "fs-extra";
-import {copyTemplate} from "./copyTemplate";
-import {createStore} from "./createStore";
-import * as Path from "path";
-import {createModule} from "./createModule";
-import {Config} from "./Entity/Config";
-import {NinComponent} from "./Entity/NinComponent";
+import * as fs from "fs-extra";
+import * as path from "path";
+import {ENCODING, SavedIndex} from "../files/FileManager";
+import {TsFileBuilder} from "./TsFileBuilder";
+import {SavedFile} from "../files/SaveProject";
+import {ModuleFileBuilder} from "./ModuleFileBuilder";
+import {StoreBuilder} from "./StoreBuilder";
 
-// const readIndex: () => Promise<Config> = async () => {
-//   const index = await readFile(process.argv[2] || "index.toml");
-//   const data = Object.assign({root: "./app"}, Toml.parse(index));
-//   data.indexPath = (process.argv[2])? Path.dirname(process.argv[2]) : "./";
-//   data.outDir = process.argv[3] || "./ninit";
-//   if(data.group && data.project) return data;
-//   throw new Error("index.toml require group and project");
-// };
 
-const readToml: (path: string) => Promise<NinComponent> = async(path) => {
-  const file = await readFile(path);
-  const t = Toml.parse(file);
-  t.path = Path.dirname(path);
-  if(!isNinComponent(t)) throw new Error("invalid toml file");
-  return t;
+export interface Settings {
+  USE_TAB_CHARACTER: boolean
+  TAB_SIZE: number
+}
+const DEFAULT_SETTING = {
+  USE_TAB_CHARACTER: false,
+  TAB_SIZE: 2,
 };
 
-const readAllToml: (conf: Config) => Promise<Array<NinComponent>> = async(conf) => {
-  const ret: Array<NinComponent> = [];
-  const read = async(path: string) => {
-    console.log(path);
-    const c = await readToml(path);
-    ret.push(c);
-    if(c.use) {
-      c.use.forEach(async it => {
-        await read(Path.join(Path.dirname(path), it))
-      });
-    }
-  };
-  const path = Path.join(conf.indexPath, conf.root);
-  await read(Path.join(path));
-  return ret;
-};
-
-const writeTs = async(fileName: string, data: string): Promise<{}> => {
-  return new Promise((resolve, reject) => {
-    mkdirsSync(fileName.split("/").slice(0, -1).join("/"));
-    writeFile(fileName, data,(err: NodeJS.ErrnoException | null) => {
-      if(err) reject(new Error(`fail to write file: ${fileName}\n${err}`));
-      else resolve("ok");
-    });
-  });
-};
-
-// export const transpile = async () => {
-//   const conf = await readIndex();
-//   const modules: Array<{name: string, path: string}> = [];
-//
-//   copyTemplate(conf);
-//   console.log("reading...");
-//   const components: Array<NinComponent> = await readAllToml(conf);
-//   console.log("writing...");
-//   for(let c of components) {
-//     console.log("1");
-//     const ts = toTs(c); // todo resolve children's using props
-//     modules.push({name: c.name, path: c.path});
-//     console.log("2");
-//     console.log(`outdir: ${conf.outDir}\ncpath: ${c.path}\ncname: ${c.name}\nout: ${toOutPath(conf, c.path)}`);
-//     await writeTs(`${toOutPath(conf, c.path)}/${c.name}.tsx` , ts);
-//     await writeTs(`${toOutPath(conf, c.path)}/${c.name}Module.ts`, createModule(c))
-//   }
-//   console.log("index: " + conf.indexPath);
-//   await writeFile(`${conf.outDir}/src/store.ts`, createStore(conf, modules));
-//
-// };
-export const transpile = async (conf: Config) => {
-  const modules: Array<{name: string, path: string}> = [];
-  copyTemplate(conf);
-  console.log("reading...");
-  const components: Array<NinComponent> = await readAllToml(conf);
-  console.log("writing...");
-  for(let c of components) {
-    console.log("1");
-    const ts = toTs(c); // todo resolve children's using props
-    modules.push({name: c.name, path: c.path});
-    console.log("2");
-    console.log(`outdir: ${conf.outDir}\ncpath: ${c.path}\ncname: ${c.name}\nout: ${toOutPath(conf, c.path)}`);
-    await writeTs(`${toOutPath(conf, c.path)}/${c.name}.tsx` , ts);
-    await writeTs(`${toOutPath(conf, c.path)}/${c.name}Module.ts`, createModule(c))
+export class Transpiler {
+  outDir: string;
+  index: SavedIndex;
+  files: Array<SavedFile>;
+  settings: Settings;
+  tsFileBuilder: TsFileBuilder;
+  moduleFileBuilder: ModuleFileBuilder;
+  storeBuilder: StoreBuilder;
+  constructor(settings: Settings = DEFAULT_SETTING) {
+    this.settings = settings;
+    this.tsFileBuilder = new TsFileBuilder(this);
+    this.moduleFileBuilder = new ModuleFileBuilder(this);
+    this.storeBuilder = new StoreBuilder(this);
   }
-  console.log("index: " + conf.indexPath);
-  await writeFile(`${conf.outDir}/src/store.ts`, createStore(conf, modules));
-};
-
-
+  transpile = async (index: SavedIndex, files: Array<SavedFile>, outDir: string) => {
+    this.index = index;
+    this.files = files;
+    this.outDir = outDir;
+    await fs.remove(outDir);
+    await this.copyTemplate();
+    const modules: Array<{name: string, path: string}> = [];
+    this.files.forEach(async it => {
+      if(Object.keys(it.store).length !== 0) modules.push({name: it.name, path: it.path});
+      const ts = this.tsFileBuilder.toTs(it);
+      await this.writeFile(path.join(this.outDir, "src", it.path), it.name + ".tsx", ts);
+      const module = this.moduleFileBuilder.build(it);
+      if(module) await this.writeFile(path.join(this.outDir, "src", it.path), it.name + "Module.ts", module);
+    });
+    const store = this.storeBuilder.build(modules);
+    await this.writeFile(path.join(this.outDir, "src"), "Store.ts", store);
+  };
+  private writeFile = async(dir: string, fileName: string, data: string) => {
+    if(!await fs.pathExists(dir)) await fs.mkdirs(dir);
+    return fs.writeFile(path.join(dir, fileName), data);
+  };
+  private copyTemplate = async() => {
+    await fs.copy('./template/no_replace', this.outDir);
+    const packageJson = await fs.readFile(`./template/package.json`, ENCODING);
+    return fs.writeFile(path.join(this.outDir, "package.json"),
+        packageJson
+            .replace("${APP_NAME}", this.index.project)
+            .replace("${VERSION}", this.index.version)
+        , ENCODING);
+  };
+  createTab = (num: number): string => {
+    const char = (this.settings.USE_TAB_CHARACTER)? "\t" : Array(this.settings.TAB_SIZE + 1).join(" ");
+    return Array(num + 1).join(char);
+  };
+}

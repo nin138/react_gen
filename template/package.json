@@ -1,6 +1,6 @@
 {
   "name": "${APP_NAME}",
-  "version": "1.0.0",
+  "version": "${VERSION}",
   "scripts": {
     "build": "webpack --colors --config ./webpack.config.dev.js",
     "build-min": "webpack --config ./webpack.config.minimize.js",

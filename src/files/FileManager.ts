@@ -14,11 +14,11 @@ export interface SavedIndex {
   dependency: Array<string>
 }
 
-const ENCODING = "utf8";
+export const ENCODING = "utf8";
 
 class FileManager {
-  private ROOT_DIR: string;
-  private PROJECT_DIR: string;
+  ROOT_DIR: string;
+  PROJECT_DIR: string;
   setRootDir(dir: string) {
     this.ROOT_DIR = dir;
     this.PROJECT_DIR = Path.join(this.ROOT_DIR, "projects");
