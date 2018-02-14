@@ -7,24 +7,18 @@ import {ActionDispatcher} from "./Container";
 import Log from "./Log/Log";
 import Renderer from "./Renderer/Renderer";
 import Project from "./Project/Project";
-import {ComponentFile} from "./Project/Modules";
-import {Map} from "immutable";
+import MenuBar from "../MenuBar/MenuBar";
 
 interface Props extends AppState {
   actions: ActionDispatcher
 }
 
 export default class IDE extends React.Component<Props, {}> {
-  componentWillMount() {
-    //todo
-    if (!this.props.project.projectName) {
-      this.props.actions.project.loadProject("test", Map({App: new ComponentFile("App")}), "App")
-    }
-  }
   render() {
     if(!this.props.project.projectName) return <p>error::opennullproject</p>;//todo
     return (
         <section className="c-IDE">
+          <MenuBar project={this.props.project}/>
           <div className="c-IDE__body">
             <div className="c-IDE__body__project-area">
               <Project value={this.props.project} actions={this.props.actions.project}/>

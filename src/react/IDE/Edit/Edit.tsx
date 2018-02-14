@@ -29,7 +29,6 @@ interface Props {
 }
 
 
-
 export default class Edit extends React.Component<Props, {}> {
 
   private createBody() {

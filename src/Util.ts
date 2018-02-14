@@ -1,5 +1,6 @@
 const tomlify = require('tomlify-j0.4');
-import * as bombadil from "@sgarciac/bombadil"
+const toml = require('toml');
+// import * as bombadil from "@sgarciac/bombadil"
 
 export const Util = {
   camelToChain: (str: string): string => {
@@ -26,10 +27,13 @@ export const Util = {
 };
 
 export const Toml = {
-  parse: (toml: string): any => {
-    const reader = new bombadil.TomlReader;
-    reader.readToml(toml);
-    return reader.result;
+  // parse: (toml: string): any => {
+  //   const reader = new bombadil.TomlReader;
+  //   reader.readToml(toml);
+  //   return reader.result;
+  // },
+  parse: (str: string): any => {
+    return toml.parse(str);
   },
   stringify: (obj: any): string => {
     return tomlify.toToml(obj);

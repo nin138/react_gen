@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = [
-  // Electron設定
+  // electron
   module.exports = {
     entry: {
       main: './src/electron/index.ts',
@@ -26,7 +26,7 @@ module.exports = [
     ],
     target: 'electron',
   },
-  // React 設定
+  // react
   {
     cache: true,
     entry: {
@@ -43,8 +43,8 @@ module.exports = [
         use: [{ loader: "ts-loader" }]
       }]
     },
-    // devtool: 'inline-source-map',
-    devtool: "eval",
+    devtool: 'inline-source-map',
+    // devtool: "eval",
     resolve: { extensions: ['.ts', '.tsx', '.js'] },
     plugins: [
       new HtmlWebpackPlugin({

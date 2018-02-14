@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {changeSelectedItem, openContextMenu, TreeItemPosition, TreeState} from "./Modules";
+import {changeSelectedItem, openContextMenu, reloadTreeState, TreeItemPosition, TreeState} from "./Modules";
 import {AppAction} from "../../Store";
 import {NinElement, NinComponentInitializer, ROOT_ID} from "../../Entities/NinComponent";
 import {LogActionDispatcher} from "../Log/Log";
@@ -16,8 +16,8 @@ export class TreeActionDispatcher {
   changeSelectedItem(id: string) { this.dispatch(changeSelectedItem(id)) }
   changeAttribute(targetId: string ,attr: string, value: string) { this.dispatch(changeAttribute(targetId, attr, value)) }
   openContextMenu(targetId: string) { this.dispatch(openContextMenu(targetId)) }
-  closeContextMenu() {
-    this.dispatch(openContextMenu(null)) }
+  closeContextMenu() {this.dispatch(openContextMenu(null)) }
+  reloadTreeState() { this.dispatch(reloadTreeState())}
 }
 
 export enum TreeDropEventType {

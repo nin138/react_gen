@@ -25,6 +25,7 @@
     "webpack": "3.4.1"
   },
   "dependencies": {
+    "@sgarciac/bombadil": "0.0.6",
     "electron": "^1.8.2",
     "express": "^4.15.3",
     "fs-extra": "^5.0.0",
@@ -35,7 +36,7 @@
     "react-router-dom": "4.1.2",
     "redux": "3.7.2",
     "shortid": "^2.2.8",
-    "tomlify-j0.4": "^3.0.0",
-    "@sgarciac/bombadil": "0.0.6"
+    "toml": "^2.3.3",
+    "tomlify-j0.4": "^3.0.0"
   }
 }

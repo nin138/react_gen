@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Editable, EditableContent, EditableContentType} from "../../../Entities/Editable";
+import {Editable, EditableContentType, NinElementAttribute} from "../../../Entities/Editable";
 
 interface Props {
   id: string
@@ -8,8 +8,8 @@ interface Props {
 }
 
 export default class AttributeEditor extends React.Component<Props> {
-  private createAttributeInput(id: string, content: EditableContent) {
-    const createInput = (value: string, type: EditableContentType, onChange: (value: string) => void, cssAttr?: string) => {
+  private createAttributeInput(id: string, content: NinElementAttribute) {
+    const createInput = (value: string, type: EditableContentType, onChange: (value: string) => void) => {
       switch(type) {
         case EditableContentType.string: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
         case EditableContentType.html_string: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
@@ -24,7 +24,7 @@ export default class AttributeEditor extends React.Component<Props> {
     return (
         <div key={content.name}>
           <p>{content.name}</p>
-          {createInput(content.value, content.type, action,content.cssAttr)}
+          {createInput(content.value, content.type, action)}
         </div>
     );
   }

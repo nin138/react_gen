@@ -1,11 +1,11 @@
 import {List, Map} from "immutable";
-import {Editable, EditableContent, EditableInitializer} from "./Editable";
+import {Editable, EditableInitializer, NinElementAttribute} from "./Editable";
+import {SavedAttribute, SavedNode} from "../../files/SaveProject";
 
 declare function require(name: string): any
 const shortId = require("shortid");
 
 export class NinElement {
-  static ROOT_ID = "root";
   readonly path: string;
   readonly type: string;
   readonly isFrame: boolean;
@@ -15,15 +15,21 @@ export class NinElement {
   readonly id: string;
   readonly editable: Editable;
   readonly row: string;
-  constructor(initializer: NinComponentInitializer, parent: string, classList: Array<string> = [], id: string = shortId.generate()) {
+  static fromSavedNode(initializer: NinComponentInitializer, node: SavedNode): NinElement {
+    console.log(node);
+    return new NinElement(initializer, node.parent, node.children, node.className, node.attribute, node.id);
+  }
+  constructor(initializer: NinComponentInitializer, parent: string, children: Array<string> = [], classList: Array<string> = [], attrs: Array<SavedAttribute> = [], id: string = shortId.generate()) {
     this.path = initializer.path;
     this.type = initializer.type;
     this.isFrame = initializer.isFrame;
     this.allowChild = initializer.allowChild;
     this.parent = parent;
+    this.children = List(children);
     this.id = id;
     this.row = initializer.row;
     this.editable = new Editable(initializer.editable, classList);
+    this.editable.attributes = List(attrs);
   }
   copy(...obj: Array<object>): NinElement { return Object.assign(Object.create(NinElement.prototype), this, ...obj) }
   changeId(id: string): NinElement { return this.copy({id: id}) }
@@ -65,7 +71,7 @@ export const createNinComponentInitializer = (type: string, nodes: Map<string, N
     editable: {//todo
       attributes: [],
       hasCss: false,
-      custom: Map<String, EditableContent>()
+      custom: Map<String, NinElementAttribute>()
     }
   }
 };

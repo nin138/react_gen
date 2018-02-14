@@ -10,11 +10,11 @@ enum ActionNames {
 
 interface AddComponentAction {
   type: ActionNames.addComponent
-  initializer: NinComponentInitializer
+  initializers: Array<NinComponentInitializer>
 }
-export const addComponentToManager = (initializer: NinComponentInitializer) => ({
+export const addComponentToManager = (...initializers: Array<NinComponentInitializer>) => ({
   type: ActionNames.addComponent,
-  initializer
+  initializers
 });
 
 interface AddCssClassAction {

@@ -2,7 +2,18 @@ import * as fs from "fs-extra";
 import * as Path from "path";
 import {Project} from "../react/IDE/Project/Modules";
 import {Toml} from "../Util";
-import {createComponentFile} from "./SaveProject";
+import {createComponentFile, SavedFile} from "./SaveProject";
+
+export interface SavedIndex {
+  group: string
+  project: string
+  version: string
+  root: string
+  css : string
+  dependency: Array<string>
+}
+
+const ENCODING = "utf8";
 
 class FileManager {
   private ROOT_DIR: string;
@@ -16,7 +27,8 @@ class FileManager {
   }
   getProjectNames(): Array<string> {
     try {
-      return fs.readdirSync(this.PROJECT_DIR);
+      return fs.readdirSync(this.PROJECT_DIR)
+          .filter(it => it !== ".DS_Store");
     } catch(e) {
       return [];
     }
@@ -30,7 +42,7 @@ class FileManager {
   // }
   saveProject(project: Project) {
     this.makeProjectDir(project.projectName);
-    fs.removeSync(Path.join(this.PROJECT_DIR, project.projectName, "components"));
+    fs.removeSync(Path.join(this.PROJECT_DIR, project.projectName, "src"));
     const createIndexToml = (prj: Project): string => {
       return Toml.stringify({
         group: prj.groupName,
@@ -45,8 +57,44 @@ class FileManager {
     project.files.toArray().forEach(it => {
       const paths = it.fullName.split(".");
       const fileName = paths.pop();
-      this.writeFile(Path.join(this.PROJECT_DIR, project.projectName, "src", ...paths), fileName!, createComponentFile(it));
+      this.writeFile(Path.join(this.PROJECT_DIR, project.projectName, "src", ...paths), fileName! + ".toml", createComponentFile(it));
     });
   }
+  loadProject(projectName: string): {files: Array<SavedFile>, index: SavedIndex} {
+    const data = fs.readFileSync(Path.join(this.PROJECT_DIR, projectName, "src", "index.toml"), ENCODING);
+    const index: SavedIndex = Toml.parse(data);
+    const files = this.readSubDirSync(Path.join(this.PROJECT_DIR, projectName, "src"))
+        .map(it => {console.log(it); return it})
+        .filter(it => !it.includes("index.toml"))
+        .filter(it => !it.includes(".DS_Store"))
+        .map(it => {
+          const file: SavedFile = Toml.parse(fs.readFileSync(it, ENCODING));
+          console.log(file);
+          file.path = Path.relative(Path.join(this.PROJECT_DIR, projectName, "src"), it)
+              .split(Path.sep)
+              .slice( 0, -1 )
+              .join(".");
+          return file;
+        });
+    return ({
+      files,
+      index
+    });
+  }
+  readSubDirSync(folderPath: string) {
+    let result: Array<string> = [];
+    const readTopDirSync = ((folderPath: string) => {
+      let items = fs.readdirSync(folderPath);
+      items = items.map((itemName) => {
+        return Path.join(folderPath, itemName);
+      });
+      items.forEach((itemPath) => {
+        if (fs.statSync(itemPath).isDirectory()) readTopDirSync(itemPath);
+        else result.push(itemPath);
+      });
+    });
+    readTopDirSync(folderPath);
+    return result;
+  };
 }
 export const fileManager = new FileManager();

@@ -25,7 +25,7 @@ export default class Renderer extends React.Component<Props, {}> {
               r + this.renderComponent(this.props.nodes.get(v!)!), ""))
     }
     if(component.row.includes(NinComponentString.Text)) {
-      row = row.replace(NinComponentString.Text, Util.escapeHTMLString(component.editable.attributes.get("text").value))
+      row = row.replace(NinComponentString.Text, Util.escapeHTMLString(component.editable.attributes.find(it => it!.name === "text").value))
     }
     return row
   }

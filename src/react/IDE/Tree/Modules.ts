@@ -9,6 +9,7 @@ export enum TreeItemPosition {
 enum ActionNames {
   changeSelectedItem = "Tree.ChangeSelectedItem",
   openContextMenu = "Tree.changeContextMenu",
+  reload = "Tree.reload",
 }
 
 
@@ -31,6 +32,13 @@ export const openContextMenu = (id: string | null): OpenContextMenuAction => ({
   id
 });
 
+interface ReloadAction {
+  type: ActionNames.reload,
+}
+export const reloadTreeState = (): ReloadAction => ({
+  type: ActionNames.reload
+});
+
 
 export interface TreeState {
   selectedItemId: string
@@ -40,6 +48,7 @@ export interface TreeState {
 export type TreeAction =
     | ChangeSelectedItemAction
     | OpenContextMenuAction
+    | ReloadAction
 
 
 const initialState: TreeState= {
@@ -53,6 +62,8 @@ export default function reducer(state: TreeState = initialState, action: TreeAct
       return Object.assign({}, state, { selectedItemId: action.id });
     case ActionNames.openContextMenu:
       return Object.assign({}, state, { contextMenuId: action.id });
+    case ActionNames.reload:
+      return Object.assign({}, initialState)
     default: { return state }
   }
 }

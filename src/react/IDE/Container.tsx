@@ -8,9 +8,11 @@ import {addComponentToManager, changeCss, createCssClass} from "./Modules";
 import {LogActionDispatcher} from "./Log/Log";
 import Css from "../Css/Css";
 import {ProjectActionDispatcher} from "./Project/Project";
-import {addCssClassToComponent, removeCssFromComponent} from "./Project/Modules";
+import {addCssClassToComponent, loadProject, removeCssFromComponent} from "./Project/Modules";
 import {NinComponentInitializer} from "../Entities/NinComponent";
 import {ModalActionDispatcher} from "../Modal/Container";
+import {SavedFile} from "../../files/SaveProject";
+import {SavedIndex} from "../../files/FileManager";
 
 export class ActionDispatcher {
   tree: TreeActionDispatcher;
@@ -41,6 +43,10 @@ export class ActionDispatcher {
   }
   removeCssFromComponent(componentId: string, className: string) {
     this.dispatch(removeCssFromComponent(componentId, className))
+  }
+  loadProject(index: SavedIndex, files: Array<SavedFile>) {
+    this.tree.reloadTreeState();
+    this.dispatch(loadProject(index, files));
   }
 }
 

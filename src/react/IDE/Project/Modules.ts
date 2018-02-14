@@ -4,6 +4,9 @@ import {
   ROOT_ID
 } from "../../Entities/NinComponent";
 import {ComponentManager, initialComponentManager} from "../../Html/ComponentManager";
+import {SavedFile} from "../../../files/SaveProject";
+import {SavedIndex} from "../../../files/FileManager";
+import {NinElementAttribute} from "../../Entities/Editable";
 
 enum ActionNames {
   loadProject = "Project.loadProject",
@@ -20,15 +23,13 @@ enum ActionNames {
 
 interface LoadProjectAction {
   type: ActionNames.loadProject,
-  projectName: string,
-  files: Map<string, ComponentFile>,
-  root: string
+  index: SavedIndex,
+  files: Array<SavedFile>
 }
-export const loadProject = (projectName: string, files: Map<string, ComponentFile>, root: string): LoadProjectAction => ({
+export const loadProject = (index: SavedIndex, files: Array<SavedFile>): LoadProjectAction => ({
   type: ActionNames.loadProject,
-  projectName,
-  files,
-  root
+  index,
+  files
 });
 
 
@@ -139,14 +140,38 @@ export class Project {
   files: Map<string, ComponentFile>;
   activeFile: string;
   componentManager: ComponentManager;
-  constructor(projectName: string, files: Map<string, ComponentFile>, activeFile: string = "App", componentManager: ComponentManager = initialComponentManager) {
-    this.groupName = "group1"; // todo;
-    this.version = "1.0.0"; //todo;
-    this.root = "src/App";//todo
-    this.projectName = projectName;
-    this.files = files;
-    this.activeFile = activeFile;
-    this.componentManager = componentManager;
+  constructor(index: SavedIndex, files: Array<SavedFile>, componentManager: ComponentManager = initialComponentManager()) {
+    const createInitializer = (file: SavedFile): NinComponentInitializer => {
+      return ({
+        path: file.path,
+        type: file.name,
+        isFrame: false,
+        allowChild: false,
+        row: "require read",
+        editable: {
+          attributes: [],
+          hasCss: false,
+          custom: Map<String, NinElementAttribute>()
+        }
+      })
+    };
+    this.groupName = index.group;
+    this.version = index.version;
+    this.root = index.root;
+    this.projectName = index.project;
+    this.componentManager = componentManager.setArray(files.map(it => createInitializer(it)));
+    const map: {[key: string]: ComponentFile} = {};
+    files.forEach(it => {
+      const obj: {[key: string]: NinElement} = {};
+      it.node.forEach(node => {
+        obj[node.id] = NinElement.fromSavedNode(this.componentManager.getInitializer(node.type), node);
+      });
+      let fullName = `${it.path}.${it.name}`;
+      if(fullName.startsWith(".")) fullName = fullName.slice(1);
+      map[fullName] = new ComponentFile(fullName, Map(obj));
+    });
+    this.files = Map(map);
+    this.activeFile = index.root;
   }
   getActiveFile(): ComponentFile {
     return this.files.get(this.activeFile);
@@ -187,8 +212,8 @@ export class Project {
     const parent = this.files.get(this.activeFile).elements.get(id).parent;
     return ret.addNode(new NinElement(ret.componentManager.getInitializer("components." + componentName), parent,));
   }
-  addComponentToManager(initializer: NinComponentInitializer) {
-    return this.copy({componentManager: this.componentManager.set(initializer)});
+  addComponentToManager(...initializers: Array<NinComponentInitializer>) {
+    return this.copy({componentManager: this.componentManager.setArray(initializers)});
   }
   getHTMLString(fileName: string = this.activeFile) {
 
@@ -197,7 +222,7 @@ export class Project {
         if (node.path !== "HTML") {
           return getFileHtml(this.files.get(`${node.path}.${node.type}`));
         }
-        if(node.type === "textNode") return node.editable.attributes.get("text").value;
+        if(node.type === "textNode") return node.editable.attributes.find(it => it!.name === "text").value;
         const classes = (node.editable.hasCss && !node.editable.classList!!.isEmpty())?
             ` class="${node.editable.classList!!.join(" ")}"` : "";
         const children = node.children.map(it => getNodeHtml(nodes.get(it!), nodes)).join();
@@ -209,11 +234,10 @@ export class Project {
       const root = file.elements.find(it => it!.parent == ROOT_ID);
       return getNodeHtml(root, file.elements)
     };
-    console.log(fileName);
-    console.log(this.files.get(fileName));
     return getFileHtml(this.files.get(fileName));
   }
 }
+
 
 
 
@@ -294,7 +318,7 @@ const initialState: Project = Object.assign(Object.create(Project.prototype),{
 
 export default function reducer(state: Project = initialState, action: ProjectAction): Project {
   switch (action.type) {
-    case ActionNames.loadProject: return new Project(action.projectName, action.files, action.root);
+    case ActionNames.loadProject: return new Project(action.index, action.files);
     case ActionNames.addFile: return state.addFile(action.fullName);
     case ActionNames.createNode: return state.addNode(action.node);
     case ActionNames.moveNode: return state.moveNode(action.moveNodeId, action.parentId, action.ref);

@@ -1,12 +1,12 @@
 import {List, Map} from "immutable"
 export class Editable {
-  attributes: Map<String, EditableContent>;
+  attributes: List<NinElementAttribute>;
   hasCss: boolean;
   classList: List<string>;
   // listeners: todo
-  custom: Map<String, EditableContent>;
+  custom: Map<String, NinElementAttribute>;
   constructor(initializer: EditableInitializer, classList: Array<string>) {
-    this.attributes = Map(initializer.attributes.reduce((ret, item) => ret.set(item.name, item), Map<string, EditableContent>()));
+    this.attributes = List(initializer.attributes);
     this.hasCss = initializer.hasCss;
     this.custom = Map(initializer.custom);
     this.classList = List(classList);
@@ -22,23 +22,29 @@ export class Editable {
     return this.copy({ classList: this.classList!!.remove(this.classList!!.indexOf(className))});
   }
   changeAttribute(attr: string, value: string) {
-    return this.copy({ attributes: this.attributes.update(attr, v => Object.assign(v, { value: value })) })
+    return this.copy({ attributes: this.attributes.map(it => (it!.name === attr)? Object.assign(it, {value}): it) });
   }
 }
 
 export interface EditableInitializer {
-  attributes: Array<EditableContent>
+  attributes: Array<NinElementAttribute>
   hasCss: boolean
-  custom: Map<String, EditableContent>
+  custom: Map<String, NinElementAttribute>
 }
 
-export interface EditableContent {
+export interface NinElementAttribute {
   name: string
   type: EditableContentType
-  cssAttr?: string|undefined // when EditableContentType is css
   value: any
 }
 
 export enum EditableContentType {
-  any, script, css, int, float, array, html_string, string,
+  any = "any",
+  script = "script",
+  css = "css",
+  int = "int",
+  float = "float",
+  array = "array",
+  html_string = "html_string",
+  string = "string",
 }

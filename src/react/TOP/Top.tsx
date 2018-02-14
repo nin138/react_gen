@@ -1,10 +1,8 @@
 import * as React from "react";
 import {AppState} from "../Store";
 import {Link} from "react-router-dom";
-import {ComponentFile} from "../IDE/Project/Modules";
-import {Map} from "immutable"
-import {ActionDispatcher} from "./Container";
 import {fileManager} from "../../files/FileManager";
+import {ActionDispatcher} from "../IDE/Container";
 
 interface Props extends AppState {
   actions: ActionDispatcher
@@ -14,16 +12,18 @@ interface Props extends AppState {
 export default class Top extends React.Component<Props, {}> {
   componentWillMount() {
     const rootDir = new URLSearchParams(this.props.location.search).get("rootDir");
-    console.log(rootDir);
     if(rootDir) fileManager.setRootDir(rootDir);
   }
+
   render() {
-    const projects = fileManager.getProjectNames().map(it => <p>{it}</p>);
+    const projects = fileManager.getProjectNames()
+        .map(it => <Link to="/ide"><p onClick={() =>  {
+          const prj = fileManager.loadProject(it);
+          console.log(prj);
+          this.props.actions.loadProject(prj.index, prj.files);
+        }}>{it}</p></Link>);
     return (
         <section className="c-top">
-            <Link to="/ide">
-              <p onClick={() => this.props.actions.loadProject("test", Map({App: new ComponentFile("App")}), "App")}>ide</p>
-            </Link>
           {projects}
         </section>
     )

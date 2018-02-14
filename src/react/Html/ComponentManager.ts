@@ -22,4 +22,4 @@ export class ComponentManager {
 
 }
 
-export const initialComponentManager = new ComponentManager().setArray(HTML_TAGS);
+export const initialComponentManager =  () => new ComponentManager().setArray(HTML_TAGS);
