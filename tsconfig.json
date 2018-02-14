@@ -13,5 +13,10 @@
     "target": "es5",
     "jsx": "react",
     "allowJs": true
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "./template/*",
+    "./template/**/*"
+  ]
 }

@@ -1,5 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
 
 module.exports = [
   // electron
@@ -54,6 +56,9 @@ module.exports = [
         minify: false,
         compile: false,
       }),
+      // new CopyWebpackPlugin([
+      //   { from: './template', to: path.join(__dirname, 'build/react/template') },
+      // ], {})
     ],
     externals: [
       'electron',
