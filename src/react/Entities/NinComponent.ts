@@ -16,7 +16,6 @@ export class NinElement {
   readonly editable: Editable;
   readonly row: string;
   static fromSavedNode(initializer: NinComponentInitializer, node: SavedNode): NinElement {
-    console.log(node);
     return new NinElement(initializer, node.parent, node.children, node.className, node.attribute, node.id);
   }
   constructor(initializer: NinComponentInitializer, parent: string, children: Array<string> = [], classList: Array<string> = [], attrs: Array<SavedAttribute> = [], id: string = shortId.generate()) {

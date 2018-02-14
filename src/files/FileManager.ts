@@ -3,7 +3,8 @@ import * as Path from "path";
 import {Project} from "../react/IDE/Project/Modules";
 import {Toml} from "../Util";
 import {createComponentFile, SavedFile} from "./SaveProject";
-
+import {ROOT_ID} from "../react/Entities/NinComponent";
+const shortId = require("shortid");
 export interface SavedIndex {
   group: string
   project: string
@@ -60,16 +61,44 @@ class FileManager {
       this.writeFile(Path.join(this.PROJECT_DIR, project.projectName, "src", ...paths), fileName! + ".toml", createComponentFile(it));
     });
   }
+  createNewProject(projectName: string, group: string) {
+    const index: SavedIndex = {
+      group: group,
+      project: projectName,
+      version: "0.0.1",
+      root: "App",
+      css : "",
+      dependency: [],
+    };
+    const app: SavedFile = {
+      path: "",
+      name: "App",
+      props: {},
+      state: {},
+      store: {},
+      initialStore: {},
+     actions: {},
+      reducer: {},
+      node: [{
+        type: "HTML.div",
+        id: shortId.generate(),
+        parent: ROOT_ID,
+        children: [],
+        className: [],
+        attribute: [],
+      }]
+    };
+    const prj = new Project(index, [app]);
+    this.saveProject(prj);
+  }
   loadProject(projectName: string): {files: Array<SavedFile>, index: SavedIndex} {
     const data = fs.readFileSync(Path.join(this.PROJECT_DIR, projectName, "src", "index.toml"), ENCODING);
     const index: SavedIndex = Toml.parse(data);
     const files = this.readSubDirSync(Path.join(this.PROJECT_DIR, projectName, "src"))
-        .map(it => {console.log(it); return it})
         .filter(it => !it.includes("index.toml"))
         .filter(it => !it.includes(".DS_Store"))
         .map(it => {
           const file: SavedFile = Toml.parse(fs.readFileSync(it, ENCODING));
-          console.log(file);
           file.path = Path.relative(Path.join(this.PROJECT_DIR, projectName, "src"), it)
               .split(Path.sep)
               .slice( 0, -1 )

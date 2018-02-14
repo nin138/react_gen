@@ -1,0 +1,27 @@
+.c-menu-bar {
+  height: 1.5rem;
+  position: absolute;
+  width: 100vw;
+  &:hover &__main {
+    transform: translateY(0rem);
+    pointer-events: auto;
+    z-index: 18000;
+  }
+  &__main {
+    pointer-events: none;
+    height: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    transition: all .5s;
+    transform: translateY(-1.5rem);
+    background: #ccc;
+    border-bottom: solid 1px #333;
+    &__item {
+      color: #333;
+      cursor: pointer;
+      padding: 0 1rem;
+      line-height: 1.5rem;
+      text-decoration: underline;
+    }
+  }
+}
