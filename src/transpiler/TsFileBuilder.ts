@@ -1,11 +1,13 @@
 import {getAttrFromSavedNode, SavedFile, SavedNode} from "../files/SaveProject";
 import {Transpiler} from "./transpiler";
 import {HTML_TAGS} from "../react/Html/Tags";
+import * as path from "path";
+import {Util} from "../Util";
 
 export class TsFileBuilder {
   private static readonly REQUIRED_IMPORT = [
     `import * as React from "react";`,
-  ].join("\n") + "\n";
+  ];
   constructor(private transpiler: Transpiler) {}
 
   toTs(file: SavedFile): string {
@@ -17,9 +19,15 @@ export class TsFileBuilder {
     ].join("\n");
   }
   private resolveDependency(file: SavedFile): string {
-    let ts = TsFileBuilder.REQUIRED_IMPORT;
+    return [TsFileBuilder.REQUIRED_IMPORT,
+        ...file.node.map(it => it.type)
+        .filter(it => !it.startsWith("HTML."))
+        .map(it =>
+            `import {${Util.capitalizeFirst(it.split(".").pop()!)}} from "./${path.relative(
+                path.join(...file.path.split(".")), 
+                path.join(...it.split(".")))
+        }";`)].join("\n") + "\n";
     // if(file.use)
-    return ts;
   };
   private createKeyType(map: {[key: string]: string}): string {
     return Object.keys(map)
@@ -55,12 +63,12 @@ export class TsFileBuilder {
   private createJSX(id: string, map: Map<string, SavedNode>, tab: number): string {
     const node = map.get(id)!!;
     const attrs = this.createAttribute(node);
-    const tag = node.type.split(".").pop();
+    let tag: string = node.type.split(".").pop()!;
     if(node.type === "HTML.textNode") return `${this.transpiler.createTab(tab)}${getAttrFromSavedNode("text", node)!.value || ""}\n`;
     if(node.type.startsWith("HTML.")) {
       const conf = HTML_TAGS.find(it => it.type === tag);
       if(!conf) throw new Error(`${node.type} is not defined in HTML5`);
-    }
+    } else tag = Util.capitalizeFirst(tag);
     if(node.children.length === 0) return `${this.transpiler.createTab(tab)}<${tag}${attrs} />\n`;
     return `${this.transpiler.createTab(tab)}<${tag}${attrs}>\n`
         + node.children.map(it => this.createJSX(it, map, tab+1)).join("\n") + "\n"

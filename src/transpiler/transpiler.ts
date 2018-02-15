@@ -5,6 +5,7 @@ import {TsFileBuilder} from "./TsFileBuilder";
 import {SavedFile} from "../files/SaveProject";
 import {ModuleFileBuilder} from "./ModuleFileBuilder";
 import {StoreBuilder} from "./StoreBuilder";
+import {Util} from "../Util";
 
 
 export interface Settings {
@@ -32,10 +33,9 @@ export class Transpiler {
   }
   transpile = async (index: SavedIndex, files: Array<SavedFile>, outDir: string) => {
     this.index = index;
-    this.files = files;
+    this.files = files.map(it => Object.assign(it, {name: Util.capitalizeFirst(it.name)}));
     this.outDir = outDir;
     await fs.remove(outDir);
-    await this.copyTemplate();
     const modules: Array<{name: string, path: string}> = [];
     this.files.forEach(async it => {
       if(Object.keys(it.store).length !== 0) modules.push({name: it.name, path: it.path});
@@ -44,17 +44,19 @@ export class Transpiler {
       const module = this.moduleFileBuilder.build(it);
       if(module) await this.writeFile(path.join(this.outDir, "src", it.path), it.name + "Module.ts", module);
     });
+    await this.copyTemplate(modules.length == 0);
     const store = this.storeBuilder.build(modules);
-    await this.writeFile(path.join(this.outDir, "src"), "Store.ts", store);
+    if(modules.length !== 0)await this.writeFile(path.join(this.outDir, "src"), "Store.ts", store);
   };
   private writeFile = async(dir: string, fileName: string, data: string) => {
     if(!await fs.pathExists(dir)) await fs.mkdirs(dir);
     return fs.writeFile(path.join(dir, fileName), data);
   };
-  private copyTemplate = async() => {
+  private copyTemplate = async(isNoStore: boolean) => {
     await fs.copy('./template/no_replace', this.outDir);
     const packageJson = await fs.readFile(`./template/package.json`, ENCODING);
-    return fs.writeFile(path.join(this.outDir, "package.json"),
+    await fs.copy(!isNoStore? "./template/index.tsx" : "./template/index-no-store.tsx", path.join(this.outDir, "src", "index.tsx"));
+    await fs.writeFile(path.join(this.outDir, "package.json"),
         packageJson
             .replace("${APP_NAME}", this.index.project)
             .replace("${VERSION}", this.index.version)

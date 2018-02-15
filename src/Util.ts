@@ -1,11 +1,13 @@
 const tomlify = require('tomlify-j0.4');
 const toml = require('toml');
-// import * as bombadil from "@sgarciac/bombadil"
 
 export const Util = {
   camelToChain: (str: string): string => {
     return str.replace(/([A-Z])/g,
         (s) => '-' + s.charAt(0).toLowerCase());
+  },
+  capitalizeFirst: (str: string): string => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   },
   escapeHTMLString: (str: string): string => {
     return str.replace(/[&'`"<>]/g, (match) => {
@@ -27,11 +29,6 @@ export const Util = {
 };
 
 export const Toml = {
-  // parse: (toml: string): any => {
-  //   const reader = new bombadil.TomlReader;
-  //   reader.readToml(toml);
-  //   return reader.result;
-  // },
   parse: (str: string): any => {
     return toml.parse(str);
   },

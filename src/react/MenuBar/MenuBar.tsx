@@ -29,7 +29,7 @@ export default class MenuBar extends React.Component<Props, {}> {
               fileManager.saveProject(this.props.project);
               const data = fileManager.loadProject(this.props.project.projectName);
               new Transpiler().transpile(data.index, data.files, `${path.join(fileManager.PROJECT_DIR, this.props.project.projectName, "ts")}`)
-                  .catch(e => console.log(e));
+                  // .catch(e => console.log(e));
             }}>transpile</p>
           </div>
         </section>
