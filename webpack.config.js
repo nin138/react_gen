@@ -63,6 +63,8 @@ module.exports = [
     externals: [
       'electron',
       'fs-extra',
+      'child_process',
+      'shell',
     ],
   },
 ];
