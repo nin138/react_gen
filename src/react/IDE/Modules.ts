@@ -1,11 +1,13 @@
 import {NinComponentInitializer} from "../Entities/NinComponent";
 import {CssClassManager} from "../Css/CssClassManager";
 import Css from "../Css/Css";
+import {SavedCss} from "../../files/FileManager";
 
 enum ActionNames {
   addComponent = "IDE.AddComponent",
   createCssClass = "IDE.CreateCssClass",
   changeCss ="IDE.ChangeCss",
+  loadSavedCss = "IDE.LoadSavedCss",
 }
 
 interface AddComponentAction {
@@ -41,6 +43,15 @@ export const changeCss = (className: string, attr: string, value: string): Chang
   value
 });
 
+interface LoadSavedCssAction {
+  type: ActionNames.loadSavedCss,
+  savedCss: SavedCss
+}
+export const loadSavedCss = (savedCss: SavedCss): LoadSavedCssAction => ({
+  type: ActionNames.loadSavedCss,
+  savedCss
+});
+
 export interface IDEState {
   cssClassManager: CssClassManager
 }
@@ -48,6 +59,7 @@ export interface IDEState {
 export type IDEAction = AddComponentAction
     | AddCssClassAction
     | ChangeCssAction
+    | LoadSavedCssAction
 
 const initialState: IDEState= {
   cssClassManager: new CssClassManager()
@@ -60,6 +72,8 @@ export default function reducer(state: IDEState = initialState, action: IDEActio
       return Object.assign({}, state, { cssClassManager: state.cssClassManager.add(action.name, action.css) });
     case ActionNames.changeCss:
       return Object.assign({}, state, { cssClassManager: state.cssClassManager.updateAttr(action.className, action.attr, action.value)});
+    case ActionNames.loadSavedCss:
+      return Object.assign({}, state, { cssClassManager: state.cssClassManager.loadSavedCss(action.savedCss)});
     default:
       return state
   }

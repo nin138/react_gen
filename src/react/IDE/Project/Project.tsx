@@ -1,14 +1,12 @@
 import * as React from 'react'
 import {Action} from "redux";
-import {addFile, changeActiveFile, componentize, loadProject, Project} from "./Modules";
+import {addFile, changeActiveFile, componentize, Project} from "./Modules";
 import {changeSelectedItem} from "../Tree/Modules";
 import {ROOT_ID} from "../../Entities/NinComponent";
-import {SavedFile} from "../../../files/SaveProject";
-import {SavedIndex} from "../../../files/FileManager";
+
 
 export class ProjectActionDispatcher {
   constructor(private dispatch: (action: Action) => void) {}
-  loadProject(index: SavedIndex, files: Array<SavedFile>) { this.dispatch(loadProject(index, files)) }
   addFile(fullName: string) { this.dispatch(addFile(fullName)) }
   componentize(id: string, componentName: string) { this.dispatch(componentize(id, componentName)) }
   changeActiveFile(fileName: string) {

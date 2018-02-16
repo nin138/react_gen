@@ -6,6 +6,16 @@ import {Util} from "../../Util";
 export default class Css {
   private values: Map<string, CssValue>;
   constructor(value: Map<string, CssValue> = defaultCss()) { this.values = value; }
+  static fromSavable(map: {[attr: string]: string}): Css {
+    let css = new Css();
+    Object.keys(map).forEach(it => {
+      css = css.set(it, map[it]);
+    });
+    return css;
+  }
+  getSavable(): {[attr: string]: string} {
+    return this.values.map(it => it!.value).toObject();
+  }
   get(atr: string): CssValue { return this.values.get(atr); }
   set(atr: string ,value: string): Css {
     if(this.values.get(atr).value == value) return this;

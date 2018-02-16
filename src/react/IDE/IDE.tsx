@@ -18,7 +18,7 @@ export default class IDE extends React.Component<Props, {}> {
     if(!this.props.project.projectName) return <p>error::opennullproject</p>;//todo
     return (
         <section className="c-IDE">
-          <MenuBar project={this.props.project}/>
+          <MenuBar project={this.props.project} cssClassManage={this.props.ide.cssClassManager}/>
           <div className="c-IDE__body">
             <div className="c-IDE__body__project-area">
               <Project value={this.props.project} actions={this.props.actions.project}/>

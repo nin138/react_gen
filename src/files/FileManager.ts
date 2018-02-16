@@ -4,6 +4,7 @@ import {Project} from "../react/IDE/Project/Modules";
 import {Toml} from "../Util";
 import {createComponentFile, SavedFile} from "./SaveProject";
 import {ROOT_ID} from "../react/Entities/NinComponent";
+import {CssClassManager} from "../react/Css/CssClassManager";
 const shortId = require("shortid");
 export interface SavedIndex {
   group: string
@@ -15,6 +16,7 @@ export interface SavedIndex {
 }
 
 export const ENCODING = "utf8";
+export type SavedCss = {[className: string]: {[attr: string]: string}}
 
 class FileManager {
   ROOT_DIR: string;
@@ -41,7 +43,7 @@ class FileManager {
   // getProject(projectName: string): { files: Map<string, ComponentFile>, root: string } {
   //
   // }
-  saveProject(project: Project) {
+  saveProject(project: Project, cssManage: CssClassManager) {
     this.makeProjectDir(project.projectName);
     fs.removeSync(Path.join(this.PROJECT_DIR, project.projectName, "src"));
     const createIndexToml = (prj: Project): string => {
@@ -55,6 +57,7 @@ class FileManager {
       });
     };
     this.writeFile(Path.join(this.PROJECT_DIR, project.projectName, "src"), "index.toml", createIndexToml(project));
+    this.writeFile(Path.join(this.PROJECT_DIR, project.projectName, "src"), "css.toml", Toml.stringify(cssManage.getSavable()));
     project.files.toArray().forEach(it => {
       const paths = it.fullName.split(".");
       const fileName = paths.pop();
@@ -89,13 +92,14 @@ class FileManager {
       }]
     };
     const prj = new Project(index, [app]);
-    this.saveProject(prj);
+    this.saveProject(prj, new CssClassManager());
   }
-  loadProject(projectName: string): {files: Array<SavedFile>, index: SavedIndex} {
-    const data = fs.readFileSync(Path.join(this.PROJECT_DIR, projectName, "src", "index.toml"), ENCODING);
-    const index: SavedIndex = Toml.parse(data);
+  loadProject(projectName: string): {files: Array<SavedFile>, index: SavedIndex, css: SavedCss} {
+    const index: SavedIndex = Toml.parse(fs.readFileSync(Path.join(this.PROJECT_DIR, projectName, "src", "index.toml"), ENCODING));
+    const css: {[className: string]: {[attr: string]: string}} = Toml.parse(fs.readFileSync(Path.join(this.PROJECT_DIR, projectName, "src", "css.toml"), ENCODING));
     const files = this.readSubDirSync(Path.join(this.PROJECT_DIR, projectName, "src"))
         .filter(it => !it.includes("index.toml"))
+        .filter(it => !it.includes("css.toml"))
         .filter(it => !it.includes(".DS_Store"))
         .map(it => {
           const file: SavedFile = Toml.parse(fs.readFileSync(it, ENCODING));
@@ -107,7 +111,8 @@ class FileManager {
         });
     return ({
       files,
-      index
+      index,
+      css,
     });
   }
   readSubDirSync(folderPath: string) {

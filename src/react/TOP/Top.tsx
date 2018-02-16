@@ -20,7 +20,7 @@ export default class Top extends React.Component<Props, {}> {
     const projects = fileManager.getProjectNames()
         .map(it => <Link to="/ide"><p className="c-top__prj-area__item" onClick={() =>  {
           const prj = fileManager.loadProject(it);
-          this.props.actions.loadProject(prj.index, prj.files);
+          this.props.actions.loadProject(prj.index, prj.files, prj.css);
         }}>{it}</p></Link>);
     return (
         <section className="c-top">
@@ -32,7 +32,7 @@ export default class Top extends React.Component<Props, {}> {
                 [{name: "create", listener: (ev: ModalEvent) => {
                   fileManager.createNewProject(ev.projectName, ev.groupName);
                   const prj = fileManager.loadProject(ev.projectName);
-                  this.props.actions.project.loadProject(prj.index, prj.files);
+                  this.props.actions.loadProject(prj.index, prj.files, prj.css);
                 }}],
                 [{name: "projectName", type: ModalInputType.TextBox},
                   {name: "groupName", type: ModalInputType.TextBox}]

@@ -3,6 +3,7 @@ import {Transpiler} from "./transpiler";
 import {HTML_TAGS} from "../react/Html/Tags";
 import * as path from "path";
 import {Util} from "../Util";
+import {EditableContentType} from "../react/Entities/Editable";
 
 export class TsFileBuilder {
   private static readonly REQUIRED_IMPORT = [
@@ -75,6 +76,7 @@ export class TsFileBuilder {
         + `${this.transpiler.createTab(tab)}</${tag}>`;
   };
   private createAttribute(node: SavedNode) {
+    if(node.className.length != 0) { node.attribute.push({name: "className", type: EditableContentType.string, value: `"${node.className.join(" ")}"`}) }
     const ret = node.attribute
         .map(it => `${it.name}=${it.value}`)
         .join(" ");

@@ -1,11 +1,12 @@
 import * as fs from "fs-extra";
 import * as path from "path";
-import {ENCODING, SavedIndex} from "../files/FileManager";
+import {ENCODING, SavedCss, SavedIndex} from "../files/FileManager";
 import {TsFileBuilder} from "./TsFileBuilder";
 import {SavedFile} from "../files/SaveProject";
 import {ModuleFileBuilder} from "./ModuleFileBuilder";
 import {StoreBuilder} from "./StoreBuilder";
 import {Util} from "../Util";
+import {CssClassManager} from "../react/Css/CssClassManager";
 
 
 export interface Settings {
@@ -31,7 +32,7 @@ export class Transpiler {
     this.moduleFileBuilder = new ModuleFileBuilder(this);
     this.storeBuilder = new StoreBuilder(this);
   }
-  transpile = async (index: SavedIndex, files: Array<SavedFile>, outDir: string) => {
+  transpile = async (index: SavedIndex, files: Array<SavedFile>, css: SavedCss, outDir: string) => {
     this.index = index;
     this.files = files.map(it => Object.assign(it, {name: Util.capitalizeFirst(it.name)}));
     this.outDir = outDir;
@@ -47,6 +48,12 @@ export class Transpiler {
     await this.copyTemplate(modules.length == 0);
     const store = this.storeBuilder.build(modules);
     if(modules.length !== 0)await this.writeFile(path.join(this.outDir, "src"), "Store.ts", store);
+    await this.createCss(css);
+  };
+  private createCss = async (savedCss: SavedCss) => {
+    const manager = new CssClassManager().loadSavedCss(savedCss);
+    const css = manager.getCssString();
+    await this.writeFile(path.join(this.outDir, "dist"), "style.css", css);
   };
   private writeFile = async(dir: string, fileName: string, data: string) => {
     if(!await fs.pathExists(dir)) await fs.mkdirs(dir);

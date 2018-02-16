@@ -5,9 +5,11 @@ import {Link} from "react-router-dom";
 import * as path from "path";
 import {Transpiler} from "../../transpiler/transpiler";
 import {execCommand, serverManager} from "../../commandline/cli";
+import {CssClassManager} from "../Css/CssClassManager";
 
 interface Props {
   project: Project
+  cssClassManage: CssClassManager
 }
 
 export default class MenuBar extends React.Component<Props, {}> {
@@ -25,11 +27,10 @@ export default class MenuBar extends React.Component<Props, {}> {
         <section className="c-menu-bar">
           <div className="c-menu-bar__main">
             <Link className="c-menu-bar__main__item" to={"./"}>home</Link>
-            <p className="c-menu-bar__main__item" onClick={() => fileManager.saveProject(this.props.project)}>save project</p>
+            <p className="c-menu-bar__main__item" onClick={() => fileManager.saveProject(this.props.project, this.props.cssClassManage)}>save project</p>
             <p className="c-menu-bar__main__item" onClick={() => {
-              fileManager.saveProject(this.props.project);
               const data = fileManager.loadProject(this.props.project.projectName);
-              new Transpiler().transpile(data.index, data.files, `${path.join(fileManager.PROJECT_DIR, this.props.project.projectName, "ts")}`)
+              new Transpiler().transpile(data.index, data.files, data.css, `${path.join(fileManager.PROJECT_DIR, this.props.project.projectName, "ts")}`)
                   // .catch(e => console.log(e));
             }}>transpile</p>
             <p className="c-menu-bar__main__item" onClick={async e => {
