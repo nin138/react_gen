@@ -7,7 +7,7 @@ import {ActionDispatcher} from "../Container";
 import {NinElement, ROOT_ID} from "../../Entities/NinComponent";
 import AttributeEditor from "./Components/AttributeEditor";
 import {Map} from "immutable";
-import {ComponentFile} from "../Project/Modules";
+import {ComponentFile} from "../Project/Project";
 
 export class EditActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}

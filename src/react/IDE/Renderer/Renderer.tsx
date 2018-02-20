@@ -2,7 +2,7 @@ import * as React from "react";
 import {NinElement, NinComponentString} from "../../Entities/NinComponent";
 import {Map} from "immutable"
 import {Util} from "../../../Util";
-import {ComponentFile, Project} from "../Project/Modules";
+import {ComponentFile, Project} from "../Project/Project";
 import {CssClassManager} from "../../Css/CssClassManager";
 
 interface Props {

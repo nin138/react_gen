@@ -1,4 +1,4 @@
-import { Middleware, MiddlewareAPI, Dispatch, Action } from "redux";
+ import { Middleware, MiddlewareAPI, Dispatch, Action } from "redux";
 import {AppState} from "./Store";
 export interface ExtendedMiddleware<StateType> extends Middleware {
   <S extends StateType>(api: MiddlewareAPI<S>): (next: Dispatch<S>) => Dispatch<S>;

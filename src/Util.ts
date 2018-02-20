@@ -1,7 +1,11 @@
 const tomlify = require('tomlify-j0.4');
 const toml = require('toml');
+const shortId = require("shortid");
 
 export const Util = {
+  generateId: (): string => {
+    return shortId.generate();
+  },
   camelToChain: (str: string): string => {
     return str.replace(/([A-Z])/g,
         (s) => '-' + s.charAt(0).toLowerCase());

@@ -7,7 +7,7 @@ import {PaletteActionDispatcher} from "./Palette/Palette";
 import {addComponentToManager, changeCss, createCssClass, loadSavedCss} from "./Modules";
 import {LogActionDispatcher} from "./Log/Log";
 import Css from "../Css/Css";
-import {ProjectActionDispatcher} from "./Project/Project";
+import {ProjectActionDispatcher} from "./Project/ProjectTree";
 import {addCssClassToComponent, loadProject, removeCssFromComponent} from "./Project/Modules";
 import {NinComponentInitializer} from "../Entities/NinComponent";
 import {ModalActionDispatcher} from "../Modal/Container";

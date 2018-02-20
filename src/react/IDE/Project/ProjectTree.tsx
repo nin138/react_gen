@@ -1,8 +1,9 @@
 import * as React from 'react'
 import {Action} from "redux";
-import {addFile, changeActiveFile, componentize, Project} from "./Modules";
+import {addFile, changeActiveFile, componentize} from "./Modules";
 import {changeSelectedItem} from "../Tree/Modules";
 import {ROOT_ID} from "../../Entities/NinComponent";
+import {Project} from "./Project";
 
 
 export class ProjectActionDispatcher {

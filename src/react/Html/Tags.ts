@@ -1,5 +1,4 @@
-import {Map} from "immutable"
-import {EditableContentType, NinElementAttribute} from "../Entities/Editable";
+import {EditableContentType} from "../Entities/Editable";
 import {NinComponentInitializer, NinComponentString} from "../Entities/NinComponent";
 
 const list: Array<{name: string, hasChild: boolean, require?: Array<string>}> = [
@@ -110,7 +109,7 @@ const textNode: NinComponentInitializer = {
   editable: {
     attributes: [{name: 'text', type: EditableContentType.html_string, value: ""}],
     hasCss: false,
-    custom: Map()
+    custom: {}
   }
 };
 
@@ -123,7 +122,7 @@ export const HTML_TAGS: Array<NinComponentInitializer> = list.map(it => { return
   editable: {
     attributes: [],
     hasCss: true,
-    custom: Map<String, NinElementAttribute>() }
+    custom: {} }
 }});
 HTML_TAGS.push(textNode);
 

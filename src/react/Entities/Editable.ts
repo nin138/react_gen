@@ -1,10 +1,12 @@
 import {List, Map} from "immutable"
+import {Util} from "../../Util";
 export class Editable {
   attributes: List<NinElementAttribute>;
   hasCss: boolean;
   classList: List<string>;
   // listeners: todo
   custom: Map<String, NinElementAttribute>;
+  id = Util.generateId();
   constructor(initializer: EditableInitializer, classList: Array<string>) {
     this.attributes = List(initializer.attributes);
     this.hasCss = initializer.hasCss;
@@ -16,7 +18,7 @@ export class Editable {
   }
   addClass(name: string): Editable {
     if(this.hasCss) return this.copy({classList: this.classList!!.push(name)});
-    else throw new Error("ADD CSS to hasCss = false node");
+    else throw new Error("ADD CSS to node hasCss = false");
   }
   removeClass(className: string): Editable {
     return this.copy({ classList: this.classList!!.remove(this.classList!!.indexOf(className))});
@@ -29,7 +31,7 @@ export class Editable {
 export interface EditableInitializer {
   attributes: Array<NinElementAttribute>
   hasCss: boolean
-  custom: Map<String, NinElementAttribute>
+  custom: {[key:string]: NinElementAttribute}
 }
 
 export interface NinElementAttribute {

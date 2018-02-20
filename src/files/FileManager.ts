@@ -1,10 +1,10 @@
 import * as fs from "fs-extra";
 import * as Path from "path";
-import {Project} from "../react/IDE/Project/Modules";
 import {Toml} from "../Util";
 import {createComponentFile, SavedFile} from "./SaveProject";
 import {ROOT_ID} from "../react/Entities/NinComponent";
 import {CssClassManager} from "../react/Css/CssClassManager";
+import {Project} from "../react/IDE/Project/Project";
 const shortId = require("shortid");
 export interface SavedIndex {
   group: string

@@ -1,4 +1,4 @@
-import {ComponentFile} from "../react/IDE/Project/Modules";
+import {ComponentFile} from "../react/IDE/Project/Project";
 import {NinElement} from "../react/Entities/NinComponent";
 import {Map} from "immutable"
 import {Toml} from "../Util";

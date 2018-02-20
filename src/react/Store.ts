@@ -4,9 +4,10 @@ import tree, {TreeAction, TreeState} from "./IDE/Tree/Modules";
 import palette, {PaletteAction, PaletteState} from "./IDE/Palette/Modules";
 import ide, {IDEAction, IDEState} from "./IDE/Modules";
 import log, {LogAction, LogState} from "./IDE/Log/Modules";
-import project, {ProjectAction, Project} from "./IDE/Project/Modules";
+import project, {ProjectAction} from "./IDE/Project/Modules";
 import modal, {ModalAction, ModalState} from "./Modal/Modules";
 import {loggerMiddleware} from "./middleware";
+import {Project} from "./IDE/Project/Project";
 
 
 export default createStore(

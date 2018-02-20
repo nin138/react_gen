@@ -2,7 +2,7 @@ import * as React from "react";
 import {itemDropped, PaletteState} from "./Modules";
 import {AppAction} from "../../Store";
 import {TreeDropEventType} from "../Tree/Tree";
-import {Project} from "../Project/Modules";
+import {Project} from "../Project/Project";
 
 export class PaletteActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}

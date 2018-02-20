@@ -1,9 +1,8 @@
 import {List, Map} from "immutable";
-import {Editable, EditableInitializer, NinElementAttribute} from "./Editable";
+import {Editable, EditableInitializer} from "./Editable";
 import {SavedAttribute, SavedNode} from "../../files/SaveProject";
+import {Util} from "../../Util";
 
-declare function require(name: string): any
-const shortId = require("shortid");
 
 export class NinElement {
   readonly path: string;
@@ -18,7 +17,12 @@ export class NinElement {
   static fromSavedNode(initializer: NinComponentInitializer, node: SavedNode): NinElement {
     return new NinElement(initializer, node.parent, node.children, node.className, node.attribute, node.id);
   }
-  constructor(initializer: NinComponentInitializer, parent: string, children: Array<string> = [], classList: Array<string> = [], attrs: Array<SavedAttribute> = [], id: string = shortId.generate()) {
+  constructor(initializer: NinComponentInitializer,
+              parent: string,
+              children: Array<string> = [],
+              classList: Array<string> = [],
+              attrs: Array<SavedAttribute> = [],
+              id: string = Util.generateId()) {
     this.path = initializer.path;
     this.type = initializer.type;
     this.isFrame = initializer.isFrame;
@@ -27,11 +31,13 @@ export class NinElement {
     this.children = List(children);
     this.id = id;
     this.row = initializer.row;
-    this.editable = new Editable(initializer.editable, classList);
-    this.editable.attributes = List(attrs);
+    let editable = new Editable(initializer.editable, classList);
+    attrs.forEach(it => {
+      editable = editable.changeAttribute(it.name, it.value);
+    });
+    this.editable = editable;
   }
   copy(...obj: Array<object>): NinElement { return Object.assign(Object.create(NinElement.prototype), this, ...obj) }
-  changeId(id: string): NinElement { return this.copy({id: id}) }
   addChild(childId: string, ref: string | null = null): NinElement {
     return this.copy({ children: (!ref)? this.children.push(childId) : this.children.insert(this.children.indexOf(ref), childId) });
   }
@@ -70,7 +76,7 @@ export const createNinComponentInitializer = (type: string, nodes: Map<string, N
     editable: {//todo
       attributes: [],
       hasCss: false,
-      custom: Map<String, NinElementAttribute>()
+      custom: {}
     }
   }
 };

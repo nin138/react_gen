@@ -29,10 +29,12 @@ export default class AttributeEditor extends React.Component<Props> {
     );
   }
   render() {
+    console.log(this.props.id);
+    console.log(this.props.editable);
     return (
         <div>
-          {this.props.editable.attributes.keySeq().toArray()
-              .map(v => this.createAttributeInput(this.props.id, this.props.editable.attributes.get(v)))
+          {this.props.editable.attributes
+              .map(it => this.createAttributeInput(this.props.id, it!))
           }
         </div>
     );
