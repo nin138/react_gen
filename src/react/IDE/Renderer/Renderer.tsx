@@ -12,12 +12,23 @@ interface Props {
 }
 
 export default class Renderer extends React.Component<Props, {}> {
-  render() {
+  componentDidMount() {
+    this.updateView();
+  }
+  componentDidUpdate() {
+    this.updateView();
+  }
+  updateView() {
     const htmlString = `<style>${this.props.cssClassManager.getCssString()}</style>` + this.props.project.getHTMLString();
+    const doc = (this.refs.renderer__iframe as HTMLIFrameElement).contentDocument;
+    doc.open();
+    doc.write(htmlString);
+    doc.close();
+  }
+  render() {
     return (
-        <iframe
-            className="c-renderer__iframe"
-            src={'data:text/html;base64,' + btoa(htmlString)}>
+        <iframe ref="renderer__iframe"
+            className="c-renderer__iframe">
         </iframe>
     )
   }
