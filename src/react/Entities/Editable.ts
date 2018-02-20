@@ -12,6 +12,7 @@ export class Editable {
     this.hasCss = initializer.hasCss;
     this.custom = Map(initializer.custom);
     this.classList = List(classList);
+    console.log("editable created: " + this.id);
   }
   private copy(...differ: Array<object>): Editable {
     return Object.assign(Object.create(Editable.prototype), this, ...differ);
@@ -24,7 +25,8 @@ export class Editable {
     return this.copy({ classList: this.classList!!.remove(this.classList!!.indexOf(className))});
   }
   changeAttribute(attr: string, value: string) {
-    return this.copy({ attributes: this.attributes.map(it => (it!.name === attr)? Object.assign(it, {value}): it) });
+    console.log("edid: " + this.id);
+    return this.copy({ attributes: this.attributes.map(it => (it!.name === attr)? Object.assign({}, it, {value}): it) });
   }
 }
 

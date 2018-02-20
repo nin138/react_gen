@@ -164,15 +164,8 @@ export class ComponentFile {
     return this.copy({ elements: this.elements.update(id, it => it.removeCssClass(className)) });
   }
   changeAttribute(id: string, attr: string, value: string): ComponentFile {
-    console.log("//LOOP");
-    this.elements.forEach(it => {
-      console.log(`${it!.id}, ${it!.editable.attributes.find(it => it!.name == "text")}`);
-      console.log(it!.editable);
-    });
-    console.log("//END LOOP");
     return this.copy( { elements: this.elements.update(id, it => {
-      console.log("up:" + it.id);
-      return it.changeAttribute(attr, value + it.id)
+      return it.changeAttribute(attr, value)
     })});
   }
   copyNodes(id: string): Map<string, NinElement> {
