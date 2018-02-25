@@ -1,8 +1,8 @@
-import {ComponentFile} from "../react/IDE/Project/Project";
 import {NinElement} from "../react/Entities/NinComponent";
 import {Map} from "immutable"
 import {Toml} from "../Util";
-import {EditableContentType, NinElementAttribute} from "../react/Entities/Editable";
+import {AttributeTypes, NinElementAttribute} from "../react/Html/Attribute";
+import {ComponentFile} from "../react/IDE/Project/ComponentFile";
 
 export interface SavedNode {
   type: string,
@@ -15,7 +15,7 @@ export interface SavedNode {
 
 export interface SavedAttribute {
   name: string
-  type: EditableContentType
+  type: AttributeTypes
   value: string
 }
 
@@ -37,7 +37,7 @@ export interface SavedFile {
 
 export const createComponentFile = (file: ComponentFile): string => {
   const getAttrArrayFromNinElement = (node: NinElement): Array<NinElementAttribute> => {
-    return node.editable.attributes.toArray()
+    return node.attributes.toArray()
   };
 
   const getNodeArray = (nodes: Map<string, NinElement>): Array<SavedNode> => {
@@ -46,12 +46,12 @@ export const createComponentFile = (file: ComponentFile): string => {
       id: it.id,
       parent: it.parent,
       children: it.children.toArray(),
-      className: it.editable.classList.toArray(),
+      className: it.classList.toArray(),
       attribute: getAttrArrayFromNinElement(it)
     }))
   };
   return Toml.stringify({
-    name: file.fullName.split(".").pop(),
+    name: file.name,
     props: {}, // todo
     state: {}, //todo
     store: {}, //todo

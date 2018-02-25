@@ -30,11 +30,8 @@ class FileManager {
   }
   getProjectNames(): Array<string> {
     try {
-      return fs.readdirSync(this.PROJECT_DIR)
-          .filter(it => it !== ".DS_Store");
-    } catch(e) {
-      return [];
-    }
+      return fs.readdirSync(this.PROJECT_DIR).filter(it => it !== ".DS_Store");
+    } catch(e) { return [];}
   }
   private writeFile(path: string, fileName: string, data: string) {
     if(!fs.existsSync(path)) fs.mkdirsSync(path);
@@ -59,8 +56,8 @@ class FileManager {
     this.writeFile(Path.join(this.PROJECT_DIR, project.projectName, "src"), "index.toml", createIndexToml(project));
     this.writeFile(Path.join(this.PROJECT_DIR, project.projectName, "src"), "css.toml", Toml.stringify(cssManage.getSavable()));
     project.files.toArray().forEach(it => {
-      const paths = it.fullName.split(".");
-      const fileName = paths.pop();
+      const paths = it.path.split(".");
+      const fileName = it.name;
       this.writeFile(Path.join(this.PROJECT_DIR, project.projectName, "src", ...paths), fileName! + ".toml", createComponentFile(it));
     });
   }
@@ -91,7 +88,7 @@ class FileManager {
         attribute: [],
       }]
     };
-    const prj = new Project(index, [app]);
+    const prj = new Project(index, [app], {});
     this.saveProject(prj, new CssClassManager());
   }
   loadProject(projectName: string): {files: Array<SavedFile>, index: SavedIndex, css: SavedCss} {

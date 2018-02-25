@@ -1,8 +1,9 @@
 import {Map} from "immutable"
 import {SavedFile} from "../../../files/SaveProject";
-import {SavedIndex} from "../../../files/FileManager";
+import {SavedCss, SavedIndex} from "../../../files/FileManager";
 import {NinElement} from "../../Entities/NinComponent";
 import {Project} from "./Project";
+import Css from "../../Css/Css";
 
 enum ActionNames {
   loadProject = "Project.loadProject",
@@ -15,17 +16,21 @@ enum ActionNames {
   removeCssFromComponent = "Project.RemoveCssFromComponent",
   componentize = " Project.Componentize",
   changeActiveFile = "Project.changeActiveFile",
+  createCssClass = "Project.createCssClass",
+  changeCssValue = "Project.changeCssValue",
 }
 
 interface LoadProjectAction {
   type: ActionNames.loadProject,
   index: SavedIndex,
   files: Array<SavedFile>
+  savedCss: SavedCss
 }
-export const loadProject = (index: SavedIndex, files: Array<SavedFile>): LoadProjectAction => ({
+export const loadProject = (index: SavedIndex, files: Array<SavedFile>, savedCss: SavedCss): LoadProjectAction => ({
   type: ActionNames.loadProject,
   index,
-  files
+  files,
+  savedCss,
 });
 
 
@@ -128,6 +133,28 @@ export const changeActiveFile = (fileName: string): ChangeActiveFileAction => ({
   fileName
 });
 
+interface CreateCssClassAction {
+  type: ActionNames.createCssClass
+  name: string
+  css: Css
+}
+export const createCssClass = (name: string, css: Css): CreateCssClassAction => ({
+  type: ActionNames.createCssClass,
+  name,
+  css
+});
+interface ChangeCssValueAction {
+  type: ActionNames.changeCssValue
+  className: string
+  attr: string
+  value: string
+}
+export const changeCssValue = (className: string, attr: string, value: string): ChangeCssValueAction => ({
+  type: ActionNames.changeCssValue,
+  className,
+  attr,
+  value
+});
 
 
 export type ProjectAction =
@@ -140,6 +167,8 @@ export type ProjectAction =
   | ChangeAttributeAction
   | ComponentizeAction
   | ChangeActiveFileAction
+  | CreateCssClassAction
+  | ChangeCssValueAction
 
 const initialState: Project = Object.assign(Object.create(Project.prototype),{
   projectName: "",
@@ -149,7 +178,7 @@ const initialState: Project = Object.assign(Object.create(Project.prototype),{
 
 export default function reducer(state: Project = initialState, action: ProjectAction): Project {
   switch (action.type) {
-    case ActionNames.loadProject: return new Project(action.index, action.files);
+    case ActionNames.loadProject: return new Project(action.index, action.files, action.savedCss);
     case ActionNames.addFile: return state.addFile(action.fullName);
     case ActionNames.createNode: return state.addNode(action.node);
     case ActionNames.moveNode: return state.moveNode(action.moveNodeId, action.parentId, action.ref);
@@ -158,6 +187,8 @@ export default function reducer(state: Project = initialState, action: ProjectAc
     case ActionNames.changeAttribute: return state.changeNodeAttribute(action.targetId, action.attr, action.value);
     case ActionNames.componentize: return state.componentize(action.id, action.componentName);
     case ActionNames.changeActiveFile: return state.changeActiveFile(action.fileName);
+    case ActionNames.createCssClass: return state.createCssClass(action.name, action.css);
+    case ActionNames.changeCssValue: return state.changeCssValue(action.className, action.attr, action.value);
     default: { return state }
   }
 }

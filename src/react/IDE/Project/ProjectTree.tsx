@@ -1,9 +1,10 @@
 import * as React from 'react'
 import {Action} from "redux";
-import {addFile, changeActiveFile, componentize} from "./Modules";
+import {addFile, changeActiveFile, changeCssValue, componentize, createCssClass} from "./Modules";
 import {changeSelectedItem} from "../Tree/Modules";
 import {ROOT_ID} from "../../Entities/NinComponent";
 import {Project} from "./Project";
+import Css from "../../Css/Css";
 
 
 export class ProjectActionDispatcher {
@@ -13,6 +14,12 @@ export class ProjectActionDispatcher {
   changeActiveFile(fileName: string) {
     this.dispatch(changeActiveFile(fileName));
     this.dispatch(changeSelectedItem(ROOT_ID));
+  }
+  createCssClass(name: string) {
+    this.dispatch(createCssClass(name, new Css()))
+  }
+  changeCssValue(className: string, attr: string, value: string) {
+    this.dispatch(changeCssValue(className, attr, value))
   }
 }
 

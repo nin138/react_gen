@@ -67,7 +67,7 @@ export default class Tree extends React.Component<Props, {}> {
       const ref = (position === TreeItemPosition.body || !position)? null : (position === TreeItemPosition.before)?targetId : parentNode.children.get(parentNode.children.indexOf(targetId) + 1);
       if(parentId === id || ref === id) return;
       if(this.getParentList(targetId).includes(id)) this.props.log.error(Message.err.dom.childIncludeParent);
-      else if(parentId !== ROOT_ID && !nodes.get(parentId).allowChild) this.props.log.error(Message.err.dom.cannotHaveChildNode);
+      else if(parentId !== ROOT_ID && !nodes.get(parentId).hasChild) this.props.log.error(Message.err.dom.cannotHaveChildNode);
       else this.props.actions.tree.moveNode(id, parentId, ref);
     }
   }

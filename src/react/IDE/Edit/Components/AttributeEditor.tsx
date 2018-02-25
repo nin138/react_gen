@@ -1,24 +1,26 @@
 import * as React from 'react'
-import {Editable, EditableContentType, NinElementAttribute} from "../../../Entities/Editable";
+import {AttributeTypes, NinElementAttribute} from "../../../Html/Attribute";
+import {NinElement} from "../../../Entities/NinComponent";
 
 interface Props {
   id: string
-  editable: Editable
+  node: NinElement
   changeAttribute: (id: string, attr: string, value: string) => void
 }
 
 export default class AttributeEditor extends React.Component<Props> {
   private createAttributeInput(id: string, content: NinElementAttribute) {
-    const createInput = (value: string, type: EditableContentType, onChange: (value: string) => void) => {
+    const createInput = (value: string, type: AttributeTypes, onChange: (value: string) => void) => {
       switch(type) {
-        case EditableContentType.string: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
-        case EditableContentType.html_string: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
-        case EditableContentType.array: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
-        case EditableContentType.float: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
-        case EditableContentType.int: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
-        case EditableContentType.script: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
-        case EditableContentType.any: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
-        case EditableContentType.css: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>); // todo use CssEditor
+        case AttributeTypes.string: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case AttributeTypes.HTMLString: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case AttributeTypes.HTMLInput: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case AttributeTypes.array: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case AttributeTypes.float: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case AttributeTypes.int: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case AttributeTypes.script: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case AttributeTypes.any: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
+        case AttributeTypes.css: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>); // todo use CssEditor
       }};
     const action = (value: string) => { this.props.changeAttribute(id, content.name, value) };
     return (
@@ -29,11 +31,9 @@ export default class AttributeEditor extends React.Component<Props> {
     );
   }
   render() {
-    console.log(this.props.id);
-    console.log(this.props.editable);
     return (
         <div>
-          {this.props.editable.attributes
+          {this.props.node.attributes
               .map(it => this.createAttributeInput(this.props.id, it!))
           }
         </div>

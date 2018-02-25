@@ -7,7 +7,8 @@ import {ActionDispatcher} from "../Container";
 import {NinElement, ROOT_ID} from "../../Entities/NinComponent";
 import AttributeEditor from "./Components/AttributeEditor";
 import {Map} from "immutable";
-import {ComponentFile} from "../Project/Project";
+import {Project} from "../Project/Project";
+import {ComponentFile} from "../Project/ComponentFile";
 
 export class EditActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
@@ -20,6 +21,7 @@ export class EditActionDispatcher {
 }
 
 interface Props {
+  project: Project
   selectedItemId: string
   nodes: Map<string, NinElement>
   cssClassManager: CssClassManager
@@ -38,16 +40,14 @@ export default class Edit extends React.Component<Props, {}> {
       </div>)
     }
     const component = this.getActiveNode();
-    const tab = (!component.editable.hasCss && this.props.selectedTab === EditTabs.CSS)? EditTabs.Attributes : this.props.selectedTab;
+    const initializer = this.props.project.getComponentInitializer(component.fullName());
+    const tab = (!initializer.hasCss && this.props.selectedTab === EditTabs.CSS)? EditTabs.Attributes : this.props.selectedTab;
     switch(tab) {
       case EditTabs.Attributes:
-        return (<AttributeEditor id={component.id}
-                                 editable={component.editable}
+        return (<AttributeEditor id={component.id} node={component}
                                  changeAttribute={(id, attr, value) => this.props.actions.tree.changeAttribute(id, attr, value)}/>);
       case EditTabs.CSS:
-        return (<CssEditor component={component} actions={this.props.actions} cssClassManager={this.props.cssClassManager}/>);
-      case EditTabs.Custom:
-        return component.editable.custom.toArray().map(v => (<div>{v}</div>));
+        return (<CssEditor project={this.props.project} component={component} actions={this.props.actions} cssClassManager={this.props.cssClassManager}/>);
     }
   }
   private onTabClicked(tab: EditTabs) {
@@ -65,7 +65,7 @@ export default class Edit extends React.Component<Props, {}> {
                 Attributes
               </li>
               {
-                (this.props.selectedItemId !== ROOT_ID && this.getActiveNode().editable.hasCss === true)?
+                (this.props.selectedItemId !== ROOT_ID && this.props.project.getComponentInitializer(this.getActiveNode().fullName()).hasCss === true)?
                     <li className={`c-edit__head__tab-area__item ${(this.props.selectedTab === EditTabs.CSS) ? "c-edit__head__tab-area__item--selected" : ""}`}
                 onClick={() => this.onTabClicked(EditTabs.CSS)}>
                 CSS

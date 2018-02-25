@@ -35,7 +35,7 @@ export type EditAction = ChangeCssAttrAction
     | ChangeSelectedTabAction
 
 export enum EditTabs {
-  Attributes, CSS, Custom, Listeners
+  Attributes, CSS, Listeners
 }
 
 const initialState: EditState= {

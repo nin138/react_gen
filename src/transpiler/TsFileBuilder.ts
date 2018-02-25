@@ -1,9 +1,8 @@
 import {getAttrFromSavedNode, SavedFile, SavedNode} from "../files/SaveProject";
 import {Transpiler} from "./transpiler";
-import {HTML_TAGS} from "../react/Html/Tags";
 import * as path from "path";
-import {Util} from "../Util";
-import {EditableContentType} from "../react/Entities/Editable";
+import {NodeUtil, Util} from "../Util";
+import {HTML_TAGS} from "../react/Html/Tags";
 
 export class TsFileBuilder {
   private static readonly REQUIRED_IMPORT = [
@@ -63,7 +62,7 @@ export class TsFileBuilder {
   }
   private createJSX(id: string, map: Map<string, SavedNode>, tab: number): string {
     const node = map.get(id)!!;
-    const attrs = this.createAttribute(node);
+    const attrs = NodeUtil.getAttrsStrFromSavedNode(node);
     let tag: string = node.type.split(".").pop()!;
     if(node.type === "HTML.textNode") return `${this.transpiler.createTab(tab)}${getAttrFromSavedNode("text", node)!.value || ""}\n`;
     if(node.type.startsWith("HTML.")) {
@@ -75,11 +74,4 @@ export class TsFileBuilder {
         + node.children.map(it => this.createJSX(it, map, tab+1)).join("\n") + "\n"
         + `${this.transpiler.createTab(tab)}</${tag}>`;
   };
-  private createAttribute(node: SavedNode) {
-    if(node.className.length != 0) { node.attribute.push({name: "className", type: EditableContentType.string, value: `"${node.className.join(" ")}"`}) }
-    const ret = node.attribute
-        .map(it => `${it.name}=${it.value}`)
-        .join(" ");
-    return (ret === "")? "" : " " + ret;
-  }
 }

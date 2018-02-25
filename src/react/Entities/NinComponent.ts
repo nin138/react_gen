@@ -1,19 +1,20 @@
-import {List, Map} from "immutable";
-import {Editable, EditableInitializer} from "./Editable";
+import {List} from "immutable";
 import {SavedAttribute, SavedNode} from "../../files/SaveProject";
 import {Util} from "../../Util";
+import {AttributeInfo, NinElementAttribute} from "../Html/Attribute";
 
 
 export class NinElement {
   readonly path: string;
   readonly type: string;
-  readonly isFrame: boolean;
-  readonly allowChild: boolean;
+  fullName = () => `${this.path}.${this.type}`;
+  readonly hasChild: boolean;
   readonly parent: string;
   readonly children: List<string> = List();
   readonly id: string;
-  readonly editable: Editable;
-  readonly row: string;
+  readonly classList: List<string>;
+  readonly attributes: List<NinElementAttribute>;
+
   static fromSavedNode(initializer: NinComponentInitializer, node: SavedNode): NinElement {
     return new NinElement(initializer, node.parent, node.children, node.className, node.attribute, node.id);
   }
@@ -25,17 +26,22 @@ export class NinElement {
               id: string = Util.generateId()) {
     this.path = initializer.path;
     this.type = initializer.type;
-    this.isFrame = initializer.isFrame;
-    this.allowChild = initializer.allowChild;
+    this.hasChild = initializer.hasChild;
     this.parent = parent;
     this.children = List(children);
     this.id = id;
-    this.row = initializer.row;
-    let editable = new Editable(initializer.editable, classList);
-    attrs.forEach(it => {
-      editable = editable.changeAttribute(it.name, it.value);
+    this.classList = List(classList);
+    let tempAttr = List(initializer.attributes.map(it => ({
+      name: it.name,
+      type: it.type,
+      isRequired: it.isRequired,
+      value: ""
+    })));
+    attrs.forEach(attr => {
+      const index = tempAttr.findIndex(it => it!.name === attr.name);
+      tempAttr = tempAttr.update(index, it => Object.assign({}, it, {value: attr.value}))
     });
-    this.editable = editable;
+    this.attributes = tempAttr;
   }
   copy(...obj: Array<object>): NinElement { return Object.assign(Object.create(NinElement.prototype), this, ...obj) }
   addChild(childId: string, ref: string | null = null): NinElement {
@@ -43,9 +49,13 @@ export class NinElement {
   }
   removeChild(id: string): NinElement { return this.copy({ children: this.children.filter( value => value !== id) }) }
   changeParent(id: string): NinElement { return this.copy({ parent: id }) }
-  addCssClass(name: string): NinElement { return this.copy({ editable: this.editable.addClass(name) }) }
-  removeCssClass(className:string): NinElement { return this.copy( { editable: this.editable.removeClass(className) }) }
-  changeAttribute(attr: string, value: string): NinElement { return this.copy({ editable: this.editable.changeAttribute(attr, value)}) }
+  addCssClass(className: string): NinElement { return this.copy({ classList: this.classList.push(className) }) }
+  removeCssClass(className:string): NinElement { return this.copy( { classList: this.classList.filter(it => it !== className)}) }
+  changeAttribute(attr: string, value: string): NinElement { return this.copy({ attributes: this.updateAttr(attr, value)}) }
+  private updateAttr(attr: string, value: string) {
+    const index = this.attributes.findIndex(it => it!.name === attr);
+    return this.attributes.update(index, it => Object.assign({}, it, {value}));
+  }
 }
 
 export const ROOT_ID = "root";
@@ -53,30 +63,13 @@ export const ROOT_ID = "root";
 export interface NinComponentInitializer {
   path: string
   type: string
-  isFrame: boolean
-  allowChild: boolean
-  row: string //    /$*children*$/
-  editable: EditableInitializer
+  hasChild: boolean
+  attributes: Array<AttributeInfo>
+  hasCss: boolean
 }
 
 export const NinComponentString = {
-  ClassName: "<$*className*$>",
   Children: "<$*children*$>",
   Text: "<$*text*$>",
   Attributes: "<$*attributes*$>",
-};
-
-export const createNinComponentInitializer = (type: string, nodes: Map<string, NinElement>): NinComponentInitializer => {
-  return {
-    path: "components", //todo
-    type: type,
-    isFrame: false,
-    allowChild: false,
-    row: `<${type} ${NinComponentString.Attributes}></${type}>`,
-    editable: {//todo
-      attributes: [],
-      hasCss: false,
-      custom: {}
-    }
-  }
 };

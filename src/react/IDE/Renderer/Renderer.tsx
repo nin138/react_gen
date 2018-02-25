@@ -1,8 +1,9 @@
 import * as React from "react";
 import {NinElement} from "../../Entities/NinComponent";
 import {Map} from "immutable"
-import {ComponentFile, Project} from "../Project/Project";
+import {Project} from "../Project/Project";
 import {CssClassManager} from "../../Css/CssClassManager";
+import {ComponentFile} from "../Project/ComponentFile";
 
 interface Props {
   nodes: Map<string, NinElement>
