@@ -53,7 +53,8 @@ export const NodeUtil = {
     const getValue = (attr: SavedAttribute | NinElementAttribute) => {
       switch (attr.type) {
         case AttributeTypes.string: return `"${attr.value}"`;
-        default: return `{${attr.value}`
+        case AttributeTypes.HTMLString: return `"${Util.escapeHTMLString(attr.value)}"`;
+        default: return `{${attr.value}}`
       }
     };
     return `${attr.name}=${getValue(attr)}`;
@@ -64,7 +65,7 @@ export const NodeUtil = {
       return `${it.name}=${NodeUtil.attrToString(it)}`;
     });
     if(node.classList.size != 0) attrs = attrs.concat(`class="${node.classList.join(" ")}"`);
-    return " " + attrs.join(" ");
+    return (attrs.length == 0)? "" : " " + attrs.join(" ");
   },
   getAttrsStrFromSavedNode: (node: SavedNode) => { // to transpiler
     //todo when required = true but value is ""
@@ -72,7 +73,7 @@ export const NodeUtil = {
       `${it.name}=${NodeUtil.attrToString(it)}`
     );
     if(node.className.length != 0) attrs = attrs.concat(`className="${node.className.join(" ")}"`);
-    return " " + attrs.join(" ");
+    return (attrs.length == 0)?  "" :" " + attrs.join(" ");
   }
 };
 

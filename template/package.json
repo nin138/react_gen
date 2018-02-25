@@ -7,7 +7,7 @@
     "sass-watch": "sass --style expanded --watch css/style.scss:dist/style.css",
     "sass-min": "sass --sourcemap=none --style compressed css/style.scss:dist/style.css",
     "release": "npm run build-min & npm run sass-min",
-    "server": "open http:127.0.0.1:3000;node server.js"
+    "server": "open http:127.0.0.1:3022;node server.js"
   },
   "devDependencies": {
     "@types/react": "15.0.39",

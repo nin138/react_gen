@@ -1,4 +1,4 @@
-import {getAttrFromSavedNode, SavedFile, SavedNode} from "../files/SaveProject";
+import {SavedFile, SavedNode} from "../files/SaveProject";
 import {Transpiler} from "./transpiler";
 import * as path from "path";
 import {NodeUtil, Util} from "../Util";
@@ -20,14 +20,13 @@ export class TsFileBuilder {
   }
   private resolveDependency(file: SavedFile): string {
     return [TsFileBuilder.REQUIRED_IMPORT,
-        ...file.node.map(it => it.type)
+        ...Array.from(new Set(file.node.map(it => it.type)))
         .filter(it => !it.startsWith("HTML."))
         .map(it =>
             `import {${Util.capitalizeFirst(it.split(".").pop()!)}} from "./${path.relative(
                 path.join(...file.path.split(".")), 
                 path.join(...it.split(".")))
         }";`)].join("\n") + "\n";
-    // if(file.use)
   };
   private createKeyType(map: {[key: string]: string}): string {
     return Object.keys(map)
@@ -64,12 +63,12 @@ export class TsFileBuilder {
     const node = map.get(id)!!;
     const attrs = NodeUtil.getAttrsStrFromSavedNode(node);
     let tag: string = node.type.split(".").pop()!;
-    if(node.type === "HTML.textNode") return `${this.transpiler.createTab(tab)}${getAttrFromSavedNode("text", node)!.value || ""}\n`;
+    if(node.type === "HTML.textNode") return `${this.transpiler.createTab(tab)}${node.attribute.find(it => it.name == "text")!.value || ""}`;
     if(node.type.startsWith("HTML.")) {
       const conf = HTML_TAGS.find(it => it.type === tag);
       if(!conf) throw new Error(`${node.type} is not defined in HTML5`);
     } else tag = Util.capitalizeFirst(tag);
-    if(node.children.length === 0) return `${this.transpiler.createTab(tab)}<${tag}${attrs} />\n`;
+    if(node.children.length === 0) return `${this.transpiler.createTab(tab)}<${tag}${attrs} />`;
     return `${this.transpiler.createTab(tab)}<${tag}${attrs}>\n`
         + node.children.map(it => this.createJSX(it, map, tab+1)).join("\n") + "\n"
         + `${this.transpiler.createTab(tab)}</${tag}>`;

@@ -19,10 +19,6 @@ export interface SavedAttribute {
   value: string
 }
 
-export const getAttrFromSavedNode = (attr: string, node: SavedNode): SavedAttribute|undefined => {
-  return node.attribute.find(it => it.name === attr);
-};
-
 export interface SavedFile {
   path: string
   name: string

@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const app = express();
+const port = 3022;
 
 app.use('/dist', express.static('dist'));
 app.get('/api/count', (req, res) => {
@@ -11,7 +12,7 @@ app.get('/api/count', (req, res) => {
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
-app.listen(3000, (err) => {
+app.listen(port, (err) => {
   if(err) console.log(err);
-  else console.log("server listen at 127.0.0.1:3000")
+  else console.log("server listen at 127.0.0.1" + port);
 });
