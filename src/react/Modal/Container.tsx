@@ -1,5 +1,5 @@
 import {connect} from 'react-redux'
-import {AppAction} from "../Store";
+import {AppAction, AppState} from "../Store";
 import {default as Modal, ModalEvent, ModalInputType} from "./Modal";
 import {closeModal, openModal} from "./Modules";
 
@@ -16,5 +16,6 @@ export class ModalActionDispatcher {
     this.dispatch(closeModal())
   }
 }
+const mapStateToProps = (state: AppState) => state.modal;
 
-export default connect(state => state.modal, dispatch => ({actions: new ModalActionDispatcher(dispatch)}))(Modal)
+export default connect(mapStateToProps, dispatch => ({actions: new ModalActionDispatcher(dispatch)}))(Modal)

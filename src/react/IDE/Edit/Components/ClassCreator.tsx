@@ -9,8 +9,8 @@ interface State {
 }
 
 export default class ClassCreator extends React.Component<Props, State> {
-  constructor() {
-    super();
+  constructor(props: Props) {
+    super(props);
     this.state = { name: "" }
   }
   render() {

@@ -32,7 +32,22 @@ interface Props {
 
 
 export default class Edit extends React.Component<Props, {}> {
+  private createTab() {
 
+    return(<React.Fragment>
+    <li className={`c-edit__head__tab-area__item ${(this.props.selectedTab === EditTabs.Attributes)? "c-edit__head__tab-area__item--selected" : ""}`}
+        onClick={ () => this.onTabClicked(EditTabs.Attributes) }>
+      Attributes
+    </li>
+    {
+      (this.props.selectedItemId !== ROOT_ID && this.props.project.getComponentInitializer(this.getActiveNode().fullName()).hasCss === true)?
+        <li className={`c-edit__head__tab-area__item ${(this.props.selectedTab === EditTabs.CSS) ? "c-edit__head__tab-area__item--selected" : ""}`}
+            onClick={() => this.onTabClicked(EditTabs.CSS)}>
+          CSS
+        </li> : ""
+    }
+    </React.Fragment>)
+  }
   private createBody() {
     if(this.props.selectedItemId === ROOT_ID) {
       return (<div>
@@ -60,17 +75,7 @@ export default class Edit extends React.Component<Props, {}> {
           <div className="c-edit__head">
             <h1>edit</h1>
             <ul className="c-edit__head__tab-area">
-              <li className={`c-edit__head__tab-area__item ${(this.props.selectedTab === EditTabs.Attributes)? "c-edit__head__tab-area__item--selected" : ""}`}
-                  onClick={ () => this.onTabClicked(EditTabs.Attributes) }>
-                Attributes
-              </li>
-              {
-                (this.props.selectedItemId !== ROOT_ID && this.props.project.getComponentInitializer(this.getActiveNode().fullName()).hasCss === true)?
-                    <li className={`c-edit__head__tab-area__item ${(this.props.selectedTab === EditTabs.CSS) ? "c-edit__head__tab-area__item--selected" : ""}`}
-                onClick={() => this.onTabClicked(EditTabs.CSS)}>
-                CSS
-                </li> : ""
-              }
+              {this.createTab()}
             </ul>
           </div>
           <div className="c-edit__body">

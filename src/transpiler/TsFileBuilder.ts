@@ -19,6 +19,7 @@ export class TsFileBuilder {
     ].join("\n");
   }
   private resolveDependency(file: SavedFile): string {
+    // todo when import same name component
     return [TsFileBuilder.REQUIRED_IMPORT,
         ...Array.from(new Set(file.node.map(it => it.type)))
         .filter(it => !it.startsWith("HTML."))

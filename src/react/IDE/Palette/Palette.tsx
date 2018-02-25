@@ -18,8 +18,8 @@ interface State {
 }
 
 export default class Palette extends React.Component<Props, State> {
-  constructor() {
-    super();
+  constructor(props: Props) {
+    super(props);
     this.state = {search: "", tab: PaletteTab.html};
   }
   onDragStart(e: React.DragEvent<any>, v: string) {
