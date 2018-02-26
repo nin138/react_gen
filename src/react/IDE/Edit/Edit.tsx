@@ -33,14 +33,13 @@ interface Props {
 
 export default class Edit extends React.Component<Props, {}> {
   private createTab() {
-
     return(<React.Fragment>
     <li className={`c-edit__head__tab-area__item ${(this.props.selectedTab === EditTabs.Attributes)? "c-edit__head__tab-area__item--selected" : ""}`}
         onClick={ () => this.onTabClicked(EditTabs.Attributes) }>
       Attributes
     </li>
     {
-      (this.props.selectedItemId !== ROOT_ID && this.props.project.getComponentInitializer(this.getActiveNode().fullName()).hasCss === true)?
+      (this.props.selectedItemId !== ROOT_ID && this.props.project.getComponentInitializer(this.getActiveElement().fullName()).hasCss === true)?
         <li className={`c-edit__head__tab-area__item ${(this.props.selectedTab === EditTabs.CSS) ? "c-edit__head__tab-area__item--selected" : ""}`}
             onClick={() => this.onTabClicked(EditTabs.CSS)}>
           CSS
@@ -51,24 +50,26 @@ export default class Edit extends React.Component<Props, {}> {
   private createBody() {
     if(this.props.selectedItemId === ROOT_ID) {
       return (<div>
-        <p>file: {this.props.file.fullName}</p>
+        <p>file: {this.props.file.fullName()}</p>
+        TODO
       </div>)
     }
-    const component = this.getActiveNode();
-    const initializer = this.props.project.getComponentInitializer(component.fullName());
+    const element = this.getActiveElement();
+    const initializer = this.props.project.getComponentInitializer(element.fullName());
     const tab = (!initializer.hasCss && this.props.selectedTab === EditTabs.CSS)? EditTabs.Attributes : this.props.selectedTab;
     switch(tab) {
       case EditTabs.Attributes:
-        return (<AttributeEditor id={component.id} node={component}
+        return (<AttributeEditor project={this.props.project}
+                                 element={element}
                                  changeAttribute={(id, attr, value) => this.props.actions.tree.changeAttribute(id, attr, value)}/>);
       case EditTabs.CSS:
-        return (<CssEditor project={this.props.project} component={component} actions={this.props.actions} cssClassManager={this.props.cssClassManager}/>);
+        return (<CssEditor project={this.props.project} element={element} actions={this.props.actions} cssClassManager={this.props.cssClassManager}/>);
     }
   }
   private onTabClicked(tab: EditTabs) {
     this.props.actions.edit.changeSelectedTab(tab);
   }
-  private getActiveNode(): NinElement { return this.props.nodes.get(this.props.selectedItemId) }
+  private getActiveElement(): NinElement { return this.props.nodes.get(this.props.selectedItemId) }
   render() {
     return (
         <section className="c-edit">

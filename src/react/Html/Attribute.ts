@@ -9,18 +9,23 @@ export interface AttributeInfo {
   name: string
   type: AttributeTypes
   isRequired: boolean
+  select?: Array<string>
 }
 
 export enum AttributeTypes {
+  boolean = "boolean",
+  HTMLid = "HTMLid",
   any = "any",
   string = "string",
-  HTMLInput = "HTMLInpit",
   HTMLString = "HTMLString",
+  SELECT = "SELECT",
   script = "script",
   css = "css",
   int = "int",
   float = "float",
   array = "array",
+  URI = "URI",
+  CSSLength = "CSSLength",
+  imageURI = "imageURI",
 }
 
-export const AttrHTMLInput = ["text", "password", "checkbox", "radio", "file", "hidden", "submit", "reset", "button", "image"];

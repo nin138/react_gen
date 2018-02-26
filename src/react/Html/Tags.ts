@@ -1,7 +1,7 @@
-import {AttributeTypes} from "./Attribute";
+import {AttributeInfo, AttributeTypes} from "./Attribute";
 import {NinComponentInitializer, NinComponentString} from "../Entities/NinComponent";
 
-const list: Array<{name: string, hasChild: boolean, attributes?: Array<{name: string, isRequired: boolean, type: AttributeTypes}>}> = [
+const list: Array<{name: string, hasChild: boolean, attributes?: Array<AttributeInfo>}> = [
   {name: "section", hasChild: true,},
   {name: "nav",hasChild: true},
   {name: "article", hasChild: true},
@@ -82,7 +82,41 @@ const list: Array<{name: string, hasChild: boolean, attributes?: Array<{name: st
   {name: "fieldset", hasChild: true},
   {name: "legend", hasChild: true},
   {name: "label", hasChild: true},
-  {name: "input", hasChild: false, attributes: [{name: "type", isRequired: true, type: AttributeTypes.HTMLInput}]},
+  {name: "input", hasChild: false,
+    attributes: [{name: "type", isRequired: true, type: AttributeTypes.SELECT,
+      select: ["text", "password", "checkbox", "radio", "url", "date", "datetime-local", "month", "time", "week", "email", "tel", "color", "number", "range", "search", "file", "hidden", "submit", "reset", "button", "image"]},
+      {name: "accept", isRequired: false, type: AttributeTypes.string},// todo audio/* video/* image/*
+      {name: "autocomplete", isRequired: false, type: AttributeTypes.SELECT, select: ["off", "on", "name", "honorific-prefix", "given-name", "additional-name", "family-name", "honorific-suffix", "nickname", "email", "username", "new-password", "current-password", "organization-title", "organization", "street-address", "address-line1", "address-line2", "address-line3", "address-level4", "address-level3", "address-level2", "address-level1", "country", "country-name", "postal-code", "cc-name", "cc-given-name", "cc-additional-name", "cc-family-name", "cc-number", "cc-exp", "cc-exp-month", "cc-exp-year", "cc-csc", "cc-type", "transaction-currency", "transaction-amount", "language", "bday", "bday-day", "bday-month", "bday-year", "sex", "tel", "tel-country-code", "tel-national", "tel-area-code", "tel-local", "tel-local-prefix", "tel-local-suffix", "tel-extension", "url", "photo"]},
+      {name: "autofocus", isRequired: false, type: AttributeTypes.boolean},
+      {name: "capture", isRequired: false, type: AttributeTypes.boolean},
+      {name: "checked", isRequired: false, type: AttributeTypes.boolean},
+      {name: "disabled", isRequired: false, type: AttributeTypes.boolean},
+      {name: "form", isRequired: false, type: AttributeTypes.HTMLid},
+      {name: "formaction", isRequired: false, type: AttributeTypes.URI},
+      {name: "formenctype", isRequired: false, type: AttributeTypes.string},//todo
+      {name: "formmethod", isRequired: false, type: AttributeTypes.SELECT, select: ["post", "get"]},
+      {name: "formnovalidate", isRequired: false, type: AttributeTypes.boolean},
+      {name: "formtarget", isRequired: false, type: AttributeTypes.string},
+      {name: "height", isRequired: false, type: AttributeTypes.CSSLength},
+      {name: "inputmode", isRequired: false, type: AttributeTypes.SELECT, select: ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"]},
+      {name: "list", isRequired: false, type: AttributeTypes.HTMLid},
+      {name: "max", isRequired: false, type: AttributeTypes.any}, //todo
+      {name: "min", isRequired: false, type: AttributeTypes.any}, //todo
+      {name: "maxlength", isRequired: false, type: AttributeTypes.int},
+      {name: "minlength", isRequired: false, type: AttributeTypes.int},
+      {name: "multiple", isRequired: false, type: AttributeTypes.boolean},
+      {name: "name", isRequired: false, type: AttributeTypes.string},
+      {name: "pattern", isRequired: false, type: AttributeTypes.string},
+      {name: "placeholder", isRequired: false, type: AttributeTypes.string},
+      {name: "readonly", isRequired: false, type: AttributeTypes.boolean},
+      {name: "selectionDirection", isRequired: false, type: AttributeTypes.SELECT, select: ["none", "forward", "backward"]},
+      {name: "size", isRequired: false, type: AttributeTypes.int},
+      {name: "spellcheck ", isRequired: false, type: AttributeTypes.SELECT, select: ["default", "true", "false"]},
+      {name: "src", isRequired: false, type: AttributeTypes.imageURI},
+      {name: "step", isRequired: false, type: AttributeTypes.any}, //todo
+      {name: "tabindex", isRequired: false, type: AttributeTypes.int},
+      {name: "width", isRequired: false, type: AttributeTypes.CSSLength}
+      ]},
   {name: "button", hasChild: true},
   {name: "select", hasChild: true},
   {name: "datalist", hasChild: true},

@@ -8,7 +8,7 @@ import {Project} from "../../Project/Project";
 
 interface Props {
   project: Project
-  component: NinElement
+  element: NinElement
   actions: ActionDispatcher
   cssClassManager: CssClassManager
 }
@@ -17,20 +17,20 @@ export default class CssEditor extends React.Component<Props> {
 
   createAndAddClass(name: string) {
     this.props.actions.project.createCssClass(name);
-    this.props.actions.addCssClassToComponent(this.props.component.id, name);
+    this.props.actions.addCssClassToComponent(this.props.element.id, name);
   }
   createClassEditors() {
-    return this.props.component.classList
-      .map(v => {
-        return (<CssClassEditor key={v!!}
-                                className={v!!}
-                                css={this.props.cssClassManager.getCss(v!!)!!}
-                                removeClass={ (className: string) => this.props.actions.removeCssFromComponent(this.props.component.id, className) }
+    return this.props.element.classList
+      .map(it => {
+        return (<CssClassEditor key={it!!}
+                                className={it!!}
+                                css={this.props.cssClassManager.getCss(it!!)!!}
+                                removeClass={ (className: string) => this.props.actions.removeCssFromComponent(this.props.element.id, className) }
                                 changeCss={ (className: string, attr: string, value: string) => this.props.actions.project.changeCssValue(className, attr, value) }/>)
       });
   }
   render() {
-    const initializer = this.props.project.getComponentInitializer(this.props.component.fullName());
+    const initializer = this.props.project.getComponentInitializer(this.props.element.fullName());
     return (
         <div>
           {(initializer.hasCss) ? (<ClassCreator createCssClass={ (value: string) => this.createAndAddClass(value) }/>) : ""}

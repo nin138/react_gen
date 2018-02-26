@@ -54,7 +54,8 @@ export const NodeUtil = {
       switch (attr.type) {
         case AttributeTypes.string: return `"${attr.value}"`;
         case AttributeTypes.HTMLString: return `"${Util.escapeHTMLString(attr.value)}"`;
-        default: return `{${attr.value}}`
+        case AttributeTypes.script: return `{${attr.value}}`;
+        default: return `"${attr.value}"`;
       }
     };
     return `${attr.name}=${getValue(attr)}`;
@@ -62,7 +63,7 @@ export const NodeUtil = {
   getAttrsStrFromNinElement: (node: NinElement) => {// to renderer
     let attrs = node.attributes.toArray().map(it => {
       //todo when required = true but value is ""
-      return `${it.name}=${NodeUtil.attrToString(it)}`;
+      return `${NodeUtil.attrToString(it)}`;
     });
     if(node.classList.size != 0) attrs = attrs.concat(`class="${node.classList.join(" ")}"`);
     return (attrs.length == 0)? "" : " " + attrs.join(" ");

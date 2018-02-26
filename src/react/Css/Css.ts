@@ -14,7 +14,7 @@ export default class Css {
     return css;
   }
   getSavable(): {[attr: string]: string} {
-    return this.values.map(it => it!.value).toObject();
+    return this.values.map(it => it!.value).filter(it => it !== "").toObject();
   }
   get(atr: string): CssValue { return this.values.get(atr); }
   set(atr: string ,value: string): Css {
@@ -119,11 +119,3 @@ const defaultCss = (): Map<string, CssValue> => {
   });
   return Map(obj);
 };
-
-// export class CssValue {
-//   public value: string = "";
-//   public type = CssValueTypes.Void;
-//   constructor(value: string = "") {
-//     this.value = value
-//   }
-// }

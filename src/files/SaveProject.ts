@@ -33,7 +33,7 @@ export interface SavedFile {
 
 export const createComponentFile = (file: ComponentFile): string => {
   const getAttrArrayFromNinElement = (node: NinElement): Array<NinElementAttribute> => {
-    return node.attributes.toArray()
+    return node.attributes.toArray().filter(it => it.value !== "");
   };
 
   const getNodeArray = (nodes: Map<string, NinElement>): Array<SavedNode> => {
