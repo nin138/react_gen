@@ -1,6 +1,6 @@
-import {SavedAttribute, SavedNode} from "./files/SaveProject";
-import {AttributeTypes, NinElementAttribute} from "./react/Html/Attribute";
-import {NinElement} from "./react/Entities/NinComponent";
+import {AttributeInfo, AttributeTypes} from "./react/Html/Attribute";
+import {NinComponentInfo} from "./react/Entities/NinElement";
+import {Map} from "immutable";
 
 const tomlify = require('tomlify-j0.4');
 const toml = require('toml');
@@ -49,33 +49,42 @@ export const NodeUtil = {
   getPathFromFullName: (fullName: string): string => {
     return fullName.split(".").slice(0, -1).join(".");
   },
-  attrToString: (attr: SavedAttribute | NinElementAttribute): string => {
-    const getValue = (attr: SavedAttribute | NinElementAttribute) => {
-      switch (attr.type) {
-        case AttributeTypes.string: return `"${attr.value}"`;
-        case AttributeTypes.HTMLString: return `"${Util.escapeHTMLString(attr.value)}"`;
-        case AttributeTypes.script: return `{${attr.value}}`;
-        default: return `"${attr.value}"`;
+  attrToString: (info: AttributeInfo, value: string): string => {
+    if(info.isRequired == true && value == "") throw new Error(`attribute "${info.name}" is required but has no value`);
+    const getValue = (attr: string, type: AttributeTypes) => {
+      switch (type) {
+        case AttributeTypes.string: return `"${value}"`;
+        case AttributeTypes.HTMLString: return `"${Util.escapeHTMLString(value)}"`;
+        case AttributeTypes.script: return `{${value}}`;
+        default: return `"${value}"`;
       }
     };
-    return `${attr.name}=${getValue(attr)}`;
+    return `${info.name}=${getValue(value, info.type)}`;
   },
-  getAttrsStrFromNinElement: (node: NinElement) => {// to renderer
-    let attrs = node.attributes.toArray().map(it => {
-      //todo when required = true but value is ""
-      return `${NodeUtil.attrToString(it)}`;
+  getAttrStr: (attrs: Map<string, string>, componentInfo: NinComponentInfo): string => {
+    attrs.keySeq().toArray().map(attr => {
+      const info = componentInfo.attributes.find(it => it.name == attr);
+      if(info == undefined) throw new Error(`this component does not have attr ${attr}`);
+      return NodeUtil.attrToString(info, attrs.get(attr));
     });
-    if(node.classList.size != 0) attrs = attrs.concat(`class="${node.classList.join(" ")}"`);
-    return (attrs.length == 0)? "" : " " + attrs.join(" ");
+    return attrs.join(" ");
   },
-  getAttrsStrFromSavedNode: (node: SavedNode) => { // to transpiler
-    //todo when required = true but value is ""
-    let attrs = node.attribute.map(it =>
-      `${it.name}=${NodeUtil.attrToString(it)}`
-    );
-    if(node.className.length != 0) attrs = attrs.concat(`className="${node.className.join(" ")}"`);
-    return (attrs.length == 0)?  "" :" " + attrs.join(" ");
-  }
+  // getAttrsStrFromNinElement: (node: NinElement) => {// to renderer
+  //   let attrs = node.attributes.toArray().map(it => {
+  //     //todo when required = true but value is ""
+  //     return `${NodeUtil.attrToString(it)}`;
+  //   });
+  //   if(node.classList.size != 0) attrs = attrs.concat(`class="${node.classList.join(" ")}"`);
+  //   return (attrs.length == 0)? "" : " " + attrs.join(" ");
+  // },
+  // getAttrsStrFromSavedNode: (node: SavedNode) => { // to transpiler
+  //   //todo when required = true but value is ""
+  //   let attrs = node.attribute.map(it =>
+  //     `${it.name}=${NodeUtil.attrToString(it)}`
+  //   );
+  //   if(node.className.length != 0) attrs = attrs.concat(`className="${node.className.join(" ")}"`);
+  //   return (attrs.length == 0)?  "" :" " + attrs.join(" ");
+  // }
 };
 
 

@@ -1,8 +1,9 @@
 import {SavedFile} from "../../../files/SaveProject";
 import {
-  NinComponentInitializer, NinComponentString, NinElement,
+  NinComponentInfo,
+  NinComponentString, NinElement,
   ROOT_ID
-} from "../../Entities/NinComponent";
+} from "../../Entities/NinElement";
 import {SavedCss, SavedIndex} from "../../../files/FileManager";
 import {List, Map} from "immutable"
 import {NodeUtil} from "../../../Util";
@@ -18,7 +19,6 @@ export class Project {
   root: string;
   files: Map<string, ComponentFile>;
   activeFile: string;
-  HTML_TAGS: List<NinComponentInitializer>;
   cssManager: CssClassManager;
   constructor(index: SavedIndex, files: Array<SavedFile>, css: SavedCss) {
     this.cssManager = new CssClassManager().loadSavedCss(css);
@@ -26,17 +26,16 @@ export class Project {
     this.version = index.version;
     this.root = index.root;
     this.projectName = index.project;
-    this.HTML_TAGS = List(HTML_TAGS);
     const map: {[key: string]: ComponentFile} = {};
     const tmpFiles: List<ComponentFile> = List(files.map(it => new ComponentFile(`${it.path}.${it.name}`)));
 
     files.forEach(it => {
       let elements: Map<string, NinElement> = Map();
       it.node.forEach(node => {
-        const initializer: NinComponentInitializer =
-          (NodeUtil.getPathFromFullName(node.type) === HTML_PATH)? this.HTML_TAGS.find(it => `${it!.path}.${it!.type}` === node.type)
+        const info: NinComponentInfo =
+          (NodeUtil.getPathFromFullName(node.type) === HTML_PATH)? HTML_TAGS.find(it => `${it!.path}.${it!.type}` === node.type)!
           : tmpFiles.find(it => it!.fullName() == node.type).getComponentInitializer();
-        elements = elements.set(node.id, NinElement.fromSavedNode(initializer, node));
+        elements = elements.set(node.id, NinElement.fromSavedNode(info, node));
       });
       let fullName = `${it.path}.${it.name}`;
       if(fullName.startsWith(".")) fullName = fullName.slice(1);
@@ -48,22 +47,23 @@ export class Project {
   getActiveFile(): ComponentFile {
     return this.files.get(this.activeFile);
   }
-  getComponentInitializer(fullName: string): NinComponentInitializer {
+  getComponentInfo(fullName: string): NinComponentInfo {
     const path = fullName.split(".");
     const type = path.pop();
-    if(path.join(".") == HTML_PATH) return this.HTML_TAGS.find(it => it!.type === type);
+    if(path.join(".") == HTML_PATH) return HTML_TAGS.find(it => it!.type === type)!;
     return this.files.get(fullName).getComponentInitializer();
   }
   private copy(...differ: Array<object>): Project {
     return Object.assign(Object.create(Project.prototype), this, ...differ)
   }
   changeActiveFile(fileName: string): Project {
-    console.log(this.getActiveFile().elements.toArray());
     return this.copy({ activeFile: fileName });
   }
   addFile(fullName: string, elements = Map<string, NinElement>()): Project {
     return this.copy({ files: this.files.set(fullName, new ComponentFile(fullName, elements))});
   }
+
+  // node
   addNode(element: NinElement): Project {
     return this.copy({ files: this.files.update(this.activeFile, it => it.addNode(element)) });
   }
@@ -82,6 +82,7 @@ export class Project {
   changeNodeAttribute(id: string, attr: string, value: string): Project {
     return this.copy({ files: this.files.update(this.activeFile, it => it.changeAttribute(id, attr, value)) });
   }
+
   componentize(id: string, componentName: string): Project {
     let nodes = this.files.get(this.activeFile).copyNodes(id).update(id, it => it.changeParent(ROOT_ID));
     const ret = this
@@ -97,13 +98,13 @@ export class Project {
           return getFileHtml(this.files.get(`${node.path}.${node.type}`));
         }
         if(node.type === "textNode") {
-          const attr = node.attributes.find(it => it!.name == "text");
-          return (attr)? attr.value : "";
+          return node.attributes.get("text") || "";
         }
-
         const children = node.children.map(it => getNodeHtml(nodes.get(it!), nodes)).join("");
+        const attrString = NodeUtil.getAttrStr(node.attributes, this.getComponentInfo(node.fullName()))
+        + (node.classList.size != 0)? ` class="${node.classList.join(" ")}"` : "";
         return this.getHTMLRow(node.type)
-          .replace(NinComponentString.Attributes, NodeUtil.getAttrsStrFromNinElement(node))
+          .replace(NinComponentString.Attributes, attrString)
           .replace(NinComponentString.Children, children);
       };
       if(file.elements.filter(it => it!.parent == ROOT_ID).size != 1) return "rendering problem"//todo
@@ -113,7 +114,7 @@ export class Project {
     return getFileHtml(this.files.get(fileName));
   }
   private getHTMLRow(tag: string): string {
-      const initializer = this.HTML_TAGS.find(it => it!.type == tag);
+      const initializer = HTML_TAGS.find(it => it!.type == tag)!;
       return (initializer.hasChild)? `<${tag}${NinComponentString.Attributes}>${NinComponentString.Children}</${tag}>` : `<${tag}${NinComponentString.Attributes}/>`
   }
 

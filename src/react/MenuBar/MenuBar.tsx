@@ -3,7 +3,7 @@ import {fileManager} from "../../files/FileManager";
 import {Project} from "../IDE/Project/Project";
 import {Link} from "react-router-dom";
 import * as path from "path";
-import {Transpiler} from "../../transpiler/transpiler";
+import {Transpiler2} from "../../transpiler/transpiler";
 import {execCommand, serverManager} from "../../commandline/cli";
 import {CssClassManager} from "../Css/CssClassManager";
 import {LogActionDispatcher} from "../IDE/Log/Log";
@@ -15,6 +15,11 @@ interface Props {
 }
 
 export default class MenuBar extends React.Component<Props, {}> {
+  componentWillMount() {
+    window.onbeforeunload = () => {
+      serverManager.disconnect();
+    }
+  }
   componentWillUnmount() {
     serverManager.disconnect();
   }
@@ -34,9 +39,7 @@ export default class MenuBar extends React.Component<Props, {}> {
             <p className="c-menu-bar__main__item" onClick={() => fileManager.saveProject(this.props.project, this.props.cssClassManage)}>save project</p>
             <p className="c-menu-bar__main__item" onClick={async () => {
               this.props.log.info("start transpile to ts");
-              const data = fileManager.loadProject(this.props.project.projectName);
-              await new Transpiler().transpile(data.index, data.files, data.css, `${path.join(fileManager.PROJECT_DIR, this.props.project.projectName, "ts")}`)
-                  // .catch(e => console.log(e));
+              await new Transpiler2().transpile(this.props.project, `${path.join(fileManager.PROJECT_DIR, this.props.project.projectName, "ts")}`);
               this.props.log.info("finish transpile");
             }}>transpile</p>
             <p className="c-menu-bar__main__item" onClick={async e => {
@@ -49,10 +52,13 @@ export default class MenuBar extends React.Component<Props, {}> {
                 this.props.log.info("finish build");
               });
             }}>build</p>
-            <p className="c-menu-bar__main__item" onClick={e => {
+            <p className="c-menu-bar__main__item" onClick={() => {
               serverManager.connect(path.join(fileManager.PROJECT_DIR, this.props.project.projectName, "ts"));
             }}>
               {"open in browser"}
+            </p>
+            <p className="c-menu-bar__main__item" onClick={() => serverManager.disconnect()}>
+              close server
             </p>
           </div>
         </section>

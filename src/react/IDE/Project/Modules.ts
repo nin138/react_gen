@@ -1,7 +1,7 @@
 import {Map} from "immutable"
 import {SavedFile} from "../../../files/SaveProject";
 import {SavedCss, SavedIndex} from "../../../files/FileManager";
-import {NinElement} from "../../Entities/NinComponent";
+import {NinElement} from "../../Entities/NinElement";
 import {Project} from "./Project";
 import Css from "../../Css/Css";
 

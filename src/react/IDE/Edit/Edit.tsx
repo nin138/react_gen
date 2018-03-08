@@ -4,7 +4,7 @@ import {AppAction} from "../../Store";
 import CssEditor from "./Components/CssEditor";
 import {CssClassManager} from "../../Css/CssClassManager";
 import {ActionDispatcher} from "../Container";
-import {NinElement, ROOT_ID} from "../../Entities/NinComponent";
+import {NinElement, ROOT_ID} from "../../Entities/NinElement";
 import AttributeEditor from "./Components/AttributeEditor";
 import {Map} from "immutable";
 import {Project} from "../Project/Project";
@@ -39,7 +39,7 @@ export default class Edit extends React.Component<Props, {}> {
       Attributes
     </li>
     {
-      (this.props.selectedItemId !== ROOT_ID && this.props.project.getComponentInitializer(this.getActiveElement().fullName()).hasCss === true)?
+      (this.props.selectedItemId !== ROOT_ID && this.props.project.getComponentInfo(this.getActiveElement().fullName()).hasCss === true)?
         <li className={`c-edit__head__tab-area__item ${(this.props.selectedTab === EditTabs.CSS) ? "c-edit__head__tab-area__item--selected" : ""}`}
             onClick={() => this.onTabClicked(EditTabs.CSS)}>
           CSS
@@ -55,7 +55,8 @@ export default class Edit extends React.Component<Props, {}> {
       </div>)
     }
     const element = this.getActiveElement();
-    const initializer = this.props.project.getComponentInitializer(element.fullName());
+    const initializer = this.props.project.getComponentInfo(element.fullName());
+    console.log(initializer);
     const tab = (!initializer.hasCss && this.props.selectedTab === EditTabs.CSS)? EditTabs.Attributes : this.props.selectedTab;
     switch(tab) {
       case EditTabs.Attributes:
@@ -71,6 +72,7 @@ export default class Edit extends React.Component<Props, {}> {
   }
   private getActiveElement(): NinElement { return this.props.nodes.get(this.props.selectedItemId) }
   render() {
+    console.log("render edit");
     return (
         <section className="c-edit">
           <div className="c-edit__head">

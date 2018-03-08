@@ -1,5 +1,5 @@
 import {AttributeInfo, AttributeTypes} from "./Attribute";
-import {NinComponentInitializer, NinComponentString} from "../Entities/NinComponent";
+import {NinComponentInfo, NinComponentString} from "../Entities/NinElement";
 
 const list: Array<{name: string, hasChild: boolean, attributes?: Array<AttributeInfo>}> = [
   {name: "section", hasChild: true,},
@@ -134,7 +134,7 @@ const list: Array<{name: string, hasChild: boolean, attributes?: Array<Attribute
 
 export const HTML_PATH = "HTML";
 
-const getHTMLTagData = (): Array<NinComponentInitializer> => {
+const getHTMLTagData = (): Array<NinComponentInfo> => {
   return list.map(it => ({
     path: HTML_PATH,
     type: it.name,
@@ -153,7 +153,6 @@ const getHTMLTagData = (): Array<NinComponentInitializer> => {
 };
 
 export const HTML_TAGS = getHTMLTagData();
-
-
+Object.freeze(HTML_TAGS);
 
 

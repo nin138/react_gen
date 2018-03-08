@@ -1,5 +1,5 @@
 import * as React from "react";
-import {NinElement} from "../../Entities/NinComponent";
+import {NinElement} from "../../Entities/NinElement";
 import {Map} from "immutable"
 import {Project} from "../Project/Project";
 import {CssClassManager} from "../../Css/CssClassManager";

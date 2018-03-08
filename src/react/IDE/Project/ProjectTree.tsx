@@ -2,7 +2,7 @@ import * as React from 'react'
 import {Action} from "redux";
 import {addFile, changeActiveFile, changeCssValue, componentize, createCssClass} from "./Modules";
 import {changeSelectedItem} from "../Tree/Modules";
-import {ROOT_ID} from "../../Entities/NinComponent";
+import {ROOT_ID} from "../../Entities/NinElement";
 import {Project} from "./Project";
 import Css from "../../Css/Css";
 

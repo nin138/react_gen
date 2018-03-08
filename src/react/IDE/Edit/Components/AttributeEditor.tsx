@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {AttributeInfo, AttributeTypes} from "../../../Html/Attribute";
-import {NinElement} from "../../../Entities/NinComponent";
+import {NinElement} from "../../../Entities/NinElement";
 import {Project} from "../../Project/Project";
 
 interface Props {
@@ -10,9 +10,7 @@ interface Props {
 }
 
 export default class AttributeEditor extends React.Component<Props> {
-  private createAttributeInput(attr: string) {
-    const info = this.props.project.getComponentInitializer(this.props.element.fullName())
-      .attributes.find(it => it.name === attr)!;
+  private createAttributeInput(info: AttributeInfo) {
     const createInput = (value: string, info: AttributeInfo, onChange: (value: string) => void) => {
       switch(info.type) {
         case AttributeTypes.string: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
@@ -27,21 +25,27 @@ export default class AttributeEditor extends React.Component<Props> {
         case AttributeTypes.script: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
         case AttributeTypes.any: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>);
         case AttributeTypes.css: return (<input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>); // todo use CssEditor
+        case AttributeTypes.CSSLength: return "todo";
+        case AttributeTypes.boolean: return (<input type="checkbox" checked={value === "true"} onChange={e => onChange(e.target.checked? "true" : "false")}/>)
+        case AttributeTypes.HTMLid: return <input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>;// todo
+        case AttributeTypes.URI: return <input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>;// todo
+        case AttributeTypes.imageURI: return <input value={value} onChange={ (e) => onChange(e.target.value) } type="text"/>;// todo
+
+        default: throw new Error("todo impl AttributeEditor" + info.type);
       }};
-    const action = (value: string) => { this.props.changeAttribute(this.props.element.id, attr, value) };
+    const action = (value: string) => { this.props.changeAttribute(this.props.element.id, info.name, value) };
     return (
-        <div key={attr}>
-          <p>{attr}</p>
-          {createInput(this.props.element.attributes.find(it => it!.name === attr).value, info!, action)}
+        <div key={info.name}>
+          <p>{info.name}</p>
+          {createInput(this.props.element.attributes.get(info.name), info, action)}
         </div>
     );
   }
   render() {
     return (
         <div>
-          {this.props.element.attributes
-              .map(it => this.createAttributeInput(it!.name))
-          }
+          {this.props.project.getComponentInfo(this.props.element.fullName()).attributes
+            .map(it => this.createAttributeInput(it))}
         </div>
     );
   }

@@ -1,7 +1,7 @@
-import {Transpiler} from "./transpiler";
+import {Transpiler2} from "./transpiler";
 
 export class StoreBuilder {
-  constructor(private transpiler: Transpiler) {}
+  constructor(private transpiler: Transpiler2) {}
   build(modules: Array<{name: string, path: string}>) {
     return [
       this.createImport(modules),

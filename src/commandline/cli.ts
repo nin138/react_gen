@@ -26,7 +26,6 @@ class ServerManager {
   isServerRunning = (): boolean => (this.server !== undefined);
   disconnect = () => {
     if(this.server) {
-      console.log(this.server);
       this.server.kill();
       this.server = undefined;
     }

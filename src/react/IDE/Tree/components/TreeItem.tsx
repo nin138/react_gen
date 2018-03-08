@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {NinElement} from "../../../Entities/NinComponent";
+import {NinElement} from "../../../Entities/NinElement";
 import {TreeItemPosition} from "../Modules";
 import {Map} from "immutable";
 import {TreeDropEventType} from "../Tree";

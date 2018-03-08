@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {NinElement, ROOT_ID} from "../../../Entities/NinComponent";
+import {NinElement, ROOT_ID} from "../../../Entities/NinElement";
 import {Map} from "immutable";
 import TreeItem from "./TreeItem";
 import {ActionDispatcher} from "../../Container";

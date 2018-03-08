@@ -1,20 +1,49 @@
-import {NinComponentInitializer, NinElement, ROOT_ID} from "../../Entities/NinComponent";
-import {Map} from "immutable";
+import {NinComponentInfo, NinElement, ROOT_ID} from "../../Entities/NinElement";
+import {List, Map} from "immutable";
+
+export interface StateData {
+  name: string,
+  initial: string,
+  type: string
+}
+
+export interface NinAction {
+  name: string;
+  prams: Map<string, string>
+}
+
+export interface NinReducerCase {
+  actionName: string
+  fn: string
+}
 
 export class ComponentFile {
-  path: string;
-  name: string;
-  row: string | undefined;
+  readonly props: List<{name: string, type: string}>;//todo
+  readonly store: List<StateData>; // todo
+  readonly state: List<StateData>; //todo
+  readonly actions: List<NinAction>;// todo
+  readonly dispatcher: any; //todo
+  readonly reducer: List<NinReducerCase>; //todo
+  readonly path: string;
+  readonly name: string;
+  readonly row: string | undefined;
   fullName(): string { return this.path + "." + this.name }
-  elements: Map<string, NinElement>;
+  readonly elements: Map<string, NinElement>;
+
   constructor(fullName: string, elements: Map<string, NinElement> = Map()) {
     const path = fullName.split(".");
     this.name = path.pop()!;
     this.path = path.join(".");
     this.elements = elements;
+
+    this.props = List();
+    this.store = List();
+    this.state = List();
+    this.actions = List();
+    this.reducer = List();
   }
 
-  getComponentInitializer(): NinComponentInitializer {
+  getComponentInitializer(): NinComponentInfo {
     return ({
       path: this.path,
       type: this.name,

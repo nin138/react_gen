@@ -1,17 +1,18 @@
 import * as React from 'react'
 import {changeSelectedItem, openContextMenu, reloadTreeState, TreeItemPosition, TreeState} from "./Modules";
 import {AppAction} from "../../Store";
-import {NinElement, NinComponentInitializer, ROOT_ID} from "../../Entities/NinComponent";
+import {NinElement, NinComponentInfo, ROOT_ID} from "../../Entities/NinElement";
 import {LogActionDispatcher} from "../Log/Log";
 import {Message} from "../../Message";
 import TreeRoot from "./components/TreeRoot";
 import {changeAttribute, createNode, moveNode} from "../Project/Modules";
 import {Map} from "immutable";
 import {ActionDispatcher} from "../Container";
+import {Project} from "../Project/Project";
 
 export class TreeActionDispatcher {
   constructor(private dispatch: (action: AppAction) => void) {}
-  createNode(initializer: NinComponentInitializer, parent: string) { this.dispatch(createNode(new NinElement(initializer, parent), parent)) }
+  createNode(initializer: NinComponentInfo, parent: string) { this.dispatch(createNode(new NinElement(initializer, parent), parent)) }
   moveNode(moveNodeId: string, parentId: string, ref: string | null) { this.dispatch(moveNode(moveNodeId, parentId, ref)) }
   changeSelectedItem(id: string) { this.dispatch(changeSelectedItem(id)) }
   changeAttribute(targetId: string ,attr: string, value: string) { this.dispatch(changeAttribute(targetId, attr, value)) }
@@ -26,6 +27,7 @@ export enum TreeDropEventType {
 }
 
 interface Props {
+  project: Project
   value: TreeState
   nodes: Map<string, NinElement>
   actions: ActionDispatcher
@@ -67,7 +69,7 @@ export default class Tree extends React.Component<Props, {}> {
       const ref = (position === TreeItemPosition.body || !position)? null : (position === TreeItemPosition.before)?targetId : parentNode.children.get(parentNode.children.indexOf(targetId) + 1);
       if(parentId === id || ref === id) return;
       if(this.getParentList(targetId).includes(id)) this.props.log.error(Message.err.dom.childIncludeParent);
-      else if(parentId !== ROOT_ID && !nodes.get(parentId).hasChild) this.props.log.error(Message.err.dom.cannotHaveChildNode);
+      else if(parentId !== ROOT_ID && !this.props.project.getComponentInfo(nodes.get(parentId).fullName()).hasChild) this.props.log.error(Message.err.dom.cannotHaveChildNode);
       else this.props.actions.tree.moveNode(id, parentId, ref);
     }
   }

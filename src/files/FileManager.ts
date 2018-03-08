@@ -2,7 +2,7 @@ import * as fs from "fs-extra";
 import * as Path from "path";
 import {Toml} from "../Util";
 import {createComponentFile, SavedFile} from "./SaveProject";
-import {ROOT_ID} from "../react/Entities/NinComponent";
+import {ROOT_ID} from "../react/Entities/NinElement";
 import {CssClassManager} from "../react/Css/CssClassManager";
 import {Project} from "../react/IDE/Project/Project";
 const shortId = require("shortid");
@@ -37,9 +37,6 @@ class FileManager {
     if(!fs.existsSync(path)) fs.mkdirsSync(path);
     fs.writeFileSync(Path.join(path, fileName), data);
   }
-  // getProject(projectName: string): { files: Map<string, ComponentFile>, root: string } {
-  //
-  // }
   saveProject(project: Project, cssManage: CssClassManager) {
     this.makeProjectDir(project.projectName);
     fs.removeSync(Path.join(this.PROJECT_DIR, project.projectName, "src"));

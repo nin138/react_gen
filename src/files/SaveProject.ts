@@ -1,7 +1,6 @@
-import {NinElement} from "../react/Entities/NinComponent";
+import {NinElement} from "../react/Entities/NinElement";
 import {Map} from "immutable"
 import {Toml} from "../Util";
-import {AttributeTypes, NinElementAttribute} from "../react/Html/Attribute";
 import {ComponentFile} from "../react/IDE/Project/ComponentFile";
 
 export interface SavedNode {
@@ -14,8 +13,7 @@ export interface SavedNode {
 }
 
 export interface SavedAttribute {
-  name: string
-  type: AttributeTypes
+  attr: string
   value: string
 }
 
@@ -32,8 +30,10 @@ export interface SavedFile {
 }
 
 export const createComponentFile = (file: ComponentFile): string => {
-  const getAttrArrayFromNinElement = (node: NinElement): Array<NinElementAttribute> => {
-    return node.attributes.toArray().filter(it => it.value !== "");
+  const getAttrArrayFromNinElement = (node: NinElement): Array<{attr: string, value: string}> => {
+    return node.attributes.keySeq().toArray()
+      .map(it => ({attr: it, value: node.attributes.get(it) }))
+      .filter(it => it.value !== "");
   };
 
   const getNodeArray = (nodes: Map<string, NinElement>): Array<SavedNode> => {

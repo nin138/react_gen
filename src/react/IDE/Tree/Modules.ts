@@ -1,4 +1,4 @@
-import {ROOT_ID} from "../../Entities/NinComponent";
+import {ROOT_ID} from "../../Entities/NinElement";
 
 export enum TreeItemPosition {
   before = "before",

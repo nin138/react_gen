@@ -24,7 +24,7 @@ export default class Palette extends React.Component<Props, State> {
   }
   onDragStart(e: React.DragEvent<any>, v: string) {
     e.dataTransfer.setData("type", TreeDropEventType.create);
-    e.dataTransfer.setData("data", JSON.stringify(this.props.project.getComponentInitializer(v)));
+    e.dataTransfer.setData("data", JSON.stringify(this.props.project.getComponentInfo(v)));
   }
   render() {
     let list: Array<string>;

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import ClassCreator from "./ClassCreator";
-import {NinElement} from "../../../Entities/NinComponent";
+import {NinElement} from "../../../Entities/NinElement";
 import {ActionDispatcher} from "../../Container";
 import CssClassEditor from "./CssClassEditor";
 import {CssClassManager} from "../../../Css/CssClassManager";
@@ -30,7 +30,7 @@ export default class CssEditor extends React.Component<Props> {
       });
   }
   render() {
-    const initializer = this.props.project.getComponentInitializer(this.props.element.fullName());
+    const initializer = this.props.project.getComponentInfo(this.props.element.fullName());
     return (
         <div>
           {(initializer.hasCss) ? (<ClassCreator createCssClass={ (value: string) => this.createAndAddClass(value) }/>) : ""}

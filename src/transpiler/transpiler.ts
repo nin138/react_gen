@@ -1,12 +1,11 @@
 import * as fs from "fs-extra";
 import * as path from "path";
-import {ENCODING, SavedCss, SavedIndex} from "../files/FileManager";
+import {ENCODING} from "../files/FileManager";
 import {TsFileBuilder} from "./TsFileBuilder";
-import {SavedFile} from "../files/SaveProject";
 import {ModuleFileBuilder} from "./ModuleFileBuilder";
 import {StoreBuilder} from "./StoreBuilder";
-import {Util} from "../Util";
-import {CssClassManager} from "../react/Css/CssClassManager";
+import {Project} from "../react/IDE/Project/Project";
+import {ComponentFile} from "../react/IDE/Project/ComponentFile";
 
 
 export interface Settings {
@@ -18,42 +17,40 @@ const DEFAULT_SETTING = {
   TAB_SIZE: 2,
 };
 
-export class Transpiler {
-  outDir: string;
-  index: SavedIndex;
-  files: Array<SavedFile>;
+
+export class Transpiler2 {
   settings: Settings;
-  tsFileBuilder: TsFileBuilder;
-  moduleFileBuilder: ModuleFileBuilder;
-  storeBuilder: StoreBuilder;
+  outDir: string;
+  project: Project;
   constructor(settings: Settings = DEFAULT_SETTING) {
     this.settings = settings;
-    this.tsFileBuilder = new TsFileBuilder(this);
-    this.moduleFileBuilder = new ModuleFileBuilder(this);
-    this.storeBuilder = new StoreBuilder(this);
   }
-  transpile = async (index: SavedIndex, files: Array<SavedFile>, css: SavedCss, outDir: string) => {
-    this.index = index;
-    this.files = files.map(it => Object.assign(it, {name: Util.capitalizeFirst(it.name)}));
+  transpile = async (project: Project, outDir: string) => {
+    const tsFileBuilder = new TsFileBuilder(this, project);
+    const moduleFileBuilder = new ModuleFileBuilder(this);
+    const storeBuilder = new StoreBuilder(this);
+    this.project = project;
     this.outDir = outDir;
     await fs.remove(outDir);
     const modules: Array<{name: string, path: string}> = [];
-    this.files.forEach(async it => {
-      if(Object.keys(it.store).length !== 0) modules.push({name: it.name, path: it.path});
-      const ts = this.tsFileBuilder.toTs(it);
-      await this.writeFile(path.join(this.outDir, "src", it.path), it.name + ".tsx", ts);
-      const module = this.moduleFileBuilder.build(it);
-      if(module) await this.writeFile(path.join(this.outDir, "src", it.path), it.name + "Module.ts", module);
+    project.files.forEach(async (file: ComponentFile) => {
+      const ts = tsFileBuilder.toTs(file);
+      await this.writeFile(path.join(this.outDir, "src", file.path), file.name + ".tsx", ts);
+      if(file.store.size !== 0) {
+        modules.push({name: file.name, path: file.path});
+        const module = moduleFileBuilder.create(file);
+        await this.writeFile(path.join(this.outDir, "src", file.path), file.name + "Module.ts", module);
+      }
     });
     await this.copyTemplate(modules.length == 0);
-    const store = this.storeBuilder.build(modules);
+    const store = storeBuilder.build(modules);
     if(modules.length !== 0)await this.writeFile(path.join(this.outDir, "src"), "Store.ts", store);
-    await this.createCss(css);
+    await this.createCss();
+    //todo
   };
-  private createCss = async (savedCss: SavedCss) => {
-    const manager = new CssClassManager().loadSavedCss(savedCss);
-    const css = manager.getCssString();
-    await this.writeFile(path.join(this.outDir, "dist"), "style.css", css);
+  createTab = (num: number): string => {
+    const char = (this.settings.USE_TAB_CHARACTER)? "\t" : Array(this.settings.TAB_SIZE + 1).join(" ");
+    return Array(num + 1).join(char);
   };
   private writeFile = async(dir: string, fileName: string, data: string) => {
     if(!await fs.pathExists(dir)) await fs.mkdirs(dir);
@@ -64,13 +61,13 @@ export class Transpiler {
     const packageJson = await fs.readFile(`./template/package.json`, ENCODING);
     await fs.copy(!isNoStore? "./template/index.tsx" : "./template/index-no-store.tsx", path.join(this.outDir, "src", "index.tsx"));
     await fs.writeFile(path.join(this.outDir, "package.json"),
-        packageJson
-            .replace("${APP_NAME}", this.index.project)
-            .replace("${VERSION}", this.index.version)
-        , ENCODING);
+      packageJson
+        .replace("${APP_NAME}", this.project.projectName)
+        .replace("${VERSION}", this.project.version)
+      , ENCODING);
   };
-  createTab = (num: number): string => {
-    const char = (this.settings.USE_TAB_CHARACTER)? "\t" : Array(this.settings.TAB_SIZE + 1).join(" ");
-    return Array(num + 1).join(char);
+  private createCss = async () => {
+    const css = this.project.cssManager.getCssString();
+    await this.writeFile(path.join(this.outDir, "dist"), "style.css", css);
   };
 }

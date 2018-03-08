@@ -1,9 +1,9 @@
-import {Transpiler} from "./transpiler";
-import {SavedFile} from "../files/SaveProject";
+import {Transpiler2} from "./transpiler";
+import {ComponentFile, NinAction} from "../react/IDE/Project/ComponentFile";
 
 export class ModuleFileBuilder {
-  constructor(private transpiler: Transpiler) {}
-  build(file: SavedFile) {
+  constructor(private transpiler: Transpiler2) {}
+  create(file: ComponentFile) {
     if(Object.keys(file.store).length == 0) return "";
     return [
       this.createActionNames(file),
@@ -14,62 +14,51 @@ export class ModuleFileBuilder {
       this.createReducer(file)
     ].join("\n\n")
   }
-  private createActionNames = (file: SavedFile) => {
+  private createActionNames = (file: ComponentFile) => {
     return `enum ActionNames {\n` +
-        `${Object.keys(file.actions).map(it => `${this.transpiler.createTab(1)}${it} = "${file.name}.${it}"`).join(",\n")}` +
+        `${file.actions.map(it => `${this.transpiler.createTab(1)}${it!.name} = "${file.name}.${it!.name}"`).join(",\n")}` +
         "\n}\n";
   };
-  private createActions = (file: SavedFile) => {
-    const createActionInterface = (name: string, params: {[param: string]: string}) => {
+  private createActions = (file: ComponentFile) => {
+    const createActionInterface = (action: NinAction) => {
       return `interface ${name}Action {\n` +
           `${this.transpiler.createTab(1)}type: ActionNames.${name},` +
-          Object.keys(params).map(param => `\n${this.transpiler.createTab(1)}${param}: ${params[param]}`).join(",") +
+          action.prams.map((param, type) => `\n${this.transpiler.createTab(1)}${param}: ${type}`).join(",") +
           "\n}\n";
     };
-    const createActionFunc = (name: string, params: {[param: string]: string}) => {
-      return `export const ${name} = (${Object.keys(params).map(param => `${param}: ${params[param]}`).join(", ")}) => ({\n` +
+    const createActionFunc = (action: NinAction) => {
+      return `export const ${action.name} = (${action.prams.map((param, type)  => `${param}: ${type}`).join(", ")}) => ({\n` +
           `${this.transpiler.createTab(1)}type: ActionNames.${name},` +
-          Object.keys(params).map(it => "\n" + this.transpiler.createTab(1) + it).join(",") +
+          action.prams.map(it => "\n" + this.transpiler.createTab(1) + it).join(",") +
           "\n});\n";
     };
-    return Object.keys(file.actions)
-        .map(name => {
-          const action = file.actions[name];
-          return `${createActionInterface(name, action)}\n${createActionFunc(name, action)}`
-        }).join("\n\n");
+    return file.actions.map(action => `${createActionInterface(action!)}\n${createActionFunc(action!)}`).join("\n\n");
   };
-  private createActionType = (file: SavedFile) => {
-    if(Object.keys(file.actions).length === 0) return "";
+  private createActionType = (file: ComponentFile) => {
+    if(file.actions.size === 0) return "";
     return `export type ${file.name}Action =\n` +
-        Object.keys(file.actions).map(it => `${this.transpiler.createTab(1)}${it}Action`).join(" |\n")
+        file.actions.map(it => `${this.transpiler.createTab(1)}${it!.name}Action`).join(" |\n")
   };
-  private createState = (file: SavedFile) => {
+  private createState = (file: ComponentFile) => {
     if(Object.keys(file.store).length === 0) return "";
     return `export interface ${file.name}State {\n` +
-        Object.keys(file.store)
-            .map(it => `${this.transpiler.createTab(1)}${it}: ${file.store[it]}`)
+        file.store
+            .map(it => `${this.transpiler.createTab(1)}${it!.name}: ${it!.initial}`)
             .join("\n") +
         "\n}\n";
   };
-  private createInitialState = (file: SavedFile) => {
+  private createInitialState = (file: ComponentFile) => {//initialstore??? todo
     return `const initialState: ${file.name}State = {\n` +
-        Object.keys(file.initialStore)
-            .map(it => `${this.transpiler.createTab(1)}${it}: ${file.initialStore[it]}`)
+        file.state
+            .map(it => `${this.transpiler.createTab(1)}${it!.name}: ${it!.initial}`)
             .join(",\n") +
         "\n};\n";
   };
-  private createReducer = (file: SavedFile) => {
-    const createCase = (name: string, fn: string) => {
-      const parse = (fn: string) => {
-        const l = fn.split(" = ");
-        return `${l[0]}: ${l[1]}`;
-      };
-      return `${this.transpiler.createTab(2)}case ActionNames.${name}:\n${this.transpiler.createTab(3)}return Object.assign({}, state, { ${parse(fn)} });\n`
-    };
+  private createReducer = (file: ComponentFile) => {
     return `export default function reducer(state: ${file.name}State = initialState, action: ${file.name}Action): ${file.name}State {\n` +
         `${this.transpiler.createTab(1)}switch(action.type) {\n` +
-        Object.keys(file.reducer)
-            .map(it => createCase(it, file.reducer[it]))
+        file.reducer
+            .map(it => `${this.transpiler.createTab(2)}case ActionNames.${it!.actionName}:\n${this.transpiler.createTab(3)}return ${it!.fn});\n`)
             .join("") +
         `${this.transpiler.createTab(2)}default: return state;\n` +
         `${this.transpiler.createTab(1)}}\n}\n`;

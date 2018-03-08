@@ -25,7 +25,7 @@ export default class IDE extends React.Component<Props, {}> {
             </div>
             <div className="c-IDE__body__tree-area">
               <Palette project={this.props.project} />
-              <Tree actions={this.props.actions} value={this.props.tree} nodes={this.props.project.getActiveFile().elements} log={this.props.actions.log}/>
+              <Tree project={this.props.project} actions={this.props.actions} value={this.props.tree} nodes={this.props.project.getActiveFile().elements} log={this.props.actions.log}/>
             </div>
             <div className="c-IDE__body__display-area">
               <Renderer cssClassManager={this.props.project.cssManager} project={this.props.project} nodes={this.props.project.getActiveFile().elements} files={this.props.project.files}/>
