@@ -3,26 +3,24 @@ import {
   BrowserWindow,
 } from 'electron';
 import * as path from 'path';
+import * as url from "url";
 
 
-// RootPath
-const ROOT_PATH = "file://" + path.resolve("");
-
-// mainWindowのHTMLファイル
-const rootPath = `${ROOT_PATH}/build/react/index.html`;
-
-// アプリ起動時の処理
-app.on('ready', e => {
-  const winSetting = { width: 1600, height: 960 };
-  const mainWindow = new BrowserWindow(winSetting);
-  // デベロップツールの表示
-
-  console.log(`${rootPath}?rootDir=${app.getPath("documents")}`);
-  mainWindow.webContents.openDevTools();
-  mainWindow.loadURL(`${rootPath}?rootDir=${path.join(app.getPath("documents"), "ninit")}`);
+const indexURI = url.format({
+  pathname: path.join(__dirname, 'index.html'),
+  protocol: 'file:',
+  slashes: true
 });
 
-// アプリ終了時の処理
+
+app.on('ready', _ => {
+  const winSetting = { width: 1600, height: 960 };
+  const mainWindow = new BrowserWindow(winSetting);
+
+  mainWindow.webContents.openDevTools();
+  mainWindow.loadURL(`${indexURI}?rootDir=${path.join(app.getPath("documents"), "ninit")}`);
+});
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();

@@ -7,8 +7,9 @@
     "postbuild": "npm run start",
     "build-electron": "webpack --config webpack-electron.config.js -p --color",
     "postbuild-electron": "npm run start",
-    "sass-watch": "sass --style expanded --watch css/style.scss:dist/style.css",
-    "sass-min": "sass --sourcemap=none --style compressed css/style.scss:dist/style.css"
+    "sass-watch": "sass --style expanded --watch css/style.scss:build/style.css",
+    "sass-min": "sass --sourcemap=none --style compressed css/style.scss:dist/style.css",
+    "package": "electron-packager ./build Ninit --platform=darwin --arch=x64 --overide --out=release"
   },
   "devDependencies": {
     "@types/fs-extra": "^5.0.0",
@@ -18,12 +19,12 @@
     "@types/react-router": "^4.0.22",
     "@types/react-router-dom": "^4.2.4",
     "copy-webpack-plugin": "^4.5.1",
+    "electron-packager": "^11.1.0",
     "fetch-mock": "5.12.1",
-    "html-webpack-plugin": "^2.30.1",
+    "html-webpack-plugin": "^3.0.6",
     "react-test-renderer": "16.0.0-beta.1",
-    "ts-loader": "2.3.2",
-    "typescript": "2.6.2",
-    "webpack": "3.4.1"
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12"
   },
   "dependencies": {
     "electron": "^1.8.2",
@@ -37,6 +38,8 @@
     "redux": "3.7.2",
     "shortid": "^2.2.8",
     "toml": "^2.3.3",
-    "tomlify-j0.4": "^3.0.0"
+    "tomlify-j0.4": "^3.0.0",
+    "ts-loader": "^4.0.1",
+    "typescript": "^2.7.2"
   }
 }

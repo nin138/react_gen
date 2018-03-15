@@ -1,1 +1,1 @@
-require ('./build/electron/index.js');
+require ('./build/index.js');
