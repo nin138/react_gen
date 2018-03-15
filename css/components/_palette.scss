@@ -25,9 +25,20 @@
       }
     }
   }
+  &__tab {
+    display: flex;
+    height: 2rem;
+    margin-bottom: .5rem;
+    &__item {
+      padding: .5rem;
+      &--selected {
+        border-bottom: solid #66aaff;
+      }
+    }
+  }
   &__list {
     border: solid;
-    height: calc(100% - 2rem);
+    height: calc(100% - 4.5rem);
     overflow-y: scroll;
     &__item {
       margin: .2rem;
