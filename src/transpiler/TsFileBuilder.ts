@@ -69,7 +69,7 @@ export class TsFileBuilder {
   private createJSX(id: string, map: Map<string, NinElement>, tab: number): string {
     const node = map.get(id)!!;
     const attrs = NodeUtil.getAttrStr(node.attributes, this.project.getComponentInfo(node.fullName()))
-     + (node.classList.size !== 0)? ` className="${node.classList.join(" ")}"` : "";
+     + ((node.classList.size == 0)? "" : ` className="${node.classList.join(" ")}"`);
     let tag: string = node.type.split(".").pop()!;
     if(node.fullName() === "HTML.textNode") return `${this.transpiler.createTab(tab)}${node.attributes.get("text") || ""}`;
     if(node.path === HTML_PATH) {
