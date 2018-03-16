@@ -4,24 +4,18 @@ import {Link} from "react-router-dom";
 import {fileManager} from "../../files/FileManager";
 import {ActionDispatcher} from "../IDE/Container";
 import {ModalEvent, ModalInputType} from "../Modal/Modal";
+import {RouteComponentProps, withRouter} from 'react-router';
 
-interface Props extends AppState {
+interface Props extends AppState, RouteComponentProps<string> {
   actions: ActionDispatcher
   location: any
 }
 
-export default class Top extends React.Component<Props, {}> {
-  componentWillMount() {
-    const rootDir = new URLSearchParams(this.props.location.search).get("rootDir");
-    if(rootDir && rootDir) fileManager.setRootDir(rootDir);
-  }
+class Top extends React.Component<Props, {}> {
 
   render() {
     const projects = fileManager.getProjectNames()
-        .map(it => <Link to="/ide"><p className="c-top__prj-area__item" onClick={() =>  {
-          const prj = fileManager.loadProject(it);
-          this.props.actions.loadProject(prj.index, prj.files, prj.css);
-        }}>{it}</p></Link>);
+        .map(it => <Link to={`/ide/${it}`}><p className="c-top__prj-area__item">{it}</p></Link>);
     return (
         <section className="c-top">
           <h1 className="c-top__h1">Ninit</h1>
@@ -31,8 +25,7 @@ export default class Top extends React.Component<Props, {}> {
                 "",
                 [{name: "create", listener: (ev: ModalEvent) => {
                   fileManager.createNewProject(ev.projectName, ev.groupName);
-                  const prj = fileManager.loadProject(ev.projectName);
-                  this.props.actions.loadProject(prj.index, prj.files, prj.css);
+                  this.props.history.push(`/ide/${ev.projectName}`)
                 }}],
                 [{name: "projectName", type: ModalInputType.TextBox},
                   {name: "groupName", type: ModalInputType.TextBox}]
@@ -45,3 +38,5 @@ export default class Top extends React.Component<Props, {}> {
     )
   }
 }
+
+export default withRouter(Top);

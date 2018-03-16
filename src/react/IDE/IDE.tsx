@@ -8,14 +8,22 @@ import Log from "./Log/Log";
 import Renderer from "./Renderer/Renderer";
 import Project from "./Project/ProjectTree";
 import MenuBar from "../MenuBar/MenuBar";
+import {fileManager} from "../../files/FileManager";
 
 interface Props extends AppState {
   actions: ActionDispatcher
+  match: any
 }
 
 export default class IDE extends React.Component<Props, {}> {
+  componentWillMount() {
+    const projectName = this.props.match.params.id;
+    if(!projectName && !this.props.project.projectName) { throw new Error("empty project loaded")}
+    const prj = fileManager.loadProject(projectName);
+    this.props.actions.loadProject(prj.index, prj.files, prj.css);
+  }
   render() {
-    if(!this.props.project.projectName) return <p>error::opennullproject</p>;//todo
+    if(!this.props.project.projectName) return <p>error::emptyprojectloaded</p>;//todo
     return (
         <section className="c-IDE">
           <MenuBar project={this.props.project} cssClassManage={this.props.project.cssManager} log={this.props.actions.log}/>

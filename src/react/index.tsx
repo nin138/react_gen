@@ -4,9 +4,14 @@ import {Provider} from "react-redux";
 import Store from './Store'
 import {Routes} from "./Routes";
 import {Router} from "react-router";
-import createBrowserHistory from "history/createBrowserHistory";
+import createHashHistory from "history/createHashHistory";
+import {fileManager} from "../files/FileManager";
+import {remote} from "electron"
+import * as path from "path";
 
-const history = createBrowserHistory();
+fileManager.setRootDir(path.join(remote.app.getPath("documents"), "ninit"));
+
+const history = createHashHistory();
 
 ReactDOM.render(
     <Provider store={Store}>

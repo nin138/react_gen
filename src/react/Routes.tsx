@@ -10,7 +10,7 @@ export class Routes extends React.Component<{}, {}> {
     return (
       <div>
         <Switch>
-          <Route path="/ide" component={IDE}/>
+          <Route path="/ide/:id" component={IDE}/>
           <Route path="/" component={Top}/>
           <Route component={NotFound}/>
         </Switch>

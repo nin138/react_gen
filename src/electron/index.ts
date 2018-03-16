@@ -18,11 +18,10 @@ app.on('ready', _ => {
   const mainWindow = new BrowserWindow(winSetting);
 
   mainWindow.webContents.openDevTools();
-  mainWindow.loadURL(`${indexURI}?rootDir=${path.join(app.getPath("documents"), "ninit")}`);
+  // mainWindow.loadURL(`${indexURI}?rootDir=${path.join(app.getPath("documents"), "ninit")}&v=1`);
+  mainWindow.loadURL(indexURI);
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  app.quit();
 });
