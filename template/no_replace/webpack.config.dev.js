@@ -1,6 +1,6 @@
 module.exports = {
   entry: './src/index.tsx',
-  output: { filename: './dist/bundle.js' },
+  output: { filename: './bundle.js' },
   devtool: 'source-map',
   resolve: { extensions: ['.ts', '.tsx', '.js'] },
   module: {

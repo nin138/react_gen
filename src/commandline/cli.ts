@@ -25,8 +25,10 @@ class ServerManager {
   private server: ChildProcess | undefined;
   isServerRunning = (): boolean => (this.server !== undefined);
   disconnect = () => {
+    console.log("dc");
+    console.log(this.server);
     if(this.server) {
-      this.server.kill();
+      this.server.kill("SIGKILL");
       this.server = undefined;
     }
   };

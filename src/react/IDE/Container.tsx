@@ -6,12 +6,14 @@ import {EditActionDispatcher} from "./Edit/Edit";
 import {LogActionDispatcher} from "./Log/Log";
 import {ProjectActionDispatcher} from "./Project/ProjectTree";
 import {
-  addCssClassToComponent,loadProject,
+  addCssClassToComponent, loadProject, rebuildTree,
   removeCssFromComponent
 } from "./Project/Modules";
 import {ModalActionDispatcher} from "../Modal/Container";
 import {SavedFile} from "../../files/SaveProject";
 import {SavedCss, SavedIndex} from "../../files/FileManager";
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from "react-dnd";
 
 export class ActionDispatcher {
   tree: TreeActionDispatcher;
@@ -36,6 +38,10 @@ export class ActionDispatcher {
     this.tree.reloadTreeState();
     this.dispatch(loadProject(index, files, css));
   }
+  rebuildTree(list: Array<{parent: string, id: string, children: Array<string>, fullName: string}>) {
+    this.dispatch(rebuildTree(list));
+  }
 }
 
-export default connect(state => state, dispatch => ({actions: new ActionDispatcher(dispatch)}))(IDE)
+
+export default DragDropContext(HTML5Backend)(connect(state => state, dispatch => ({actions: new ActionDispatcher(dispatch)}))(IDE));

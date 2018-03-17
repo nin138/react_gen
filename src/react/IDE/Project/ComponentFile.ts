@@ -1,5 +1,6 @@
 import {NinComponentInfo, NinElement, ROOT_ID} from "../../Entities/NinElement";
 import {List, Map} from "immutable";
+import {Project} from "./Project";
 
 export interface StateData {
   name: string,
@@ -56,7 +57,16 @@ export class ComponentFile {
   private copy(...differ: Array<object>): ComponentFile {
     return Object.assign(Object.create(ComponentFile.prototype), this, ...differ)
   }
-
+  rebuildTree(project: Project, list: Array<{parent: string, fullName: string, id: string, children: Array<string>}>) {
+    let newElements: {[key: string]: NinElement} = {};
+    list.forEach(it => {
+      const oldElement = this.elements.get(it.id);
+      newElements[it.id] = (oldElement) ?
+        oldElement.copy({children: List(it.children), parent: it.parent})
+        : new NinElement(project.getComponentInfo(it.fullName), it.parent, it.children, undefined, undefined, it.id);
+    });
+    return this.copy({elements: Map(newElements)});
+  }
   addNode(element: NinElement): ComponentFile {
     if(element.parent == ROOT_ID) return this.copy({ elements: this.elements.set(element.id, element) });
     return this.copy({ elements: this.elements.set(element.id, element).update(element.parent, it => it.addChild(element.id)) });

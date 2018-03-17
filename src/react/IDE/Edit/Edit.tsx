@@ -72,7 +72,6 @@ export default class Edit extends React.Component<Props, {}> {
   }
   private getActiveElement(): NinElement { return this.props.nodes.get(this.props.selectedItemId) }
   render() {
-    console.log("render edit");
     return (
         <section className="c-edit">
           <div className="c-edit__head">

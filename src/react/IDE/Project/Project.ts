@@ -82,7 +82,9 @@ export class Project {
   changeNodeAttribute(id: string, attr: string, value: string): Project {
     return this.copy({ files: this.files.update(this.activeFile, it => it.changeAttribute(id, attr, value)) });
   }
-
+  rebuildTree(list: Array<{parent: string, id: string, fullName: string, children: Array<string>}>) {
+    return this.copy({ files: this.files.update(this.activeFile, it => it.rebuildTree(this, list))});
+  }
   componentize(id: string, componentName: string): Project {
     let nodes = this.files.get(this.activeFile).copyNodes(id).update(id, it => it.changeParent(ROOT_ID));
     const ret = this

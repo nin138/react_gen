@@ -18,6 +18,7 @@ enum ActionNames {
   changeActiveFile = "Project.changeActiveFile",
   createCssClass = "Project.createCssClass",
   changeCssValue = "Project.changeCssValue",
+  rebuildTree = "Project.rebuildTree",
 }
 
 interface LoadProjectAction {
@@ -156,6 +157,15 @@ export const changeCssValue = (className: string, attr: string, value: string): 
   value
 });
 
+interface RebuildTreeAction {
+  type: ActionNames.rebuildTree
+  list: Array<{parent: string, id: string, children: Array<string>, fullName: string}>
+}
+export const rebuildTree = (list: Array<{parent: string, id: string, children: Array<string>, fullName: string}>): RebuildTreeAction => ({
+  type: ActionNames.rebuildTree,
+  list
+});
+
 
 export type ProjectAction =
     AddFileAction
@@ -169,6 +179,7 @@ export type ProjectAction =
   | ChangeActiveFileAction
   | CreateCssClassAction
   | ChangeCssValueAction
+  | RebuildTreeAction
 
 const initialState: Project = Object.assign(Object.create(Project.prototype),{
   projectName: "",
@@ -189,6 +200,7 @@ export default function reducer(state: Project = initialState, action: ProjectAc
     case ActionNames.changeActiveFile: return state.changeActiveFile(action.fileName);
     case ActionNames.createCssClass: return state.createCssClass(action.name, action.css);
     case ActionNames.changeCssValue: return state.changeCssValue(action.className, action.attr, action.value);
+    case ActionNames.rebuildTree: return state.rebuildTree(action.list);
     default: { return state }
   }
 }

@@ -4,30 +4,28 @@
   "scripts": {
     "build": "webpack --colors --config ./webpack.config.dev.js",
     "build-min": "webpack --config ./webpack.config.minimize.js",
-    "sass-watch": "sass --style expanded --watch css/style.scss:dist/style.css",
-    "sass-min": "sass --sourcemap=none --style compressed css/style.scss:dist/style.css",
-    "release": "npm run build-min & npm run sass-min",
+    "release": "yarn run build-min & npm run sass-min",
     "server": "open http:127.0.0.1:3022;node server.js"
   },
   "devDependencies": {
-    "@types/react": "15.0.39",
-    "@types/react-dom": "15.5.1",
-    "@types/react-redux": "4.4.47",
-    "@types/react-router": "^4.0.14",
-    "@types/react-router-dom": "4.0.6",
+    "@types/react": "^16.0.38",
+    "@types/react-dom": "^16.0.4",
+    "@types/react-redux": "^5.0.15",
+    "@types/react-router": "^4.0.22",
+    "@types/react-router-dom": "^4.2.4",
     "fetch-mock": "5.12.1",
-    "react-test-renderer": "16.0.0-beta.1",
-    "ts-loader": "2.3.2",
-    "typescript": "2.4.2",
-    "webpack": "3.4.1"
+    "ts-loader": "^4.0.1",
+    "typescript": "^2.7.2",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12"
   },
   "dependencies": {
     "express": "^4.15.3",
     "immutable": "^3.8.1",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "react-redux": "5.0.5",
-    "react-router-dom": "4.1.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.2.2",
     "redux": "3.7.2",
     "shortid": "^2.2.8"
   }

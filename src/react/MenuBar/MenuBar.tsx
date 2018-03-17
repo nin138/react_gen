@@ -44,11 +44,11 @@ export default class MenuBar extends React.Component<Props, {}> {
             }}>transpile</p>
             <p className="c-menu-bar__main__item" onClick={async e => {
               this.props.log.info("starting build");
-              await execCommand("npm", ["i"],
+              await execCommand("yarn", ["install"],
                   path.join(fileManager.PROJECT_DIR, this.props.project.projectName, "ts"),
                   onStdout, onStderr)
               .then(async _ => {
-                await execCommand("npm", ["run", "build"], path.join(fileManager.PROJECT_DIR, this.props.project.projectName, "ts"), onStdout, onStderr)
+                await execCommand("yarn", ["run", "build"], path.join(fileManager.PROJECT_DIR, this.props.project.projectName, "ts"), onStdout, onStderr)
                 this.props.log.info("finish build");
               });
             }}>build</p>
@@ -57,7 +57,8 @@ export default class MenuBar extends React.Component<Props, {}> {
             }}>
               {"open in browser"}
             </p>
-            <p className="c-menu-bar__main__item" onClick={() => serverManager.disconnect()}>
+            <p className="c-menu-bar__main__item"
+               onClick={() => serverManager.disconnect()}>
               close server
             </p>
           </div>
