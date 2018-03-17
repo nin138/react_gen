@@ -2,7 +2,7 @@ import * as React from "react";
 import {TreeDropEventType} from "../Tree/Tree";
 import {Project} from "../Project/Project";
 import {HTML_TAGS} from "../../Html/Tags";
-
+import {PaletteItem} from "./PaletteItem";
 
 interface Props {
   project: Project
@@ -16,6 +16,7 @@ interface State {
   search: string
   tab: PaletteTab
 }
+
 
 export default class Palette extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -46,11 +47,8 @@ export default class Palette extends React.Component<Props, State> {
       default:
         list = [];
     }
-    const components = list.filter(it => it.toLowerCase().includes(this.state.search.toLowerCase())) // todo sort
-      .map(v => (<div className="c-palette__list__item" key={v}
-                       onDragStart={ e => this.onDragStart(e, v) }
-                       draggable={true}>{v}</div>)
-      );
+    const components = list.filter(it => it.toLowerCase().includes(this.state.search.toLowerCase()))//to do sort
+      .map(it => <PaletteItem node={{fullName: it}} />);
     return (
         <section className="c-palette">
           <div className="c-palette__head">

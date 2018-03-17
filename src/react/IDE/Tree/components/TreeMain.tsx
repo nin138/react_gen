@@ -5,6 +5,7 @@ import {Map} from "immutable";
 import {NinElement, ROOT_ID} from "../../../Entities/NinElement";
 import {ActionDispatcher} from "../../Container";
 import {Project} from "../../Project/Project";
+import {PaletteDnDType} from "../../Palette/PaletteItem";
 
 interface Props {
   elements: Map<string, NinElement>
@@ -42,6 +43,7 @@ export class TreeMain extends React.Component<Props ,State> {
     return roots.toArray().map(it => toTreeData(it.id));
   }
   private handleOnChange(list: Array<TreeData>) {
+    console.log(list);
     const ret: Array<{parent: string, id: string, fullName: string, children: Array<string>}> = [];
     const parse = (data: TreeData, parent: string) => {
       ret.push({ parent: parent, id: data.id, fullName: data.fullName, children: (data.children)? data.children.map(it => it.id) : [] })
@@ -55,6 +57,7 @@ export class TreeMain extends React.Component<Props ,State> {
     return (
       <div style={{ height: "100%" }}>
         <SortableTree
+          dndType={PaletteDnDType}
           rowHeight={52}
           nodeContentRenderer={TreeNodeRenderer}
           treeData={this.getTreeData(this.props.elements)}
