@@ -109,9 +109,7 @@ export class Project {
           .replace(NinComponentString.Attributes, attrString)
           .replace(NinComponentString.Children, children);
       };
-      if(file.elements.filter(it => it!.parent == ROOT_ID).size != 1) return "rendering problem"//todo
-      const root = file.elements.find(it => it!.parent == ROOT_ID);
-      return getNodeHtml(root, file.elements)
+      return file.elements.filter(it => it!.parent == ROOT_ID).map(it => getNodeHtml(it!, file.elements)).join("");
     };
     return getFileHtml(this.files.get(fileName));
   }
