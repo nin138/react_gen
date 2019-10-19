@@ -1,4 +1,4 @@
-import {Action} from 'redux'
+import { Action } from "redux";
 
 enum ActionNames {
   ChangeSelectedTab = "Edit.ChangeSelectedTab",
@@ -7,8 +7,8 @@ enum ActionNames {
 }
 
 interface ChangeSelectedTabAction extends Action {
-  type: ActionNames.ChangeSelectedTab,
-  tab: EditTabs
+  type: ActionNames.ChangeSelectedTab;
+  tab: EditTabs;
 }
 export const changeSelectedTab = (tab: EditTabs): ChangeSelectedTabAction => ({
   type: ActionNames.ChangeSelectedTab,
@@ -16,39 +16,48 @@ export const changeSelectedTab = (tab: EditTabs): ChangeSelectedTabAction => ({
 });
 
 interface ChangeCssAttrAction extends Action {
-  type: ActionNames.ChangeCssAttr
-  attr: string
-  value: string
+  type: ActionNames.ChangeCssAttr;
+  attr: string;
+  value: string;
 }
-export const changeCssAttr = (attr: string, value: string): ChangeCssAttrAction => ({
+export const changeCssAttr = (
+  attr: string,
+  value: string
+): ChangeCssAttrAction => ({
   type: ActionNames.ChangeCssAttr,
   attr,
-  value,
+  value
 });
 
-
 export interface EditState {
-  selectedTab: EditTabs
+  selectedTab: EditTabs;
 }
 
-export type EditAction = ChangeCssAttrAction
-    | ChangeSelectedTabAction
+export type EditAction = ChangeCssAttrAction | ChangeSelectedTabAction;
 
 export enum EditTabs {
-  Attributes, CSS, Listeners
+  Attributes,
+  CSS,
+  Listeners
 }
 
-const initialState: EditState= {
+const initialState: EditState = {
   selectedTab: EditTabs.CSS
 };
 
-export default function reducer(state: EditState = initialState, action: EditAction): EditState {
+export default function reducer(
+  state: EditState = initialState,
+  action: EditAction
+): EditState {
   switch (action.type) {
     case ActionNames.ChangeCssAttr:
-      return Object.assign({}, state, { attr: action.attr, value: action.value });
+      return Object.assign({}, state, {
+        attr: action.attr,
+        value: action.value
+      });
     case ActionNames.ChangeSelectedTab:
-      return Object.assign({}, state, { selectedTab: action.tab});
+      return Object.assign({}, state, { selectedTab: action.tab });
     default:
-      return state
+      return state;
   }
 }

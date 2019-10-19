@@ -1,15 +1,15 @@
 export interface NinElementAttribute {
-  name: string
-  type: AttributeTypes
-  value: string
-  isRequired: boolean
+  name: string;
+  type: AttributeTypes;
+  value: string;
+  isRequired: boolean;
 }
 
 export interface AttributeInfo {
-  name: string
-  type: AttributeTypes
-  isRequired: boolean
-  select?: Array<string>
+  name: string;
+  type: AttributeTypes;
+  isRequired: boolean;
+  select?: string[];
 }
 
 export enum AttributeTypes {
@@ -26,6 +26,5 @@ export enum AttributeTypes {
   array = "array",
   URI = "URI",
   CSSLength = "CSSLength",
-  imageURI = "imageURI",
+  imageURI = "imageURI"
 }
-

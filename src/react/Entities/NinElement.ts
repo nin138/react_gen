@@ -1,8 +1,7 @@
-import {List, Map} from "immutable";
-import {SavedNode} from "../../files/SaveProject";
-import {Util} from "../../Util";
-import {AttributeInfo} from "../Html/Attribute";
-
+import { List, Map } from "immutable";
+import { SavedNode } from "../../files/SaveProject";
+import { Util } from "../../Util";
+import { AttributeInfo } from "../Html/Attribute";
 
 export class NinElement {
   readonly path: string;
@@ -14,15 +13,27 @@ export class NinElement {
   readonly classList: List<string>;
   readonly attributes: Map<string, string>;
 
-  static fromSavedNode(initializer: NinComponentInfo, node: SavedNode): NinElement {
-    return new NinElement(initializer, node.parent, node.children, node.className, node.attribute, node.id);
+  static fromSavedNode(
+    initializer: NinComponentInfo,
+    node: SavedNode
+  ): NinElement {
+    return new NinElement(
+      initializer,
+      node.parent,
+      node.children,
+      node.className,
+      node.attribute,
+      node.id
+    );
   }
-  constructor(initializer: NinComponentInfo,
-              parent: string,
-              children: Array<string> = [],
-              classList: Array<string> = [],
-              attrs: Array<{attr: string, value: string}> = [],
-              id: string = Util.generateId()) {
+  constructor(
+    initializer: NinComponentInfo,
+    parent: string,
+    children: string[] = [],
+    classList: string[] = [],
+    attrs: Array<{ attr: string; value: string }> = [],
+    id: string = Util.generateId()
+  ) {
     this.path = initializer.path;
     this.type = initializer.type;
     this.parent = parent;
@@ -35,29 +46,47 @@ export class NinElement {
     });
     this.attributes = map;
   }
-  copy(...obj: Array<object>): NinElement { return Object.assign(Object.create(NinElement.prototype), this, ...obj) }
-  addChild(childId: string, ref: string | null = null): NinElement {
-    return this.copy({ children: (!ref)? this.children.push(childId) : this.children.insert(this.children.indexOf(ref), childId) });
+  copy(...obj: object[]): NinElement {
+    return Object.assign(Object.create(NinElement.prototype), this, ...obj);
   }
-  removeChild(id: string): NinElement { return this.copy({ children: this.children.filter( value => value !== id) }) }
-  changeParent(id: string): NinElement { return this.copy({ parent: id }) }
-  addCssClass(className: string): NinElement { return this.copy({ classList: this.classList.push(className) }) }
-  removeCssClass(className:string): NinElement { return this.copy( { classList: this.classList.filter(it => it !== className)}) }
-  changeAttribute(attr: string, value: string): NinElement { return this.copy({ attributes: this.attributes.update(attr, _ => value)})}
+  addChild(childId: string, ref: string | null = null): NinElement {
+    return this.copy({
+      children: !ref
+        ? this.children.push(childId)
+        : this.children.insert(this.children.indexOf(ref), childId)
+    });
+  }
+  removeChild(id: string): NinElement {
+    return this.copy({ children: this.children.filter(value => value !== id) });
+  }
+  changeParent(id: string): NinElement {
+    return this.copy({ parent: id });
+  }
+  addCssClass(className: string): NinElement {
+    return this.copy({ classList: this.classList.push(className) });
+  }
+  removeCssClass(className: string): NinElement {
+    return this.copy({
+      classList: this.classList.filter(it => it !== className)
+    });
+  }
+  changeAttribute(attr: string, value: string): NinElement {
+    return this.copy({ attributes: this.attributes.update(attr, _ => value) });
+  }
 }
 
 export const ROOT_ID = "root";
 
 export interface NinComponentInfo {
-  path: string
-  type: string
-  hasChild: boolean
-  attributes: Array<AttributeInfo>
-  hasCss: boolean
+  path: string;
+  type: string;
+  hasChild: boolean;
+  attributes: AttributeInfo[];
+  hasCss: boolean;
 }
 
 export const NinComponentString = {
   Children: "<$*children*$>",
   Text: "<$*text*$>",
-  Attributes: "<$*attributes*$>",
+  Attributes: "<$*attributes*$>"
 };

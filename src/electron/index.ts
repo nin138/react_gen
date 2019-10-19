@@ -1,19 +1,14 @@
-import {
-  app,
-  BrowserWindow,
-} from 'electron';
-import * as path from 'path';
+import { app, BrowserWindow } from "electron";
+import * as path from "path";
 import * as url from "url";
 
-
 const indexURI = url.format({
-  pathname: path.join(__dirname, 'index.html'),
-  protocol: 'file:',
+  pathname: path.join(__dirname, "index.html"),
+  protocol: "file:",
   slashes: true
 });
 
-
-app.on('ready', _ => {
+app.on("ready", _ => {
   const winSetting = { width: 1600, height: 960 };
   const mainWindow = new BrowserWindow(winSetting);
 
@@ -22,6 +17,6 @@ app.on('ready', _ => {
   mainWindow.loadURL(indexURI);
 });
 
-app.on('window-all-closed', () => {
+app.on("window-all-closed", () => {
   app.quit();
 });

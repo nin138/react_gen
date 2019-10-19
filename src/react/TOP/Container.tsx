@@ -1,6 +1,8 @@
-import {connect} from 'react-redux'
+import { connect } from "react-redux";
+import { ActionDispatcher } from "../IDE/Container";
 import Top from "./Top";
-import {ActionDispatcher} from "../IDE/Container";
 
-
-export default connect(state => state, dispatch => ({actions: new ActionDispatcher(dispatch)}))(Top)
+export default connect(
+  state => state,
+  dispatch => ({ actions: new ActionDispatcher(dispatch) })
+)(Top);

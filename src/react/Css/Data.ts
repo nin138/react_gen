@@ -1,17 +1,25 @@
-import {Map} from "immutable"
+import { Map } from "immutable";
 
 export class UnitSizeCalculator {
-  public unit_data = {
+  unit_data = {
     rem: 16,
     vh: 0,
     vw: 0,
     vmin: 0,
-    vmax: 0,
-  }
+    vmax: 0
+  };
 }
 
 export enum CssValueTypes {
-  Invalid, Void, Color, Len, Int, Float, ZeroToOne ,Other, Merge
+  Invalid,
+  Void,
+  Color,
+  Len,
+  Int,
+  Float,
+  ZeroToOne,
+  Other,
+  Merge
 }
 
 export enum CssUnit {
@@ -25,33 +33,189 @@ export enum CssUnit {
   Vmax = "vmax"
 }
 export enum CssCategory {
-  Position, Display , Size , Text, Flex
+  Position,
+  Display,
+  Size,
+  Text,
+  Flex
 }
 
 export enum CssCondition {
-  FlexBox, FlexItem, NotStatic
+  FlexBox,
+  FlexItem,
+  NotStatic
 }
-
 
 interface CssAttrData {
-  category: CssCategory
-  valueType: CssValueTypes
-  values?: Array<string>
-  condition?: CssCondition
-  children?: Array<string>
-  parent?: string
-  patterns?: Array<Array<Array<string>>>
+  category: CssCategory;
+  valueType: CssValueTypes;
+  values?: string[];
+  condition?: CssCondition;
+  children?: string[];
+  parent?: string;
+  patterns?: string[][][];
 }
 
-
-
 export default class CssData {
-  public static ALL_ATTR_HAS = ["inherit", "initial", "unset"];
-  public static COLOR_NAMES = ["AliceBlue", "AntiqueWhite", "Aqua", "Aquamarine", "Azure", "Beige", "Bisque", "Black", "BlanchedAlmond", "Blue", "BlueViolet", "Brown", "BurlyWood", "CadetBlue", "Chartreuse", "Chocolate", "Coral", "CornflowerBlue", "Cornsilk", "Crimson", "Cyan", "DarkBlue", "DarkCyan", "DarkGoldenrod", "DarkGray", "DarkGreen", "DarkKhaki", "DarkMagenta", "DarkOliveGreen", "DarkOrange", "DarkOrchid", "DarkRed", "DarkSalmon", "DarkSeaGreen", "DarkSlateBlue", "DarkSlateGray", "DarkTurquoise", "DarkViolet", "DeepPink", "DeepSkyBlue", "DimGray", "DodgerBlue", "FireBrick", "FloralWhite", "ForestGreen", "Fuchsia", "Gainsboro", "GhostWhite", "Gold", "Goldenrod", "Gray", "Green", "GreenYellow", "Honeydew", "HotPink", "IndianRed", "Indigo", "Ivory", "Khaki", "Lavender", "LavenderBlush", "LawnGreen", "LemonChiffon", "LightBlue", "LightCoral", "LightCyan", "LightGoldenrodYellow", "LightGreen", "LightGrey", "LightPink", "LightSalmon", "LightSeaGreen", "LightSkyBlue", "LightSlateGray", "LightSteelBlue", "LightYellow", "Lime", "LimeGreen", "Linen", "Magenta", "Maroon", "MediumAquamarine", "MediumBlue", "MediumOrchid", "MediumPurple", "MediumSeaGreen", "MediumSlateBlue", "MediumSpringGreen", "MediumTurquoise", "MediumVioletRed", "MidnightBlue", "MintCream", "MistyRose", "Moccasin", "NavajoWhite", "Navy", "OldLace", "Olive", "OliveDrab", "Orange", "OrangeRed", "Orchid", "PaleGoldenrod", "PaleGreen", "PaleTurquoise", "PaleVioletRed", "PapayaWhip", "PeachPuff", "Peru", "Pink", "Plum", "PowderBlue", "Purple", "Red", "RosyBrown", "RoyalBlue", "SaddleBrown", "Salmon", "SandyBrown", "SeaGreen", "Seashell", "Sienna", "Silver", "SkyBlue", "SlateBlue", "SlateGray", "Snow", "SpringGreen", "SteelBlue", "Tan", "Teal", "Thistle", "Tomato", "Turquoise", "Violet", "Wheat", "White", "WhiteSmoke", "Yellow", "YellowGreen"];
-  public static Flex_BOX_ATTRS = ["flexDirection", "flexWrap", "justifyContent", "alignItems", "alignContent"];
-  public static FLEX_ITEM_ATTRS = ["flex", "flexGrow", "flexShrink", "flexBasis", "order"];
-  public static DISPLAY_DIRECTIONS = ["top", "left", "right", "bottom"];
-  public static values: Map<string, CssAttrData> = Map({
+  static ALL_ATTR_HAS = ["inherit", "initial", "unset"];
+  static COLOR_NAMES = [
+    "AliceBlue",
+    "AntiqueWhite",
+    "Aqua",
+    "Aquamarine",
+    "Azure",
+    "Beige",
+    "Bisque",
+    "Black",
+    "BlanchedAlmond",
+    "Blue",
+    "BlueViolet",
+    "Brown",
+    "BurlyWood",
+    "CadetBlue",
+    "Chartreuse",
+    "Chocolate",
+    "Coral",
+    "CornflowerBlue",
+    "Cornsilk",
+    "Crimson",
+    "Cyan",
+    "DarkBlue",
+    "DarkCyan",
+    "DarkGoldenrod",
+    "DarkGray",
+    "DarkGreen",
+    "DarkKhaki",
+    "DarkMagenta",
+    "DarkOliveGreen",
+    "DarkOrange",
+    "DarkOrchid",
+    "DarkRed",
+    "DarkSalmon",
+    "DarkSeaGreen",
+    "DarkSlateBlue",
+    "DarkSlateGray",
+    "DarkTurquoise",
+    "DarkViolet",
+    "DeepPink",
+    "DeepSkyBlue",
+    "DimGray",
+    "DodgerBlue",
+    "FireBrick",
+    "FloralWhite",
+    "ForestGreen",
+    "Fuchsia",
+    "Gainsboro",
+    "GhostWhite",
+    "Gold",
+    "Goldenrod",
+    "Gray",
+    "Green",
+    "GreenYellow",
+    "Honeydew",
+    "HotPink",
+    "IndianRed",
+    "Indigo",
+    "Ivory",
+    "Khaki",
+    "Lavender",
+    "LavenderBlush",
+    "LawnGreen",
+    "LemonChiffon",
+    "LightBlue",
+    "LightCoral",
+    "LightCyan",
+    "LightGoldenrodYellow",
+    "LightGreen",
+    "LightGrey",
+    "LightPink",
+    "LightSalmon",
+    "LightSeaGreen",
+    "LightSkyBlue",
+    "LightSlateGray",
+    "LightSteelBlue",
+    "LightYellow",
+    "Lime",
+    "LimeGreen",
+    "Linen",
+    "Magenta",
+    "Maroon",
+    "MediumAquamarine",
+    "MediumBlue",
+    "MediumOrchid",
+    "MediumPurple",
+    "MediumSeaGreen",
+    "MediumSlateBlue",
+    "MediumSpringGreen",
+    "MediumTurquoise",
+    "MediumVioletRed",
+    "MidnightBlue",
+    "MintCream",
+    "MistyRose",
+    "Moccasin",
+    "NavajoWhite",
+    "Navy",
+    "OldLace",
+    "Olive",
+    "OliveDrab",
+    "Orange",
+    "OrangeRed",
+    "Orchid",
+    "PaleGoldenrod",
+    "PaleGreen",
+    "PaleTurquoise",
+    "PaleVioletRed",
+    "PapayaWhip",
+    "PeachPuff",
+    "Peru",
+    "Pink",
+    "Plum",
+    "PowderBlue",
+    "Purple",
+    "Red",
+    "RosyBrown",
+    "RoyalBlue",
+    "SaddleBrown",
+    "Salmon",
+    "SandyBrown",
+    "SeaGreen",
+    "Seashell",
+    "Sienna",
+    "Silver",
+    "SkyBlue",
+    "SlateBlue",
+    "SlateGray",
+    "Snow",
+    "SpringGreen",
+    "SteelBlue",
+    "Tan",
+    "Teal",
+    "Thistle",
+    "Tomato",
+    "Turquoise",
+    "Violet",
+    "Wheat",
+    "White",
+    "WhiteSmoke",
+    "Yellow",
+    "YellowGreen"
+  ];
+  static Flex_BOX_ATTRS = [
+    "flexDirection",
+    "flexWrap",
+    "justifyContent",
+    "alignItems",
+    "alignContent"
+  ];
+  static FLEX_ITEM_ATTRS = [
+    "flex",
+    "flexGrow",
+    "flexShrink",
+    "flexBasis",
+    "order"
+  ];
+  static DISPLAY_DIRECTIONS = ["top", "left", "right", "bottom"];
+  static values: Map<string, CssAttrData> = Map({
     position: {
       category: CssCategory.Position,
       valueType: CssValueTypes.Other,
@@ -60,41 +224,49 @@ export default class CssData {
     top: {
       category: CssCategory.Position,
       valueType: CssValueTypes.Len,
-      condition: CssCondition.NotStatic,
+      condition: CssCondition.NotStatic
     },
     left: {
       category: CssCategory.Position,
       valueType: CssValueTypes.Len,
-      condition: CssCondition.NotStatic,
+      condition: CssCondition.NotStatic
     },
     right: {
       category: CssCategory.Position,
       valueType: CssValueTypes.Len,
-      condition: CssCondition.NotStatic,
+      condition: CssCondition.NotStatic
     },
     bottom: {
       category: CssCategory.Position,
       valueType: CssValueTypes.Len,
-      condition: CssCondition.NotStatic,
+      condition: CssCondition.NotStatic
     },
     float: {
       category: CssCategory.Position,
       valueType: CssValueTypes.Other,
-      values: ["none", "left", "right"],
+      values: ["none", "left", "right"]
     },
     clear: {
       category: CssCategory.Position,
       valueType: CssValueTypes.Other,
-      values: ["left", "right", "both"],
+      values: ["left", "right", "both"]
     },
     zIndex: {
       category: CssCategory.Position,
-      valueType: CssValueTypes.Int,
+      valueType: CssValueTypes.Int
     },
     display: {
       category: CssCategory.Display,
       valueType: CssValueTypes.Len,
-      values: ["block", "inline", "inline-block", "flex", "inline-flex", "none", "inherit"],
+      values: [
+        "block",
+        "inline",
+        "inline-block",
+        "flex",
+        "inline-flex",
+        "none",
+        "inherit"
+      ]
     },
     flex: {
       category: CssCategory.Flex,
@@ -107,43 +279,49 @@ export default class CssData {
         [["flexGrow"], ["flexShrink"], ["flexBasis"]]
       ],
       children: ["flexGrow, FlexShrink, FlexBasis"],
-      condition: CssCondition.FlexItem,
+      condition: CssCondition.FlexItem
     },
     flexGrow: {
       category: CssCategory.Flex,
       valueType: CssValueTypes.Int,
       parent: "flex",
-      condition: CssCondition.FlexItem,
+      condition: CssCondition.FlexItem
     },
     flexShrink: {
       category: CssCategory.Flex,
       valueType: CssValueTypes.Int,
       parent: "flex",
-      condition: CssCondition.FlexItem,
+      condition: CssCondition.FlexItem
     },
     flexBasis: {
       category: CssCategory.Flex,
       valueType: CssValueTypes.Len,
       parent: "flex",
-      condition: CssCondition.FlexItem,
+      condition: CssCondition.FlexItem
     },
     flexDirection: {
       category: CssCategory.Flex,
       valueType: CssValueTypes.Other,
       values: ["row", "row-reverse", "column", "column-reverse"],
-      condition: CssCondition.FlexBox,
+      condition: CssCondition.FlexBox
     },
     flexWrap: {
       category: CssCategory.Flex,
       valueType: CssValueTypes.Other,
       values: ["nowrap", "wrap", "wrap-reverse"],
-      condition: CssCondition.FlexBox,
+      condition: CssCondition.FlexBox
     },
     justifyContent: {
       category: CssCategory.Flex,
       valueType: CssValueTypes.Other,
-      values: ["flex-start", "flex-end", "center", "space-around", "spane-between"],
-      condition: CssCondition.FlexBox,
+      values: [
+        "flex-start",
+        "flex-end",
+        "center",
+        "space-around",
+        "spane-between"
+      ],
+      condition: CssCondition.FlexBox
     },
     alignItems: {
       category: CssCategory.Flex,
@@ -154,35 +332,49 @@ export default class CssData {
     alignContent: {
       category: CssCategory.Flex,
       valueType: CssValueTypes.Other,
-      values: ["stretch", "flex-start", "flex-end", "center", "space-around", "spane-between"],
+      values: [
+        "stretch",
+        "flex-start",
+        "flex-end",
+        "center",
+        "space-around",
+        "spane-between"
+      ],
       condition: CssCondition.FlexBox
     },
     alignSelf: {
       category: CssCategory.Flex,
       valueType: CssValueTypes.Other,
-      values: ["stretch", "flex-start", "flex-end", "center", "space-around", "spane-between"],
-      condition: CssCondition.FlexItem,
+      values: [
+        "stretch",
+        "flex-start",
+        "flex-end",
+        "center",
+        "space-around",
+        "spane-between"
+      ],
+      condition: CssCondition.FlexItem
     },
     order: {
       category: CssCategory.Flex,
       valueType: CssValueTypes.Int,
-      condition: CssCondition.FlexItem,
+      condition: CssCondition.FlexItem
     },
     opacity: {
       category: CssCategory.Display,
-      valueType: CssValueTypes.ZeroToOne,
+      valueType: CssValueTypes.ZeroToOne
     },
     backgroundColor: {
       category: CssCategory.Display,
-      valueType: CssValueTypes.Color,
+      valueType: CssValueTypes.Color
     },
     width: {
       category: CssCategory.Size,
-      valueType: CssValueTypes.Len,
+      valueType: CssValueTypes.Len
     },
     height: {
       category: CssCategory.Size,
-      valueType: CssValueTypes.Len,
+      valueType: CssValueTypes.Len
     },
     margin: {
       category: CssCategory.Size,
@@ -193,7 +385,7 @@ export default class CssData {
         [["marginTop"], ["marginLeft", "marginRight"], ["marginBottom"]],
         [["marginTop"], ["marginRight"], ["marginBottom"], ["marginLeft"]]
       ],
-      children: ["marginTop", "marginLeft", "marginRight", "marginBottom"],
+      children: ["marginTop", "marginLeft", "marginRight", "marginBottom"]
     },
     marginTop: {
       category: CssCategory.Size,
@@ -224,42 +416,40 @@ export default class CssData {
         [["paddingTop"], ["paddingLeft", "paddingRight"], ["paddingBottom"]],
         [["paddingTop"], ["paddingRight"], ["paddingBottom"], ["paddingLeft"]]
       ],
-      children: ["paddingTop", "paddingLeft", "paddingRight", "paddingBottom"],
+      children: ["paddingTop", "paddingLeft", "paddingRight", "paddingBottom"]
     },
     paddingTop: {
       category: CssCategory.Size,
       valueType: CssValueTypes.Len,
-      parent: "padding",
+      parent: "padding"
     },
     paddingLeft: {
       category: CssCategory.Size,
       valueType: CssValueTypes.Len,
-      parent: "padding",
+      parent: "padding"
     },
     paddingRight: {
       category: CssCategory.Size,
       valueType: CssValueTypes.Len,
-      parent: "padding",
+      parent: "padding"
     },
     paddingBottom: {
       category: CssCategory.Size,
       valueType: CssValueTypes.Len,
-      parent: "padding",
+      parent: "padding"
     },
     fontSize: {
       category: CssCategory.Text,
-      valueType: CssValueTypes.Len,
+      valueType: CssValueTypes.Len
     },
     fontWeight: {
       category: CssCategory.Text,
       valueType: CssValueTypes.Other,
-      values: ["normal", "bold", "lighter", "bolder"],
+      values: ["normal", "bold", "lighter", "bolder"]
     },
     color: {
       category: CssCategory.Text,
-      valueType: CssValueTypes.Color,
+      valueType: CssValueTypes.Color
     }
   });
-
 }
-

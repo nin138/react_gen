@@ -1,8 +1,11 @@
-import * as React from 'react'
-import { RouteComponentProps } from 'react-router'
+import * as React from "react";
+import { RouteComponentProps } from "react-router";
 
-export default class NotFound extends React.Component<RouteComponentProps<any>, {}> {
+export default class NotFound extends React.Component<
+  RouteComponentProps<any>,
+  {}
+> {
   render() {
-    return (<div>404 Not Found</div>)
+    return <div>404 Not Found</div>;
   }
 }

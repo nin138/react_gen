@@ -6,11 +6,7 @@ export enum PrimitiveTypes {
   string = "string",
   symbol = "symbol",
   object = "object",
-  function = "function",
+  function = "function"
 }
 
-export const DefaltTypes = [
-  "array",
-  "map",
-  "Date",
-];
+export const DefaltTypes = ["array", "map", "Date"];

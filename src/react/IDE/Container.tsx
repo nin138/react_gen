@@ -1,19 +1,21 @@
-import {connect} from 'react-redux'
-import {AppAction} from "../Store";
+import { DragDropContext } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
+import { connect } from "react-redux";
+import { SavedCss, SavedIndex } from "../../files/FileManager";
+import { SavedFile } from "../../files/SaveProject";
+import { ModalActionDispatcher } from "../Modal/Container";
+import { AppAction } from "../Store";
+import { EditActionDispatcher } from "./Edit/Edit";
 import IDE from "./IDE";
-import {TreeActionDispatcher} from "./Tree/Tree";
-import {EditActionDispatcher} from "./Edit/Edit";
-import {LogActionDispatcher} from "./Log/Log";
-import {ProjectActionDispatcher} from "./Project/ProjectTree";
+import { LogActionDispatcher } from "./Log/Log";
 import {
-  addCssClassToComponent, loadProject, rebuildTree,
+  addCssClassToComponent,
+  loadProject,
+  rebuildTree,
   removeCssFromComponent
 } from "./Project/Modules";
-import {ModalActionDispatcher} from "../Modal/Container";
-import {SavedFile} from "../../files/SaveProject";
-import {SavedCss, SavedIndex} from "../../files/FileManager";
-import HTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContext } from "react-dnd";
+import { ProjectActionDispatcher } from "./Project/ProjectTree";
+import { TreeActionDispatcher } from "./Tree/Tree";
 
 export class ActionDispatcher {
   tree: TreeActionDispatcher;
@@ -29,19 +31,30 @@ export class ActionDispatcher {
     this.modal = new ModalActionDispatcher(dispatch);
   }
   addCssClassToComponent(id: string, className: string) {
-    this.dispatch(addCssClassToComponent(id, className))
+    this.dispatch(addCssClassToComponent(id, className));
   }
   removeCssFromComponent(componentId: string, className: string) {
-    this.dispatch(removeCssFromComponent(componentId, className))
+    this.dispatch(removeCssFromComponent(componentId, className));
   }
-  loadProject(index: SavedIndex, files: Array<SavedFile>, css: SavedCss) {
+  loadProject(index: SavedIndex, files: SavedFile[], css: SavedCss) {
     this.tree.reloadTreeState();
     this.dispatch(loadProject(index, files, css));
   }
-  rebuildTree(list: Array<{parent: string, id: string, children: Array<string>, fullName: string}>) {
+  rebuildTree(
+    list: Array<{
+      parent: string;
+      id: string;
+      children: string[];
+      fullName: string;
+    }>
+  ) {
     this.dispatch(rebuildTree(list));
   }
 }
 
-
-export default DragDropContext(HTML5Backend)(connect(state => state, dispatch => ({actions: new ActionDispatcher(dispatch)}))(IDE));
+export default DragDropContext(HTML5Backend)(
+  connect(
+    state => state,
+    dispatch => ({ actions: new ActionDispatcher(dispatch) })
+  )(IDE)
+);

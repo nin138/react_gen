@@ -1,9 +1,9 @@
-import {Map} from "immutable"
-import {SavedFile} from "../../../files/SaveProject";
-import {SavedCss, SavedIndex} from "../../../files/FileManager";
-import {NinElement} from "../../Entities/NinElement";
-import {Project} from "./Project";
+import { Map } from "immutable";
+import { SavedCss, SavedIndex } from "../../../files/FileManager";
+import { SavedFile } from "../../../files/SaveProject";
 import Css from "../../Css/Css";
+import { NinElement } from "../../Entities/NinElement";
+import { Project } from "./Project";
 
 enum ActionNames {
   loadProject = "Project.loadProject",
@@ -18,26 +18,29 @@ enum ActionNames {
   changeActiveFile = "Project.changeActiveFile",
   createCssClass = "Project.createCssClass",
   changeCssValue = "Project.changeCssValue",
-  rebuildTree = "Project.rebuildTree",
+  rebuildTree = "Project.rebuildTree"
 }
 
 interface LoadProjectAction {
-  type: ActionNames.loadProject,
-  index: SavedIndex,
-  files: Array<SavedFile>
-  savedCss: SavedCss
+  type: ActionNames.loadProject;
+  index: SavedIndex;
+  files: SavedFile[];
+  savedCss: SavedCss;
 }
-export const loadProject = (index: SavedIndex, files: Array<SavedFile>, savedCss: SavedCss): LoadProjectAction => ({
+export const loadProject = (
+  index: SavedIndex,
+  files: SavedFile[],
+  savedCss: SavedCss
+): LoadProjectAction => ({
   type: ActionNames.loadProject,
   index,
   files,
-  savedCss,
+  savedCss
 });
 
-
 interface ChangeSelectedElement {
-  type: ActionNames.changeSelectedElement,
-  id: string
+  type: ActionNames.changeSelectedElement;
+  id: string;
 }
 
 export const changeSelectedElement = (id: string): ChangeSelectedElement => ({
@@ -46,32 +49,39 @@ export const changeSelectedElement = (id: string): ChangeSelectedElement => ({
 });
 
 interface AddFileAction {
-  type: ActionNames.addFile,
-  fullName: string
+  type: ActionNames.addFile;
+  fullName: string;
 }
 export const addFile = (fullName: string): AddFileAction => ({
   type: ActionNames.addFile,
-  fullName,
+  fullName
 });
 
 interface CreateNodeAction {
-  type: ActionNames.createNode
-  node: NinElement
-  parent: string
+  type: ActionNames.createNode;
+  node: NinElement;
+  parent: string;
 }
-export const createNode = (node: NinElement, parent: string): CreateNodeAction => ({
+export const createNode = (
+  node: NinElement,
+  parent: string
+): CreateNodeAction => ({
   type: ActionNames.createNode,
   node,
   parent
 });
 
 interface MoveNodeAction {
-  type: ActionNames.moveNode
-  moveNodeId: string
-  parentId: string
-  ref: string | null
+  type: ActionNames.moveNode;
+  moveNodeId: string;
+  parentId: string;
+  ref: string | null;
 }
-export const moveNode = (moveNodeId: string, parentId: string, ref: string | null): MoveNodeAction => ({
+export const moveNode = (
+  moveNodeId: string,
+  parentId: string,
+  ref: string | null
+): MoveNodeAction => ({
   type: ActionNames.moveNode,
   moveNodeId,
   parentId,
@@ -79,23 +89,30 @@ export const moveNode = (moveNodeId: string, parentId: string, ref: string | nul
 });
 
 interface AddCssClassToComponentAction {
-  type: ActionNames.addCssClassToComponent
-  id: string
-  className: string
+  type: ActionNames.addCssClassToComponent;
+  id: string;
+  className: string;
 }
-export const addCssClassToComponent = (id: string, className: string): AddCssClassToComponentAction => ({
+export const addCssClassToComponent = (
+  id: string,
+  className: string
+): AddCssClassToComponentAction => ({
   type: ActionNames.addCssClassToComponent,
   id,
-  className,
+  className
 });
 
 interface ChangeAttributeAction {
-  type: ActionNames.changeAttribute,
+  type: ActionNames.changeAttribute;
+  targetId: string;
+  attr: string;
+  value: string;
+}
+export const changeAttribute = (
   targetId: string,
   attr: string,
-  value: string,
-}
-export const changeAttribute = (targetId: string, attr: string, value: string): ChangeAttributeAction => ({
+  value: string
+): ChangeAttributeAction => ({
   type: ActionNames.changeAttribute,
   targetId,
   attr,
@@ -103,30 +120,36 @@ export const changeAttribute = (targetId: string, attr: string, value: string): 
 });
 
 interface RemoveCssFromComponentAction {
-  type: ActionNames.removeCssFromComponent
-  id: string
-  className: string
+  type: ActionNames.removeCssFromComponent;
+  id: string;
+  className: string;
 }
-export const removeCssFromComponent = (id: string, className: string): RemoveCssFromComponentAction => ({
+export const removeCssFromComponent = (
+  id: string,
+  className: string
+): RemoveCssFromComponentAction => ({
   type: ActionNames.removeCssFromComponent,
   id,
-  className,
+  className
 });
 
 interface ComponentizeAction {
-  type: ActionNames.componentize,
+  type: ActionNames.componentize;
+  id: string;
+  componentName: string;
+}
+export const componentize = (
   id: string,
   componentName: string
-}
-export const componentize = (id: string, componentName: string): ComponentizeAction => ({
+): ComponentizeAction => ({
   type: ActionNames.componentize,
   id,
   componentName
 });
 
 interface ChangeActiveFileAction {
-  type: ActionNames.changeActiveFile,
-  fileName: string
+  type: ActionNames.changeActiveFile;
+  fileName: string;
 }
 
 export const changeActiveFile = (fileName: string): ChangeActiveFileAction => ({
@@ -135,22 +158,29 @@ export const changeActiveFile = (fileName: string): ChangeActiveFileAction => ({
 });
 
 interface CreateCssClassAction {
-  type: ActionNames.createCssClass
-  name: string
-  css: Css
+  type: ActionNames.createCssClass;
+  name: string;
+  css: Css;
 }
-export const createCssClass = (name: string, css: Css): CreateCssClassAction => ({
+export const createCssClass = (
+  name: string,
+  css: Css
+): CreateCssClassAction => ({
   type: ActionNames.createCssClass,
   name,
   css
 });
 interface ChangeCssValueAction {
-  type: ActionNames.changeCssValue
-  className: string
-  attr: string
-  value: string
+  type: ActionNames.changeCssValue;
+  className: string;
+  attr: string;
+  value: string;
 }
-export const changeCssValue = (className: string, attr: string, value: string): ChangeCssValueAction => ({
+export const changeCssValue = (
+  className: string,
+  attr: string,
+  value: string
+): ChangeCssValueAction => ({
   type: ActionNames.changeCssValue,
   className,
   attr,
@@ -158,17 +188,28 @@ export const changeCssValue = (className: string, attr: string, value: string): 
 });
 
 interface RebuildTreeAction {
-  type: ActionNames.rebuildTree
-  list: Array<{parent: string, id: string, children: Array<string>, fullName: string}>
+  type: ActionNames.rebuildTree;
+  list: Array<{
+    parent: string;
+    id: string;
+    children: string[];
+    fullName: string;
+  }>;
 }
-export const rebuildTree = (list: Array<{parent: string, id: string, children: Array<string>, fullName: string}>): RebuildTreeAction => ({
+export const rebuildTree = (
+  list: Array<{
+    parent: string;
+    id: string;
+    children: string[];
+    fullName: string;
+  }>
+): RebuildTreeAction => ({
   type: ActionNames.rebuildTree,
   list
 });
 
-
 export type ProjectAction =
-    AddFileAction
+  | AddFileAction
   | LoadProjectAction
   | CreateNodeAction
   | MoveNodeAction
@@ -179,28 +220,49 @@ export type ProjectAction =
   | ChangeActiveFileAction
   | CreateCssClassAction
   | ChangeCssValueAction
-  | RebuildTreeAction
+  | RebuildTreeAction;
 
-const initialState: Project = Object.assign(Object.create(Project.prototype),{
+const initialState: Project = Object.assign(Object.create(Project.prototype), {
   projectName: "",
   files: Map(),
   activeFile: "App"
 });
 
-export default function reducer(state: Project = initialState, action: ProjectAction): Project {
+export default function reducer(
+  state: Project = initialState,
+  action: ProjectAction
+): Project {
   switch (action.type) {
-    case ActionNames.loadProject: return new Project(action.index, action.files, action.savedCss);
-    case ActionNames.addFile: return state.addFile(action.fullName);
-    case ActionNames.createNode: return state.addNode(action.node);
-    case ActionNames.moveNode: return state.moveNode(action.moveNodeId, action.parentId, action.ref);
-    case ActionNames.addCssClassToComponent: return state.addCssClassToNode(action.id, action.className);
-    case ActionNames.removeCssFromComponent: return state.removeCssClassFromNode(action.id, action.className);
-    case ActionNames.changeAttribute: return state.changeNodeAttribute(action.targetId, action.attr, action.value);
-    case ActionNames.componentize: return state.componentize(action.id, action.componentName);
-    case ActionNames.changeActiveFile: return state.changeActiveFile(action.fileName);
-    case ActionNames.createCssClass: return state.createCssClass(action.name, action.css);
-    case ActionNames.changeCssValue: return state.changeCssValue(action.className, action.attr, action.value);
-    case ActionNames.rebuildTree: return state.rebuildTree(action.list);
-    default: { return state }
+    case ActionNames.loadProject:
+      return new Project(action.index, action.files, action.savedCss);
+    case ActionNames.addFile:
+      return state.addFile(action.fullName);
+    case ActionNames.createNode:
+      return state.addNode(action.node);
+    case ActionNames.moveNode:
+      return state.moveNode(action.moveNodeId, action.parentId, action.ref);
+    case ActionNames.addCssClassToComponent:
+      return state.addCssClassToNode(action.id, action.className);
+    case ActionNames.removeCssFromComponent:
+      return state.removeCssClassFromNode(action.id, action.className);
+    case ActionNames.changeAttribute:
+      return state.changeNodeAttribute(
+        action.targetId,
+        action.attr,
+        action.value
+      );
+    case ActionNames.componentize:
+      return state.componentize(action.id, action.componentName);
+    case ActionNames.changeActiveFile:
+      return state.changeActiveFile(action.fileName);
+    case ActionNames.createCssClass:
+      return state.createCssClass(action.name, action.css);
+    case ActionNames.changeCssValue:
+      return state.changeCssValue(action.className, action.attr, action.value);
+    case ActionNames.rebuildTree:
+      return state.rebuildTree(action.list);
+    default: {
+      return state;
+    }
   }
 }
