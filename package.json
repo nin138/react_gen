@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "electron": "^1.8.2",
-    "express": "^4.15.3",
+    "express": "^4.17.3",
     "fs-extra": "^5.0.0",
     "immutable": "^3.8.1",
     "react": "^16.2.0",
